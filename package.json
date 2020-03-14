@@ -1,0 +1,54 @@
+{
+  "name": "Diwo",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  },
+  "dependencies": {
+    "@react-native-community/async-storage": "^1.6.2",
+    "react": "16.9.0",
+    "react-native": "0.61.2",
+    "react-native-chart-kit": "^3.11.0",
+    "react-native-device-info": "^5.5.3",
+    "react-native-elements": "^1.2.7",
+    "react-native-firebase": "^5.6.0",
+    "react-native-gesture-handler": "^1.4.1",
+    "react-native-hide-with-keyboard": "^1.2.1",
+    "react-native-linear-gradient": "^2.5.6",
+    "react-native-multiple-select": "^0.5.5",
+    "react-native-reanimated": "^1.3.0",
+    "react-native-responsive-linechart": "^2.2.0",
+    "react-native-responsive-screen": "^1.3.1",
+    "react-native-screens": "^1.0.0-alpha.23",
+    "react-native-simple-dialogs": "^1.2.1",
+    "react-native-snap-carousel": "^3.8.2",
+    "react-native-splash-screen": "^3.2.0",
+    "react-native-svg": "^9.13.3",
+    "react-native-vector-icons": "^6.6.0",
+    "react-native-view-more-text": "^2.1.0",
+    "react-navigation": "^4.0.10",
+    "react-navigation-drawer": "^2.2.2",
+    "react-navigation-stack": "^1.9.4",
+    "react-redux": "^7.1.1",
+    "redux": "^4.0.4",
+    "socket.io-client": "^2.3.0"
+  },
+  "devDependencies": {
+    "@babel/core": "7.6.3",
+    "@babel/runtime": "7.6.3",
+    "@react-native-community/eslint-config": "0.0.3",
+    "babel-jest": "24.9.0",
+    "eslint": "6.5.1",
+    "jest": "24.9.0",
+    "metro-react-native-babel-preset": "0.51.1",
+    "react-test-renderer": "16.9.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}
