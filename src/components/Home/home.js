@@ -42,7 +42,7 @@ export default class home extends Component {
       loading: false,
       isWorkjoy_active: 0,
       isSocialKapital_active: 0,
-      message_active: 1,
+      message_active: 0,
       badgeCount: 0,
       //loading: false
     };
@@ -291,27 +291,11 @@ export default class home extends Component {
     // return new Date(year, month+1, 0).getDate();
   };
 
-  sendLocalNotification() {
-    PushNotification.localNotification({
-      /* Android Only Properties */
-
-      /* iOS and Android properties */
-      title: 'Welcome back to Diwo', // (optional)
-      message: 'Welcome back to Diwo', // (required)
-      playSound: false, // (optional) default: true
-      // soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
-      // number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-      // repeatType: 'day', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
-      // actions: '["Yes", "No"]', // (Android only) See the doc for notification actions to know more
-    });
-  }
-
-  componentDidMount() {
+  async fetchData() {
+    this.setState({loading: true});
     const {navigation} = this.props;
     let user_details;
     const token_value = navigation.getParam('token', 'NO-ID');
-    // this.sendLocalNotification();
-
     if (this.state.count == '1' && token_value == 'NO-ID') {
       user_details = this.state.storeToken;
       console.log(user_details.token);
@@ -334,7 +318,7 @@ export default class home extends Component {
       // console.log(auth);
       headers.append('Authorization', auth);
       this.setState({loading: true});
-      fetch('http://diwo.nu/public/api/user', {
+      await fetch('http://diwo.nu/public/api/user', {
         method: 'POST',
         headers: headers,
       })
@@ -350,7 +334,7 @@ export default class home extends Component {
           console.error(error);
         });
 
-      fetch('http://diwo.nu/public/api/userExperience', {
+      await fetch('http://diwo.nu/public/api/userExperience', {
         method: 'POST',
         headers: headers,
       })
@@ -370,7 +354,7 @@ export default class home extends Component {
         });
 
       // this.setState({ loading: true })
-      fetch('http://diwo.nu/public/api/lastAddedWorkJoy', {
+      await fetch('http://diwo.nu/public/api/lastAddedWorkJoy', {
         method: 'POST',
         headers: headers,
       })
@@ -457,7 +441,7 @@ export default class home extends Component {
         });
 
       this.setState({loading: true});
-      fetch('http://diwo.nu/public/api/lastAddedSocialkapital', {
+      await fetch('http://diwo.nu/public/api/lastAddedSocialkapital', {
         method: 'POST',
         headers: headers,
       })
@@ -544,7 +528,7 @@ export default class home extends Component {
         });
 
       this.setState({loading: true});
-      fetch('http://diwo.nu/public/api/getLastMessageReadStatus', {
+      await fetch('http://diwo.nu/public/api/getLastMessageReadStatus', {
         method: 'POST',
         headers: headers,
       })
@@ -569,7 +553,7 @@ export default class home extends Component {
       let auth = 'Bearer ' + token_value;
       headers.append('Authorization', auth);
       this.setState({loading: true});
-      fetch('http://diwo.nu/public/api/user', {
+      await fetch('http://diwo.nu/public/api/user', {
         method: 'POST',
         headers: headers,
       })
@@ -585,7 +569,7 @@ export default class home extends Component {
         });
 
       this.setState({loading: true});
-      fetch('http://diwo.nu/public/api/userExperience', {
+      await fetch('http://diwo.nu/public/api/userExperience', {
         method: 'POST',
         headers: headers,
       })
@@ -604,7 +588,7 @@ export default class home extends Component {
         });
 
       // this.setState({ loading: true })
-      fetch('http://diwo.nu/public/api/lastAddedWorkJoy', {
+      await fetch('http://diwo.nu/public/api/lastAddedWorkJoy', {
         method: 'POST',
         headers: headers,
       })
@@ -690,7 +674,7 @@ export default class home extends Component {
         });
 
       this.setState({loading: true});
-      fetch('http://diwo.nu/public/api/lastAddedSocialkapital', {
+      await fetch('http://diwo.nu/public/api/lastAddedSocialkapital', {
         method: 'POST',
         headers: headers,
       })
@@ -777,7 +761,7 @@ export default class home extends Component {
         });
 
       this.setState({loading: true});
-      fetch('http://diwo.nu/public/api/getLastMessageReadStatus', {
+      await fetch('http://diwo.nu/public/api/getLastMessageReadStatus', {
         method: 'POST',
         headers: headers,
       })
@@ -797,7 +781,25 @@ export default class home extends Component {
           console.error(error);
         });
     }
+    let self = this;
 
+    let intervalFetch = setInterval(() => {
+      if (!self.state.loading) {
+        clearInterval(intervalFetch);
+        this.state.badgeCount = 0;
+        if (this.state.message_active == 1) this.state.badgeCount++;
+        if (this.state.isWorkjoy_active == 1) this.state.badgeCount++;
+        if (this.state.isSocialKapital_active == 1) this.state.badgeCount++;
+        if (this.state.badgeCount > 0) {
+          this.sendLocalNotification(this.state.badgeCount);
+          PushNotification.setApplicationIconBadgeNumber(this.state.badgeCount);
+        }
+      }
+    }, 1000);
+  }
+
+  componentDidMount() {
+    this.fetchData();
     // PushNotificationIOS.setApplicationIconBadgeNumber(10);
     // PushNotificationIOS.getApplicationIconBadgeNumber((res) => {
     //     console.log(res) //returns 10
@@ -880,13 +882,23 @@ export default class home extends Component {
       </View>
     );
   };
+  sendLocalNotification = count => {
+    PushNotification.localNotification({
+      /* Android Only Properties */
+
+      /* iOS and Android properties */
+      title: 'Diwo', // (optional)
+      message: `Du har ${count} underretninger`, // (required)
+      playSound: false, // (optional) default: true
+      // soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+      // number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+      // repeatType: 'day', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
+      // actions: '["Yes", "No"]', // (Android only) See the doc for notification actions to know more
+    });
+  };
   render() {
     var {height, width} = Dimensions.get('window');
-    this.state.badgeCount = 0;
-    if (this.state.message_active == 1) this.state.badgeCount++;
-    if (this.state.isWorkjoy_active == 1) this.state.badgeCount++;
-    if (this.state.isSocialKapital_active == 1) this.state.badgeCount++;
-    PushNotification.setApplicationIconBadgeNumber(this.state.badgeCount);
+
     return (
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>

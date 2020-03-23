@@ -105,7 +105,7 @@ export default class login extends Component {
             .catch(error => {
               console.log('err', error);
             });
-
+          AsyncStorage.setItem('usertoken', responseJson.token);
           this.props.navigation.navigate('Home', {token: responseJson.token});
         } else {
           alert('Invalid Credentails');

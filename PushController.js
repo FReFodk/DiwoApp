@@ -76,7 +76,7 @@ export default class PushController extends Component {
       onRegister: function(token) {
         console.log('TOKEN:', token);
         self.storeDeviceToken(token);
-        self.sendLocalNotification();
+        // self.sendLocalNotification();
       },
 
       // (required) Called when a remote or local notification is opened or received
