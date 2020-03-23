@@ -56,8 +56,8 @@ export default class PushController extends Component {
       /* Android Only Properties */
 
       /* iOS and Android properties */
-      title: 'Welcome back to Diwo', // (optional)
-      message: 'Welcome back to Diwo', // (required)
+      title: 'Diwo', // (optional)
+      message: 'velkommen tilbage!', // (required)
       playSound: false, // (optional) default: true
       // soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
       // number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)

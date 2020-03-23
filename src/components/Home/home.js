@@ -448,7 +448,7 @@ export default class home extends Component {
                 this.setState({isWorkjoy_active: 1});
               }
             } else {
-              this.setState({isWorkjoy_active: 0});
+              this.setState({isWorkjoy_active: 1});
             }
           }
         })
@@ -768,7 +768,7 @@ export default class home extends Component {
                 }
               }
             } else {
-              this.setState({isSocialKapital_active: 0});
+              this.setState({isSocialKapital_active: 1});
             }
           }
         })
