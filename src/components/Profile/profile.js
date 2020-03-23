@@ -1,45 +1,58 @@
-import React, { Component } from 'react';
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Image, Alert, ScrollView, Button, TextInput } from 'react-native';
+import React, {Component} from 'react';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ScrollView,
+  Button,
+  TextInput,
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Card, Icon, Input } from 'react-native-elements';
-import { Dialog } from 'react-native-simple-dialogs';
+import {Card, Icon, Input} from 'react-native-elements';
+import {Dialog} from 'react-native-simple-dialogs';
 import Text_EN from '../res/lang/static_text';
 import MultiSelect from 'react-native-multiple-select';
-import { NavigationEvents } from 'react-navigation';
+import {NavigationEvents} from 'react-navigation';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 export default class Profile extends Component {
-  myInterval = "";
+  myInterval = '';
   Newitem = [];
   constructor(props) {
-    super(props)
+    super(props);
     this._retrieveData();
     this.state = {
-      tokenValue: "",
-      token: "",
-      firstName: "",
-      lastName: "",
-      dataSource: "",
+      tokenValue: '',
+      token: '',
+      firstName: '',
+      lastName: '',
+      dataSource: '',
       count: 0,
-      experienceText: "",
+      experienceText: '',
       answerSend: false,
       error_popup: false,
       isKeyboardOpen: 0,
-      hoursHired: "",
-      teamName: "",
+      hoursHired: '',
+      teamName: '',
       message_dialog: false,
-      title: "",
-      message_text: "",
+      title: '',
+      message_text: '',
       selectedItems: [],
-      errorText: ""
-    }
+      errorText: '',
+    };
 
     this.page_reloaded = this.page_reloaded.bind(this);
   }
   onSelectedItemsChange = selectedItems => {
-    this.setState({ selectedItems, errorText: false });
+    this.setState({selectedItems, errorText: false});
   };
 
   page_reloaded() {
@@ -51,8 +64,8 @@ export default class Profile extends Component {
       const value = await AsyncStorage.getItem('visited_onces');
       console.log(value);
       if (value !== null) {
-        console.log("in if");
-        this.setState({ token: JSON.parse(value), count: 1 });
+        console.log('in if');
+        this.setState({token: JSON.parse(value), count: 1});
         this.componentDidMount();
       }
     } catch (error) {
@@ -62,7 +75,7 @@ export default class Profile extends Component {
 
   learnMore = () => {
     Linking.openURL('http://diwo.nu');
-  }
+  };
 
   help_workjoy = () => {
     Alert.alert(
@@ -74,11 +87,11 @@ export default class Profile extends Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'Learn More', onPress: () => this.learnMore() },
+        {text: 'Learn More', onPress: () => this.learnMore()},
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
-  }
+  };
 
   help_socialkapital = () => {
     Alert.alert(
@@ -90,11 +103,11 @@ export default class Profile extends Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'Learn More', onPress: () => this.learnMore() },
+        {text: 'Learn More', onPress: () => this.learnMore()},
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
-  }
+  };
 
   help_experience = () => {
     Alert.alert(
@@ -106,154 +119,191 @@ export default class Profile extends Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'Learn More', onPress: () => this.learnMore() },
+        {text: 'Learn More', onPress: () => this.learnMore()},
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
-  }
+  };
 
   componentDidMount() {
-
     this.Newitem = [];
     console.log(this.state.count);
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     if (this.state.count == 1) {
       const user_details = this.state.token;
       // this.setState({token:userToken.token});
       var headers = new Headers();
       let auth = 'Bearer ' + user_details.token;
-      headers.append("Authorization", auth);
-      fetch("http://diwo.nu/public/api/user", {
+      headers.append('Authorization', auth);
+      fetch('http://diwo.nu/public/api/user', {
         method: 'POST',
         headers: headers,
       })
-        .then((response) => response.json())
-        .then((responseJson) => {
+        .then(response => response.json())
+        .then(responseJson => {
           console.log(responseJson);
           if (responseJson) {
-            this.setState({ firstName: responseJson.user.first_name, lastName: responseJson.user.last_name, userId: responseJson.user.user_id });
+            this.setState({
+              firstName: responseJson.user.first_name,
+              lastName: responseJson.user.last_name,
+              userId: responseJson.user.user_id,
+            });
           }
-        }).catch((error) => {
+        })
+        .catch(error => {
           console.error(error);
         });
 
-      fetch("http://diwo.nu/public/api/getUserInfo", {
+      fetch('http://diwo.nu/public/api/getUserInfo', {
         method: 'POST',
         headers: headers,
       })
-        .then((response) => response.json())
-        .then((responseJson) => {
+        .then(response => response.json())
+        .then(responseJson => {
           console.log(responseJson);
-          this.setState({ hoursHired: responseJson.users[0].hours_hired, teamName: responseJson.users[0].team_name });
-        }).catch((error) => {
+          this.setState({
+            hoursHired: responseJson.users[0].hours_hired,
+            teamName: responseJson.users[0].team_name,
+          });
+        })
+        .catch(error => {
           console.error(error);
         });
 
-      fetch("http://diwo.nu/public/api/getAllUserInfo", {
+      fetch('http://diwo.nu/public/api/getAllUserInfo', {
         method: 'POST',
         headers: headers,
       })
-        .then((response) => response.json())
-        .then((responseJson) => {
+        .then(response => response.json())
+        .then(responseJson => {
           this.Newitem = [];
           // console.log(responseJson);
           //this.setState({item:responseJson.users[0].user_id});
           for (var i = 0; i < responseJson.users.length; i++) {
             var id = responseJson.users[i].user_id;
-            var name = responseJson.users[i].first_name + ' ' + responseJson.users[i].last_name
+            var name =
+              responseJson.users[i].first_name +
+              ' ' +
+              responseJson.users[i].last_name;
             // console.log(id);
             this.Newitem.push({
               id: id,
-              name: name
+              name: name,
             });
           }
           //this.setState({hoursHired:responseJson.users[0].hours_hired,teamName:responseJson.users[0].team_name});
-        }).catch((error) => {
+        })
+        .catch(error => {
           console.error(error);
         });
     }
   }
 
   send_message = () => {
-    this.setState({ message_dialog: true });
-  }
+    this.setState({message_dialog: true});
+  };
 
   message_send = () => {
     console.log(this.state.selectedItems.toString());
     console.log(this.state.title);
     console.log(this.state.message_text);
     let rec_id = this.state.selectedItems.toString();
-    if (rec_id.length > 0 && this.state.title.length > 0 && this.state.message_text.length > 0) {
+    if (
+      rec_id.length > 0 &&
+      this.state.title.length > 0 &&
+      this.state.message_text.length > 0
+    ) {
       const user_details = this.state.token;
       var headers = new Headers();
       let auth = 'Bearer ' + user_details.token;
-      headers.append("Authorization", auth);
+      headers.append('Authorization', auth);
 
-      var data = new FormData()
+      var data = new FormData();
       data.append('receiver_id', rec_id);
       data.append('title', this.state.title);
       data.append('message', this.state.message_text);
       console.log(data);
-      fetch("http://diwo.nu/public/api/sendMessage", {
+      fetch('http://diwo.nu/public/api/sendMessage', {
         method: 'POST',
         headers: headers,
         body: data,
       })
-        .then((response) => response.json())
-        .then((responseJson) => {
+        .then(response => response.json())
+        .then(responseJson => {
           console.log(responseJson);
           if (responseJson.status == 200) {
             console.log(responseJson);
-            this.setState({ message_dialog: false, title: "", message_text: "", selectedItems: [] });
+            this.setState({
+              message_dialog: false,
+              title: '',
+              message_text: '',
+              selectedItems: [],
+            });
             this.componentDidMount();
           } else {
-            alert("Something went wrong.");
+            alert('Something went wrong.');
           }
-        }).catch((error) => {
+        })
+        .catch(error => {
           console.error(error);
         });
     } else {
-      this.setState({ errorText: true });
+      this.setState({errorText: true});
     }
-  }
+  };
 
   render() {
-    const { selectedItems } = this.state;
+    const {selectedItems} = this.state;
     return (
       <View style={styles.container}>
-        <NavigationEvents onDidFocus={() => { this.page_reloaded() }} />
+        <NavigationEvents
+          onDidFocus={() => {
+            this.page_reloaded();
+          }}
+        />
         <Dialog
           visible={this.state.message_dialog}
-          onTouchOutside={() => this.setState({ message_dialog: false, errorText: false })} >
-          <View style={{ position: 'relative', padding: 15 }}>
+          onTouchOutside={() =>
+            this.setState({message_dialog: false, errorText: false})
+          }>
+          <View style={{position: 'relative', padding: 15}}>
             <View style={styles.dialog_close_icon}>
-              <TouchableOpacity onPress={() => this.setState({ message_dialog: false, errorText: false })}>
+              <TouchableOpacity
+                onPress={() =>
+                  this.setState({message_dialog: false, errorText: false})
+                }>
                 <Image
                   style={{
                     width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%')
+                    height: width > height ? wp('3.5%') : wp('8%'),
                   }}
                   source={require('../../uploads/close.png')}
                 />
               </TouchableOpacity>
             </View>
-            <View style={{ paddingBottom: 10, marginTop: 50 }}>
-              {this.state.errorText == true ? <Text style={{ paddingLeft: 15, color: 'red' }}>{Text_EN.Text_en.select_user_error}</Text> : null}
+            <View style={{paddingBottom: 10, marginTop: 50}}>
+              {this.state.errorText == true ? (
+                <Text style={{paddingLeft: 15, color: 'red'}}>
+                  {Text_EN.Text_en.select_user_error}
+                </Text>
+              ) : null}
               <MultiSelect
                 hideSubmitButton
-                styleTextDropdown={{ paddingLeft: 15 }}
-                styleTextDropdownSelected={{ paddingLeft: 15 }}
-                styleDropdownMenu={{ marginTop: 20 }}
+                styleTextDropdown={{paddingLeft: 15}}
+                styleTextDropdownSelected={{paddingLeft: 15}}
+                styleDropdownMenu={{marginTop: 20}}
                 hideTags
                 items={this.Newitem}
                 uniqueKey="id"
-                ref={(component) => { this.multiSelect = component }}
+                ref={component => {
+                  this.multiSelect = component;
+                }}
                 onSelectedItemsChange={this.onSelectedItemsChange}
                 selectedItems={selectedItems}
                 selectText="Users"
                 fontSize={width > height ? wp('1.5%') : wp('4%')}
                 searchInputPlaceholderText="Search Name..."
-                onChangeInput={(text) => console.log(text)}
+                onChangeInput={text => console.log(text)}
                 tagRemoveIconColor="#68c5fc"
                 tagBorderColor="#68c5fc"
                 tagTextColor="#68c5fc"
@@ -261,26 +311,38 @@ export default class Profile extends Component {
                 selectedItemIconColor="#CCC"
                 itemTextColor="#000"
                 displayKey="name"
-                searchInputStyle={{ color: '#CCC' }}
+                searchInputStyle={{color: '#CCC'}}
                 submitButtonColor="#3dce59"
                 submitButtonText="Submit"
               />
               <TextInput
                 style={styles.Text_input_title}
                 placeholder={Text_EN.Text_en.title}
-                onChangeText={(title) => this.setState({ title, errorText: false })}
+                onChangeText={title => this.setState({title, errorText: false})}
               />
               <TextInput
                 style={styles.Text_input_message}
                 placeholder="Kommentar til din leder"
                 multiline={true}
                 numberOfLines={8}
-                onChangeText={(message_text) => this.setState({ message_text, errorText: false })}
+                onChangeText={message_text =>
+                  this.setState({message_text, errorText: false})
+                }
               />
             </View>
             <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity style={{ backgroundColor: '#00a1ff', padding: 10, paddingRight: 25, paddingLeft: 25, borderRadius: 5 }} onPress={() => this.message_send()}>
-                <Text style={styles.submit_btn}>{Text_EN.Text_en.send_message}</Text>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#00a1ff',
+                  padding: 10,
+                  paddingRight: 25,
+                  paddingLeft: 25,
+                  borderRadius: 5,
+                }}
+                onPress={() => this.message_send()}>
+                <Text style={styles.submit_btn}>
+                  {Text_EN.Text_en.send_message}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -290,30 +352,72 @@ export default class Profile extends Component {
           style={styles.background_diamond}
           source={require('../../uploads/diamond-dark.png')}
         />
-        <View style={{ padding: 10, flexDirection: 'row', borderBottomColor: '#01a2ff', borderBottomWidth: 2, justifyContent: 'space-between' }}>
+        <View
+          style={{
+            padding: 10,
+            flexDirection: 'row',
+            borderBottomColor: '#01a2ff',
+            borderBottomWidth: 2,
+            justifyContent: 'space-between',
+          }}>
           <View>
-            <Text style={{ fontSize: width > height ? wp('1.6%') : wp('4%') }}>Hej  <Text style={{ fontWeight: "bold", fontSize: width > height ? wp('1.6%') : wp('4.5%') }}>{this.state.firstName}</Text></Text>
+            <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
+              Hej{' '}
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: width > height ? wp('1.6%') : wp('4.5%'),
+                }}>
+                {this.state.firstName}
+              </Text>
+            </Text>
           </View>
-          <View style={{ position: 'absolute', left: width > height ? wp('48%') : wp('45%'), alignSelf: 'center' }}>
+          <View
+            style={{
+              position: 'absolute',
+              left: width > height ? wp('48%') : wp('45%'),
+              alignSelf: 'center',
+            }}>
             <Image
-              style={{ width: width > height ? wp('6%') : wp('15%'), height: width > height ? wp('3%') : wp('6%') }}
+              style={{
+                width: width > height ? wp('6%') : wp('15%'),
+                height: width > height ? wp('3%') : wp('6%'),
+              }}
               source={require('../../uploads/Diwologo_png.png')}
             />
           </View>
           <View>
-            <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.openDrawer()}>
               <Image
-                style={{ width: width > height ? wp('3.5%') : wp('8%'), height: width > height ? wp('3%') : wp('7%') }}
+                style={{
+                  width: width > height ? wp('3.5%') : wp('8%'),
+                  height: width > height ? wp('3%') : wp('7%'),
+                }}
                 source={require('../../uploads/drawer_menu.png')}
               />
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ flex: 1, marginTop: 10 }}>
-          <View style={{ flex: 0.70, }}>
-            <TouchableOpacity onPress={() => this.props.navigation.navigate('More_info', { Firstname: this.state.firstName, token: this.state.token })}>
-              <View style={{ flexDirection: 'row', justifyContent: 'center', alignContent: 'center', alignItems: 'center' }}>
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.cooperation}</Text>
+        <View style={{flex: 1, marginTop: 10}}>
+          <View style={{flex: 0.7}}>
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('More_info', {
+                  Firstname: this.state.firstName,
+                  token: this.state.token,
+                })
+              }>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.upper_txt}>
+                  {Text_EN.Text_en.cooperation}
+                </Text>
                 <Image
                   style={styles.diamond_icon}
                   source={require('../../uploads/diamond_img.png')}
@@ -327,44 +431,62 @@ export default class Profile extends Component {
               </View>
             </TouchableOpacity>
             <Text style={styles.profile_title}>Min Profil:</Text>
-            <View style={{ marginTop: 25, marginLeft: 10 }}>
+            <View style={{marginTop: 25, marginLeft: 10}}>
               <View style={styles.detail_view}>
                 <Image
                   style={styles.diamond_icon_detail}
                   source={require('../../uploads/diamond_img.png')}
                 />
-                <Text style={{ fontSize: width > height ? wp('2.5%') : wp('4%'), }}>{this.state.firstName} {this.state.lastName} </Text>
+                <Text
+                  style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
+                  {this.state.firstName} {this.state.lastName}{' '}
+                </Text>
               </View>
               <View style={styles.detail_view}>
                 <Image
                   style={styles.diamond_icon_detail}
                   source={require('../../uploads/diamond_img.png')}
                 />
-                <Text style={{ fontSize: width > height ? wp('2.5%') : wp('4%') }}>{this.state.hoursHired} timer</Text>
+                <Text
+                  style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
+                  {this.state.hoursHired} timer
+                </Text>
               </View>
               <View style={styles.detail_view}>
                 <Image
                   style={styles.diamond_icon_detail}
                   source={require('../../uploads/diamond_img.png')}
                 />
-                <Text style={{ fontSize: width > height ? wp('2.5%') : wp('4%') }}>{this.state.teamName}</Text>
+                <Text
+                  style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
+                  {this.state.teamName}
+                </Text>
               </View>
             </View>
           </View>
-          <View style={{ flex: 0.25 }}>
-            <View style={{ flexDirection: 'row', justifyContent: 'center', alignContent: 'center' }}>
+          <View style={{flex: 0.25}}>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'center',
+                alignContent: 'center',
+              }}>
               <Image
                 style={styles.diamond_icon_detail}
                 source={require('../../uploads/diamond_img.png')}
               />
-              <Text style={{ fontSize: width > height ? wp('2.5%') : wp('4%') }}>Har du en Kommentar?</Text>
+              <Text style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
+                Har du en Kommentar?
+              </Text>
               <Image
                 style={styles.diamond_icon_detail}
                 source={require('../../uploads/diamond_img.png')}
               />
             </View>
             <View>
-              <TouchableOpacity style={styles.active_submit_btn} onPress={() => this.send_message()}>
+              <TouchableOpacity
+                style={styles.active_submit_btn}
+                onPress={() => this.send_message()}>
                 <Text style={styles.submit_btn}>Skriv besked</Text>
               </TouchableOpacity>
             </View>
@@ -388,9 +510,10 @@ export default class Profile extends Component {
           </View>
       </View> */}
         <HideWithKeyboard>
-          <View style={{ marginBottom: 5 }}>
-            
-            <Text style={{ textAlign: 'center' }}><Text style={{ fontSize: 18 }}>©</Text> Copyright FReFo</Text>
+          <View style={{marginBottom: 5}}>
+            <Text style={{textAlign: 'center'}}>
+              <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+            </Text>
           </View>
         </HideWithKeyboard>
       </View>
@@ -398,11 +521,11 @@ export default class Profile extends Component {
   }
 }
 
-const { height, width } = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative'
+    position: 'relative',
   },
   detail_view: {
     flexDirection: 'row',
@@ -415,7 +538,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     backgroundColor: '#00a1ff',
-    borderRadius: 10
+    borderRadius: 10,
   },
   bottom_btn: {
     width: '30.333%',
@@ -424,7 +547,7 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginBottom: 2,
     borderRadius: 10,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   // bottom_btn_txt: {
   //   textAlign: 'center',
@@ -436,7 +559,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
     fontSize: width > height ? wp('2%') : wp('4%'),
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   background_diamond: {
     position: 'absolute',
@@ -445,18 +568,18 @@ const styles = StyleSheet.create({
     bottom: -width * 0.3,
     right: -width * 0.28,
     opacity: 0.2,
-    transform: [{ rotate: "321deg" }]
+    transform: [{rotate: '321deg'}],
   },
   diamond_icon: {
     width: width > height ? wp('4%') : wp('6%'),
     height: width > height ? wp('4%') : wp('6%'),
     marginLeft: 5,
-    marginRight: 5
+    marginRight: 5,
   },
   upper_txt: {
     fontSize: width > height ? wp('2%') : wp('4%'),
     color: '#038fc1',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   profile_title: {
     marginTop: 20,
@@ -482,22 +605,22 @@ const styles = StyleSheet.create({
   Text_input_title: {
     paddingLeft: 15,
     borderWidth: 1,
-    textAlignVertical: "top",
-    backgroundColor: "white",
+    textAlignVertical: 'top',
+    backgroundColor: 'white',
     borderTopColor: 'white',
     borderLeftColor: 'white',
     borderBottomColor: 'lightgrey',
     borderRightColor: 'white',
     marginBottom: 0,
     fontSize: width > height ? wp('1.5%') : wp('4%'),
-    minHeight: 40
+    minHeight: 40,
   },
   Text_input_message: {
     fontSize: width > height ? wp('1.5%') : wp('4%'),
     paddingLeft: 15,
     borderWidth: 1,
-    textAlignVertical: "top",
-    backgroundColor: "white",
+    textAlignVertical: 'top',
+    backgroundColor: 'white',
     borderTopColor: 'lightgrey',
     borderLeftColor: 'lightgrey',
     borderBottomColor: 'lightgrey',
@@ -505,6 +628,6 @@ const styles = StyleSheet.create({
     marginTop: 30,
     marginBottom: 15,
     borderRadius: 15,
-    minHeight: 150
+    minHeight: 150,
   },
-});  
+});

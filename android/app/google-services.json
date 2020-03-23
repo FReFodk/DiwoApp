@@ -1,50 +1,35 @@
 {
   "project_info": {
-    "project_number": "645127046811",
-    "firebase_url": "https://diwo-5dc00.firebaseio.com",
-    "project_id": "diwo-5dc00",
-    "storage_bucket": "diwo-5dc00.appspot.com"
+    "project_number": "18239083421",
+    "firebase_url": "https://diwo-app.firebaseio.com",
+    "project_id": "diwo-app",
+    "storage_bucket": "diwo-app.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:645127046811:android:7ee1a71256d76473ffa83e",
+        "mobilesdk_app_id": "1:18239083421:android:2f92dbb55db725ab399574",
         "android_client_info": {
           "package_name": "com.sandra.diwo"
         }
       },
       "oauth_client": [
         {
-          "client_id": "645127046811-8otpprch9flpu6er7uvee6oro2v1r9vd.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.sandra.diwo",
-            "certificate_hash": "acc0dbb7d85a2eeb44a207414192ddef6c032760"
-          }
-        },
-        {
-          "client_id": "645127046811-tb9ta0cu7rtragphqnouprnu1ksntidv.apps.googleusercontent.com",
+          "client_id": "18239083421-gt66o2a9hkqoj9caj2soeq5vrclmcgu4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDXR6ExK3d7sAxVjAF8U-34Gf2LkoV9fMs"
+          "current_key": "AIzaSyB__pqrvS2U1ZPW8VBBE9BOHge3UfGNNKk"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "645127046811-tb9ta0cu7rtragphqnouprnu1ksntidv.apps.googleusercontent.com",
+              "client_id": "18239083421-gt66o2a9hkqoj9caj2soeq5vrclmcgu4.apps.googleusercontent.com",
               "client_type": 3
-            },
-            {
-              "client_id": "645127046811-2e58avmkspfsjfn1dr2nr20349uhq0rs.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.sandraviiig.DIWO"
-              }
             }
           ]
         }

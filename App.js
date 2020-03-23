@@ -6,14 +6,17 @@
  * @flow
  */
 
-import React,{Component} from 'react';
+import React, {Component} from 'react';
 import PrimaryNav from './src/components/AppNavigator';
+import PushController from './PushController';
 
-
-export default class App extends Component {  
+export default class App extends Component {
   render() {
     return (
-      <PrimaryNav />
+      <>
+        <PushController />
+        <PrimaryNav />
+      </>
     );
   }
 }
