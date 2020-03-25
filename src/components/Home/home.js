@@ -107,16 +107,14 @@ export default class home extends Component {
   //     });
   // }
 
-  // showAlert = (title, message) => {
-  //     Alert.alert(
-  //         title,
-  //         message,
-  //         [
-  //             { text: 'OK', onPress: () => console.log('OK Pressed') },
-  //         ],
-  //         { cancelable: false },
-  //     );
-  // }
+  showAlert = (title, message) => {
+    Alert.alert(
+      title,
+      message,
+      [{text: 'OK', onPress: () => console.log('OK Pressed')}],
+      {cancelable: false},
+    );
+  };
 
   page_reloaded() {
     this.setState({loading: true});

@@ -117,7 +117,7 @@ export default class home extends Component {
   openExperience = id => {
     // alert(id);
     const user_details = this.state.token;
-    alert(JSON.stringify(user_details));
+    // alert(JSON.stringify(user_details));
     // this.setState({token:userToken.token});
     var headers = new Headers();
     let auth = 'Bearer ' + user_details.token;

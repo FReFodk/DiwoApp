@@ -99,9 +99,9 @@ messageListener = async () => {
     // this.showAlert(title, body);
   }
 
-  this.messageListener = firebase.messaging().onMessage(message => {
-    console.log(JSON.stringify(message));
-  });
+  // this.messageListener = firebase.messaging().onMessage(message => {
+  //   console.log(JSON.stringify(message));
+  // });
 };
 
 showAlert = (title, message) => {
