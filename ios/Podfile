@@ -49,6 +49,8 @@ target 'Diwo' do
 
   
 
+  pod 'RNBackgroundFetch', :path => '../node_modules/react-native-background-fetch'
+
   target 'DiwoTests' do
     inherit! :search_paths
     # Pods for testing

@@ -1,34 +1,46 @@
-import React, { Component } from 'react';
-import { Dimensions, StyleSheet, Text, View, TouchableOpacity, Image, Alert, ScrollView, Button } from 'react-native';
+import React, {Component} from 'react';
+import {
+  Dimensions,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  Alert,
+  ScrollView,
+  Button,
+} from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import { Card, Icon } from 'react-native-elements';
-import { Dialog } from 'react-native-simple-dialogs';
+import {Card, Icon} from 'react-native-elements';
+import {Dialog} from 'react-native-simple-dialogs';
 import Text_EN from '../res/lang/static_text';
-import { NavigationEvents } from 'react-navigation';
+import {NavigationEvents} from 'react-navigation';
 import ViewMoreText from 'react-native-view-more-text';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
-import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
-
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
 
 export default class More_info extends Component {
-  myInterval = "";
+  myInterval = '';
   constructor(props) {
-    super(props)
+    super(props);
     this._retrieveData = this._retrieveData.bind(this);
     this.state = {
-      tokenValue: "",
-      token: "",
-      firstName: "",
-      lastName: "",
-      dataSource: "",
+      tokenValue: '',
+      token: '',
+      firstName: '',
+      lastName: '',
+      dataSource: '',
       count: 0,
-      experienceText: "",
+      experienceText: '',
       answerSend: false,
       error_popup: false,
       isKeyboardOpen: 0,
-      hoursHired: "",
-      teamName: ""
-    }
+      hoursHired: '',
+      teamName: '',
+    };
     this._retrieveData();
     this.page_reloaded = this.page_reloaded.bind(this);
   }
@@ -39,7 +51,7 @@ export default class More_info extends Component {
     try {
       const value = await AsyncStorage.getItem('visited_onces');
       if (value !== null) {
-        this.setState({ token: JSON.parse(value), count: 1 });
+        this.setState({token: JSON.parse(value), count: 1});
         this.componentDidMount();
       }
     } catch (error) {
@@ -49,7 +61,7 @@ export default class More_info extends Component {
 
   learnMore = () => {
     Linking.openURL('http://diwo.nu');
-  }
+  };
 
   help_workjoy = () => {
     Alert.alert(
@@ -61,11 +73,11 @@ export default class More_info extends Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'Learn More', onPress: () => this.learnMore() },
+        {text: 'Learn More', onPress: () => this.learnMore()},
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
-  }
+  };
 
   help_socialkapital = () => {
     Alert.alert(
@@ -77,11 +89,11 @@ export default class More_info extends Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'Learn More', onPress: () => this.learnMore() },
+        {text: 'Learn More', onPress: () => this.learnMore()},
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
-  }
+  };
 
   help_experience = () => {
     Alert.alert(
@@ -93,52 +105,79 @@ export default class More_info extends Component {
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        { text: 'Learn More', onPress: () => this.learnMore() },
+        {text: 'Learn More', onPress: () => this.learnMore()},
       ],
-      { cancelable: false },
+      {cancelable: false},
     );
-  }
+  };
 
-  renderViewMore = (onPress) => {
+  renderViewMore = onPress => {
     return (
-      <Text onPress={onPress} style={{ fontSize: width > height ? wp('2.3%') : wp('3%'), color: '#038fc1', fontWeight: 'bold', marginTop: 10 }}>{Text_EN.Text_en.View_more}</Text>
-    )
-  }
-  renderViewLess = (onPress) => {
+      <Text
+        onPress={onPress}
+        style={{
+          fontSize: width > height ? wp('2.3%') : wp('3%'),
+          color: '#038fc1',
+          fontWeight: 'bold',
+          marginTop: 10,
+        }}>
+        {Text_EN.Text_en.View_more}
+      </Text>
+    );
+  };
+  renderViewLess = onPress => {
     return (
-      <Text onPress={onPress} style={{ fontSize: width > height ? wp('2.3%') : wp('3%'), color: '#038fc1', fontWeight: 'bold', marginTop: 10 }}>{Text_EN.Text_en.View_less}</Text>
-    )
-  }
+      <Text
+        onPress={onPress}
+        style={{
+          fontSize: width > height ? wp('2.3%') : wp('3%'),
+          color: '#038fc1',
+          fontWeight: 'bold',
+          marginTop: 10,
+        }}>
+        {Text_EN.Text_en.View_less}
+      </Text>
+    );
+  };
 
   componentDidMount() {
-    const { navigation } = this.props;
+    const {navigation} = this.props;
     if (this.state.count == 1) {
       const user_details = this.state.token;
       // this.setState({token:userToken.token});
       var headers = new Headers();
       let auth = 'Bearer ' + user_details.token;
-      headers.append("Authorization", auth);
-      fetch("http://diwo.nu/public/api/user", {
+      headers.append('Authorization', auth);
+      fetch('http://diwo.nu/public/api/user', {
         method: 'POST',
         headers: headers,
       })
-        .then((response) => response.json())
-        .then((responseJson) => {
+        .then(response => response.json())
+        .then(responseJson => {
           if (responseJson) {
-            this.setState({ firstName: responseJson.user.first_name, lastName: responseJson.user.last_name, userId: responseJson.user.user_id });
+            this.setState({
+              firstName: responseJson.user.first_name,
+              lastName: responseJson.user.last_name,
+              userId: responseJson.user.user_id,
+            });
           }
-        }).catch((error) => {
+        })
+        .catch(error => {
           console.error(error);
         });
 
-      fetch("http://diwo.nu/public/api/getUserInfo", {
+      fetch('http://diwo.nu/public/api/getUserInfo', {
         method: 'POST',
         headers: headers,
       })
-        .then((response) => response.json())
-        .then((responseJson) => {
-          this.setState({ hoursHired: responseJson.users[0].hours_hired, teamName: responseJson.users[0].team_name });
-        }).catch((error) => {
+        .then(response => response.json())
+        .then(responseJson => {
+          this.setState({
+            hoursHired: responseJson.users[0].hours_hired,
+            teamName: responseJson.users[0].team_name,
+          });
+        })
+        .catch(error => {
           console.error(error);
         });
     }
@@ -147,96 +186,148 @@ export default class More_info extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <NavigationEvents onDidFocus={() => { this.page_reloaded() }} />
+        <NavigationEvents
+          onDidFocus={() => {
+            this.page_reloaded();
+          }}
+        />
         <Image
           style={styles.background_diamond}
           source={require('../../uploads/diamond-dark.png')}
         />
-        <View style={{ padding: 10, flexDirection: 'row', borderBottomColor: '#01a2ff', borderBottomWidth: 2, justifyContent: 'space-between' }}>
+        <View
+          style={{
+            padding: 10,
+            flexDirection: 'row',
+            borderBottomColor: '#01a2ff',
+            borderBottomWidth: 2,
+            justifyContent: 'space-between',
+          }}>
           <View>
-            <Text style={{ fontSize: width > height ? wp('1.6%') : wp('4%') }}>Hej  <Text style={{ fontWeight: "bold", fontSize: width > height ? wp('1.6%') : wp('4.5%') }}>{this.state.firstName}</Text></Text>
+            <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
+              Hej{' '}
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: width > height ? wp('1.6%') : wp('4.5%'),
+                }}>
+                {this.state.firstName}
+              </Text>
+            </Text>
           </View>
-          <View style={{ position: 'absolute', left: width > height ? wp('48%') : wp('45%'), alignSelf: 'center' }}>
+          <View
+            style={{
+              position: 'absolute',
+              left: width > height ? wp('48%') : wp('45%'),
+              alignSelf: 'center',
+            }}>
             <Image
-              style={{ width: width > height ? wp('6%') : wp('15%'), height: width > height ? wp('3%') : wp('6%') }}
+              style={{
+                width: width > height ? wp('6%') : wp('15%'),
+                height: width > height ? wp('3%') : wp('6%'),
+              }}
               source={require('../../uploads/Diwologo_png.png')}
             />
           </View>
           <View>
-            <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
+            <TouchableOpacity
+              onPress={() => this.props.navigation.openDrawer()}>
               <Image
-                style={{ width: width > height ? wp('3.5%') : wp('8%'), height: width > height ? wp('3%') : wp('7%') }}
+                style={{
+                  width: width > height ? wp('3.5%') : wp('8%'),
+                  height: width > height ? wp('3%') : wp('7%'),
+                }}
                 source={require('../../uploads/drawer_menu.png')}
               />
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ flex: 1, marginTop: 10, padding: 10 }}>
+        <View style={{flex: 1, marginTop: 10, padding: 10}}>
           <View>
             <ScrollView>
               <Card borderRadius={15}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Image
                     style={styles.diamond_icon_title}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={{ fontSize: width > height ? wp('2.3%') : wp('4%'), color: '#038fc1', fontWeight: 'bold' }}>{Text_EN.Text_en.more_info_title1}</Text>
+                  <Text
+                    style={{
+                      fontSize: width > height ? wp('2.3%') : wp('4%'),
+                      color: '#038fc1',
+                      fontWeight: 'bold',
+                    }}>
+                    {Text_EN.Text_en.more_info_title1}
+                  </Text>
                 </View>
                 <ViewMoreText
                   numberOfLines={4}
                   renderViewMore={this.renderViewMore}
                   renderViewLess={this.renderViewLess}
-                  textStyle={{ fontSize: width > height ? wp('2%') : wp('3.8%') }}
-                >
-                  <Text>
-                    {Text_EN.Text_en.more_info_text1}
-                  </Text>
+                  textStyle={{
+                    fontSize: width > height ? wp('2%') : wp('3.8%'),
+                  }}>
+                  <Text>{Text_EN.Text_en.more_info_text1}</Text>
                 </ViewMoreText>
               </Card>
               <Card borderRadius={15}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Image
                     style={styles.diamond_icon_title}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={{ fontSize: width > height ? wp('2.3%') : wp('4%'), color: '#038fc1', fontWeight: 'bold' }}>{Text_EN.Text_en.more_info_title2}</Text>
+                  <Text
+                    style={{
+                      fontSize: width > height ? wp('2.3%') : wp('4%'),
+                      color: '#038fc1',
+                      fontWeight: 'bold',
+                    }}>
+                    {Text_EN.Text_en.more_info_title2}
+                  </Text>
                 </View>
                 <ViewMoreText
                   numberOfLines={4}
                   renderViewMore={this.renderViewMore}
                   renderViewLess={this.renderViewLess}
-                  textStyle={{ fontSize: width > height ? wp('2.3%') : wp('3.8%') }}
-                >
-                  <Text>
-                    {Text_EN.Text_en.more_info_text2}
-                  </Text>
+                  textStyle={{
+                    fontSize: width > height ? wp('2.3%') : wp('3.8%'),
+                  }}>
+                  <Text>{Text_EN.Text_en.more_info_text2}</Text>
                 </ViewMoreText>
               </Card>
               <Card borderRadius={15}>
-                <View style={{ flexDirection: 'row' }}>
+                <View style={{flexDirection: 'row'}}>
                   <Image
                     style={styles.diamond_icon_title}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={{ fontSize: width > height ? wp('2.3%') : wp('4%'), color: '#038fc1', fontWeight: 'bold' }}>{Text_EN.Text_en.more_info_title3}</Text>
+                  <Text
+                    style={{
+                      fontSize: width > height ? wp('2.3%') : wp('4%'),
+                      color: '#038fc1',
+                      fontWeight: 'bold',
+                    }}>
+                    {Text_EN.Text_en.more_info_title3}
+                  </Text>
                 </View>
                 <ViewMoreText
                   numberOfLines={4}
                   renderViewMore={this.renderViewMore}
                   renderViewLess={this.renderViewLess}
-                  textStyle={{ fontSize: width > height ? wp('2.3%') : wp('3.8%') }}
-                >
-                  <Text>
-                    {Text_EN.Text_en.more_info_text3}
-                  </Text>
+                  textStyle={{
+                    fontSize: width > height ? wp('2.3%') : wp('3.8%'),
+                  }}>
+                  <Text>{Text_EN.Text_en.more_info_text3}</Text>
                 </ViewMoreText>
               </Card>
             </ScrollView>
           </View>
         </View>
         <HideWithKeyboard>
-          <View style={{ marginBottom: 5 }}>
-            <Text style={{ textAlign: 'center' }}><Text style={{ fontSize: 18 }}>©</Text> Copyright FReFo</Text>
+          <View style={{marginBottom: 5}}>
+            <Text style={{textAlign: 'center'}}>
+              <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+            </Text>
           </View>
         </HideWithKeyboard>
       </View>
@@ -244,11 +335,11 @@ export default class More_info extends Component {
   }
 }
 
-const { height, width } = Dimensions.get('window');
+const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    position: 'relative'
+    position: 'relative',
   },
   detail_view: {
     flexDirection: 'row',
@@ -261,7 +352,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'center',
     backgroundColor: '#00a1ff',
-    borderRadius: 10
+    borderRadius: 10,
   },
   bottom_btn: {
     width: '30.333%',
@@ -270,19 +361,19 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     marginBottom: 2,
     borderRadius: 10,
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   bottom_btn_txt: {
     textAlign: 'center',
     color: 'white',
     fontSize: width * 0.042,
-    padding: 10
+    padding: 10,
   },
   submit_btn: {
     textAlign: 'center',
     color: 'white',
     fontSize: width * 0.045,
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   background_diamond: {
     position: 'absolute',
@@ -291,13 +382,13 @@ const styles = StyleSheet.create({
     bottom: -width * 0.3,
     right: -width * 0.28,
     opacity: 0.2,
-    transform: [{ rotate: "321deg" }]
+    transform: [{rotate: '321deg'}],
   },
   diamond_icon: {
     width: width * 0.08,
     height: width * 0.08,
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   diamond_icon_title: {
     width: width > height ? wp('4%') : wp('8%'),
@@ -306,19 +397,19 @@ const styles = StyleSheet.create({
   upper_txt: {
     fontSize: width * 0.045,
     color: '#038fc1',
-    fontWeight: 'bold'
+    fontWeight: 'bold',
   },
   profile_title: {
     marginTop: 20,
     marginLeft: 25,
     color: '#7b7b7b',
     fontWeight: 'bold',
-    fontSize: width * 0.045
+    fontSize: width * 0.045,
   },
   diamond_icon_detail: {
     width: width * 0.11,
     height: width * 0.11,
     marginLeft: 10,
     marginRight: 10,
-  }
-});  
+  },
+});

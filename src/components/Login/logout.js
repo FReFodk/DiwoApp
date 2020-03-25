@@ -1,18 +1,27 @@
-import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, Image, KeyboardAvoidingView, TextInput, ActivityIndicator } from 'react-native';
+import React, {Component} from 'react';
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Image,
+  KeyboardAvoidingView,
+  TextInput,
+  ActivityIndicator,
+} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
-import { NavigationEvents } from 'react-navigation';
+import {NavigationEvents} from 'react-navigation';
 import DeviceInfo from 'react-native-device-info';
 
 export default class logout extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     this.state = {
-      username: "",
-      password: "",
-      token: "",
-    }
+      username: '',
+      password: '',
+      token: '',
+    };
     // alert("hello")
     this._retrieveData();
     // this.logout = this.logout.bind(this);
@@ -21,15 +30,15 @@ export default class logout extends Component {
 
   page_reloaded = () => {
     this.logout();
-  }
+  };
 
   _retrieveData = async () => {
-    console.log("hi");
+    console.log('hi');
     try {
       const value = await AsyncStorage.getItem('visited_onces');
       if (value !== null) {
         console.log(value);
-        this.setState({ token: JSON.parse(value), count: 1 });
+        this.setState({token: JSON.parse(value), count: 1});
         // this.logout();
       }
     } catch (error) {
@@ -41,27 +50,27 @@ export default class logout extends Component {
     // console.log("logout called", this.state.token);
     const value = await AsyncStorage.removeItem('visited_onces');
     const user_details = this.state.token;
-    console.log(JSON.stringify(user_details))
+    console.log(JSON.stringify(user_details));
     // console.log(value)
     // this.props.navigation.navigate('Login');
 
-    var data = new FormData()
-    data.append("udid", DeviceInfo.getUniqueId());
+    var data = new FormData();
+    data.append('udid', DeviceInfo.getUniqueId());
 
     var headers = new Headers();
     let auth = 'Bearer ' + user_details.token;
-    headers.append("Authorization", auth);
+    headers.append('Authorization', auth);
 
-    fetch("http://diwo.nu/public/api/delete_notification", {
-      method: "POST",
+    fetch('http://diwo.nu/public/api/delete_notification', {
+      method: 'POST',
       headers: headers,
-      body: data
+      body: data,
     })
-      .then((response) => response.json())
-      .then((responseJson) => {
+      .then(response => response.json())
+      .then(responseJson => {
         // alert(JSON.stringify(responseJson))
         if (responseJson.status == 200) {
-          console.log("answer", responseJson);
+          console.log('answer', responseJson);
           this.props.navigation.navigate('Login');
         } else {
           // this.props.navigation.navigate('Login');
@@ -70,15 +79,14 @@ export default class logout extends Component {
       })
       .catch(error => {
         // this.props.navigation.navigate('Login');
-        console.log("err", error);
+        console.log('err', error);
       });
-  }
+  };
 
   // componentDidMount() {
   //   console.log("Logout page");
   //   this.logout();
   // }
-
 
   render() {
     return (
@@ -95,4 +103,4 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
   },
-});  
+});
