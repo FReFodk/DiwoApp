@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>18239083421-m2qsr52df2qag9ed3l6eotul7s3acpi1.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.18239083421-m2qsr52df2qag9ed3l6eotul7s3acpi1</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCs0kJK6u7w2klesuFjxwnlczd86aIxags</string>
+	<key>GCM_SENDER_ID</key>
+	<string>18239083421</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.sandraviiig.DIWO</string>
+	<key>PROJECT_ID</key>
+	<string>diwo-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>diwo-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:18239083421:ios:e364394eb4cae855399574</string>
+	<key>DATABASE_URL</key>
+	<string>https://diwo-app.firebaseio.com</string>
+</dict>
+</plist>
