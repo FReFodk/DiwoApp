@@ -14,7 +14,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import {Card, Icon} from 'react-native-elements';
 import {Dialog} from 'react-native-simple-dialogs';
 import Text_EN from '../res/lang/static_text';
-import {NavigationEvents} from 'react-navigation';
+import {NavigationEvents, SafeAreaView} from 'react-navigation';
 import ViewMoreText from 'react-native-view-more-text';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {
@@ -185,152 +185,154 @@ export default class More_info extends Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        <NavigationEvents
-          onDidFocus={() => {
-            this.page_reloaded();
-          }}
-        />
-        <Image
-          style={styles.background_diamond}
-          source={require('../../uploads/diamond-dark.png')}
-        />
-        <View
-          style={{
-            padding: 10,
-            flexDirection: 'row',
-            borderBottomColor: '#01a2ff',
-            borderBottomWidth: 2,
-            justifyContent: 'space-between',
-          }}>
-          <View>
-            <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-              Hej{' '}
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                }}>
-                {this.state.firstName}
-              </Text>
-            </Text>
-          </View>
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.container}>
+          <NavigationEvents
+            onDidFocus={() => {
+              this.page_reloaded();
+            }}
+          />
+          <Image
+            style={styles.background_diamond}
+            source={require('../../uploads/diamond-dark.png')}
+          />
           <View
             style={{
-              position: 'absolute',
-              left: width > height ? wp('48%') : wp('45%'),
-              alignSelf: 'center',
+              padding: 10,
+              flexDirection: 'row',
+              borderBottomColor: '#01a2ff',
+              borderBottomWidth: 2,
+              justifyContent: 'space-between',
             }}>
-            <Image
+            <View>
+              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
+                Hej{' '}
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
+                  }}>
+                  {this.state.firstName}
+                </Text>
+              </Text>
+            </View>
+            <View
               style={{
-                width: width > height ? wp('6%') : wp('15%'),
-                height: width > height ? wp('3%') : wp('6%'),
-              }}
-              source={require('../../uploads/Diwologo_png.png')}
-            />
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
+                position: 'absolute',
+                left: width > height ? wp('48%') : wp('45%'),
+                alignSelf: 'center',
+              }}>
               <Image
                 style={{
-                  width: width > height ? wp('3.5%') : wp('8%'),
-                  height: width > height ? wp('3%') : wp('7%'),
+                  width: width > height ? wp('6%') : wp('15%'),
+                  height: width > height ? wp('3%') : wp('6%'),
                 }}
-                source={require('../../uploads/drawer_menu.png')}
+                source={require('../../uploads/Diwologo_png.png')}
               />
-            </TouchableOpacity>
+            </View>
+            <View>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.openDrawer()}>
+                <Image
+                  style={{
+                    width: width > height ? wp('3.5%') : wp('8%'),
+                    height: width > height ? wp('3%') : wp('7%'),
+                  }}
+                  source={require('../../uploads/drawer_menu.png')}
+                />
+              </TouchableOpacity>
+            </View>
           </View>
+          <View style={{flex: 1, marginTop: 10, padding: 10}}>
+            <View>
+              <ScrollView>
+                <Card borderRadius={15}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Image
+                      style={styles.diamond_icon_title}
+                      source={require('../../uploads/diamond_img.png')}
+                    />
+                    <Text
+                      style={{
+                        fontSize: width > height ? wp('2.3%') : wp('4%'),
+                        color: '#038fc1',
+                        fontWeight: 'bold',
+                      }}>
+                      {Text_EN.Text_en.more_info_title1}
+                    </Text>
+                  </View>
+                  <ViewMoreText
+                    numberOfLines={4}
+                    renderViewMore={this.renderViewMore}
+                    renderViewLess={this.renderViewLess}
+                    textStyle={{
+                      fontSize: width > height ? wp('2%') : wp('3.8%'),
+                    }}>
+                    <Text>{Text_EN.Text_en.more_info_text1}</Text>
+                  </ViewMoreText>
+                </Card>
+                <Card borderRadius={15}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Image
+                      style={styles.diamond_icon_title}
+                      source={require('../../uploads/diamond_img.png')}
+                    />
+                    <Text
+                      style={{
+                        fontSize: width > height ? wp('2.3%') : wp('4%'),
+                        color: '#038fc1',
+                        fontWeight: 'bold',
+                      }}>
+                      {Text_EN.Text_en.more_info_title2}
+                    </Text>
+                  </View>
+                  <ViewMoreText
+                    numberOfLines={4}
+                    renderViewMore={this.renderViewMore}
+                    renderViewLess={this.renderViewLess}
+                    textStyle={{
+                      fontSize: width > height ? wp('2.3%') : wp('3.8%'),
+                    }}>
+                    <Text>{Text_EN.Text_en.more_info_text2}</Text>
+                  </ViewMoreText>
+                </Card>
+                <Card borderRadius={15}>
+                  <View style={{flexDirection: 'row'}}>
+                    <Image
+                      style={styles.diamond_icon_title}
+                      source={require('../../uploads/diamond_img.png')}
+                    />
+                    <Text
+                      style={{
+                        fontSize: width > height ? wp('2.3%') : wp('4%'),
+                        color: '#038fc1',
+                        fontWeight: 'bold',
+                      }}>
+                      {Text_EN.Text_en.more_info_title3}
+                    </Text>
+                  </View>
+                  <ViewMoreText
+                    numberOfLines={4}
+                    renderViewMore={this.renderViewMore}
+                    renderViewLess={this.renderViewLess}
+                    textStyle={{
+                      fontSize: width > height ? wp('2.3%') : wp('3.8%'),
+                    }}>
+                    <Text>{Text_EN.Text_en.more_info_text3}</Text>
+                  </ViewMoreText>
+                </Card>
+              </ScrollView>
+            </View>
+          </View>
+          <HideWithKeyboard>
+            <View style={{marginBottom: 5}}>
+              <Text style={{textAlign: 'center'}}>
+                <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+              </Text>
+            </View>
+          </HideWithKeyboard>
         </View>
-        <View style={{flex: 1, marginTop: 10, padding: 10}}>
-          <View>
-            <ScrollView>
-              <Card borderRadius={15}>
-                <View style={{flexDirection: 'row'}}>
-                  <Image
-                    style={styles.diamond_icon_title}
-                    source={require('../../uploads/diamond_img.png')}
-                  />
-                  <Text
-                    style={{
-                      fontSize: width > height ? wp('2.3%') : wp('4%'),
-                      color: '#038fc1',
-                      fontWeight: 'bold',
-                    }}>
-                    {Text_EN.Text_en.more_info_title1}
-                  </Text>
-                </View>
-                <ViewMoreText
-                  numberOfLines={4}
-                  renderViewMore={this.renderViewMore}
-                  renderViewLess={this.renderViewLess}
-                  textStyle={{
-                    fontSize: width > height ? wp('2%') : wp('3.8%'),
-                  }}>
-                  <Text>{Text_EN.Text_en.more_info_text1}</Text>
-                </ViewMoreText>
-              </Card>
-              <Card borderRadius={15}>
-                <View style={{flexDirection: 'row'}}>
-                  <Image
-                    style={styles.diamond_icon_title}
-                    source={require('../../uploads/diamond_img.png')}
-                  />
-                  <Text
-                    style={{
-                      fontSize: width > height ? wp('2.3%') : wp('4%'),
-                      color: '#038fc1',
-                      fontWeight: 'bold',
-                    }}>
-                    {Text_EN.Text_en.more_info_title2}
-                  </Text>
-                </View>
-                <ViewMoreText
-                  numberOfLines={4}
-                  renderViewMore={this.renderViewMore}
-                  renderViewLess={this.renderViewLess}
-                  textStyle={{
-                    fontSize: width > height ? wp('2.3%') : wp('3.8%'),
-                  }}>
-                  <Text>{Text_EN.Text_en.more_info_text2}</Text>
-                </ViewMoreText>
-              </Card>
-              <Card borderRadius={15}>
-                <View style={{flexDirection: 'row'}}>
-                  <Image
-                    style={styles.diamond_icon_title}
-                    source={require('../../uploads/diamond_img.png')}
-                  />
-                  <Text
-                    style={{
-                      fontSize: width > height ? wp('2.3%') : wp('4%'),
-                      color: '#038fc1',
-                      fontWeight: 'bold',
-                    }}>
-                    {Text_EN.Text_en.more_info_title3}
-                  </Text>
-                </View>
-                <ViewMoreText
-                  numberOfLines={4}
-                  renderViewMore={this.renderViewMore}
-                  renderViewLess={this.renderViewLess}
-                  textStyle={{
-                    fontSize: width > height ? wp('2.3%') : wp('3.8%'),
-                  }}>
-                  <Text>{Text_EN.Text_en.more_info_text3}</Text>
-                </ViewMoreText>
-              </Card>
-            </ScrollView>
-          </View>
-        </View>
-        <HideWithKeyboard>
-          <View style={{marginBottom: 5}}>
-            <Text style={{textAlign: 'center'}}>
-              <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
-            </Text>
-          </View>
-        </HideWithKeyboard>
-      </View>
+      </SafeAreaView>
     );
   }
 }

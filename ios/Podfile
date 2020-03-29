@@ -47,9 +47,8 @@ target 'Diwo' do
 
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
 
-  
-
-  pod 'RNBackgroundFetch', :path => '../node_modules/react-native-background-fetch'
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
 
   target 'DiwoTests' do
     inherit! :search_paths

@@ -16,7 +16,7 @@ import {Card, Icon, Input} from 'react-native-elements';
 import {Dialog} from 'react-native-simple-dialogs';
 import Text_EN from '../res/lang/static_text';
 import MultiSelect from 'react-native-multiple-select';
-import {NavigationEvents} from 'react-navigation';
+import {NavigationEvents, SafeAreaView} from 'react-navigation';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {
   widthPercentageToDP as wp,
@@ -255,268 +255,270 @@ export default class Profile extends Component {
   render() {
     const {selectedItems} = this.state;
     return (
-      <View style={styles.container}>
-        <NavigationEvents
-          onDidFocus={() => {
-            this.page_reloaded();
-          }}
-        />
-        <Dialog
-          visible={this.state.message_dialog}
-          onTouchOutside={() =>
-            this.setState({message_dialog: false, errorText: false})
-          }>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon}>
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.container}>
+          <NavigationEvents
+            onDidFocus={() => {
+              this.page_reloaded();
+            }}
+          />
+          <Dialog
+            visible={this.state.message_dialog}
+            onTouchOutside={() =>
+              this.setState({message_dialog: false, errorText: false})
+            }>
+            <View style={{position: 'relative', padding: 15}}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({message_dialog: false, errorText: false})
+                  }>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{paddingBottom: 10, marginTop: 50}}>
+                {this.state.errorText == true ? (
+                  <Text style={{paddingLeft: 15, color: 'red'}}>
+                    {Text_EN.Text_en.select_user_error}
+                  </Text>
+                ) : null}
+                <MultiSelect
+                  hideSubmitButton
+                  styleTextDropdown={{paddingLeft: 15}}
+                  styleTextDropdownSelected={{paddingLeft: 15}}
+                  styleDropdownMenu={{marginTop: 20}}
+                  hideTags
+                  items={this.Newitem}
+                  uniqueKey="id"
+                  ref={component => {
+                    this.multiSelect = component;
+                  }}
+                  onSelectedItemsChange={this.onSelectedItemsChange}
+                  selectedItems={selectedItems}
+                  selectText="Users"
+                  fontSize={width > height ? wp('1.5%') : wp('4%')}
+                  searchInputPlaceholderText="Search Name..."
+                  onChangeInput={text => console.log(text)}
+                  tagRemoveIconColor="#68c5fc"
+                  tagBorderColor="#68c5fc"
+                  tagTextColor="#68c5fc"
+                  selectedItemTextColor="#68c5fc"
+                  selectedItemIconColor="#CCC"
+                  itemTextColor="#000"
+                  displayKey="name"
+                  searchInputStyle={{color: '#CCC'}}
+                  submitButtonColor="#3dce59"
+                  submitButtonText="Submit"
+                />
+                <TextInput
+                  style={styles.Text_input_title}
+                  placeholder={Text_EN.Text_en.title}
+                  onChangeText={title => this.setState({title, errorText: false})}
+                />
+                <TextInput
+                  style={styles.Text_input_message}
+                  placeholder="Kommentar til din leder"
+                  multiline={true}
+                  numberOfLines={8}
+                  onChangeText={message_text =>
+                    this.setState({message_text, errorText: false})
+                  }
+                />
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 25,
+                    paddingLeft: 25,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => this.message_send()}>
+                  <Text style={styles.submit_btn}>
+                    {Text_EN.Text_en.send_message}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Dialog>
+
+          <Image
+            style={styles.background_diamond}
+            source={require('../../uploads/diamond-dark.png')}
+          />
+          <View
+            style={{
+              padding: 10,
+              flexDirection: 'row',
+              borderBottomColor: '#01a2ff',
+              borderBottomWidth: 2,
+              justifyContent: 'space-between',
+            }}>
+            <View>
+              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
+                Hej{' '}
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
+                  }}>
+                  {this.state.firstName}
+                </Text>
+              </Text>
+            </View>
+            <View
+              style={{
+                position: 'absolute',
+                left: width > height ? wp('48%') : wp('45%'),
+                alignSelf: 'center',
+              }}>
+              <Image
+                style={{
+                  width: width > height ? wp('6%') : wp('15%'),
+                  height: width > height ? wp('3%') : wp('6%'),
+                }}
+                source={require('../../uploads/Diwologo_png.png')}
+              />
+            </View>
+            <View>
               <TouchableOpacity
-                onPress={() =>
-                  this.setState({message_dialog: false, errorText: false})
-                }>
+                onPress={() => this.props.navigation.openDrawer()}>
                 <Image
                   style={{
                     width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
+                    height: width > height ? wp('3%') : wp('7%'),
                   }}
-                  source={require('../../uploads/close.png')}
+                  source={require('../../uploads/drawer_menu.png')}
                 />
               </TouchableOpacity>
             </View>
-            <View style={{paddingBottom: 10, marginTop: 50}}>
-              {this.state.errorText == true ? (
-                <Text style={{paddingLeft: 15, color: 'red'}}>
-                  {Text_EN.Text_en.select_user_error}
-                </Text>
-              ) : null}
-              <MultiSelect
-                hideSubmitButton
-                styleTextDropdown={{paddingLeft: 15}}
-                styleTextDropdownSelected={{paddingLeft: 15}}
-                styleDropdownMenu={{marginTop: 20}}
-                hideTags
-                items={this.Newitem}
-                uniqueKey="id"
-                ref={component => {
-                  this.multiSelect = component;
-                }}
-                onSelectedItemsChange={this.onSelectedItemsChange}
-                selectedItems={selectedItems}
-                selectText="Users"
-                fontSize={width > height ? wp('1.5%') : wp('4%')}
-                searchInputPlaceholderText="Search Name..."
-                onChangeInput={text => console.log(text)}
-                tagRemoveIconColor="#68c5fc"
-                tagBorderColor="#68c5fc"
-                tagTextColor="#68c5fc"
-                selectedItemTextColor="#68c5fc"
-                selectedItemIconColor="#CCC"
-                itemTextColor="#000"
-                displayKey="name"
-                searchInputStyle={{color: '#CCC'}}
-                submitButtonColor="#3dce59"
-                submitButtonText="Submit"
-              />
-              <TextInput
-                style={styles.Text_input_title}
-                placeholder={Text_EN.Text_en.title}
-                onChangeText={title => this.setState({title, errorText: false})}
-              />
-              <TextInput
-                style={styles.Text_input_message}
-                placeholder="Kommentar til din leder"
-                multiline={true}
-                numberOfLines={8}
-                onChangeText={message_text =>
-                  this.setState({message_text, errorText: false})
-                }
-              />
-            </View>
-            <View style={styles.dialog_submit_btn}>
+          </View>
+          <View style={{flex: 1, marginTop: 10}}>
+            <View style={{flex: 0.7}}>
               <TouchableOpacity
-                style={{
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 25,
-                  paddingLeft: 25,
-                  borderRadius: 5,
-                }}
-                onPress={() => this.message_send()}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.send_message}
-                </Text>
+                onPress={() =>
+                  this.props.navigation.navigate('More_info', {
+                    Firstname: this.state.firstName,
+                    token: this.state.token,
+                  })
+                }>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={styles.upper_txt}>
+                    {Text_EN.Text_en.cooperation}
+                  </Text>
+                  <Image
+                    style={styles.diamond_icon}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
+                  <Image
+                    style={styles.diamond_icon}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
+                </View>
               </TouchableOpacity>
+              <Text style={styles.profile_title}>Min Profil:</Text>
+              <View style={{marginTop: 25, marginLeft: 10}}>
+                <View style={styles.detail_view}>
+                  <Image
+                    style={styles.diamond_icon_detail}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text
+                    style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
+                    {this.state.firstName} {this.state.lastName}{' '}
+                  </Text>
+                </View>
+                <View style={styles.detail_view}>
+                  <Image
+                    style={styles.diamond_icon_detail}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text
+                    style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
+                    {this.state.hoursHired} timer
+                  </Text>
+                </View>
+                <View style={styles.detail_view}>
+                  <Image
+                    style={styles.diamond_icon_detail}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text
+                    style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
+                    {this.state.teamName}
+                  </Text>
+                </View>
+              </View>
             </View>
-          </View>
-        </Dialog>
-
-        <Image
-          style={styles.background_diamond}
-          source={require('../../uploads/diamond-dark.png')}
-        />
-        <View
-          style={{
-            padding: 10,
-            flexDirection: 'row',
-            borderBottomColor: '#01a2ff',
-            borderBottomWidth: 2,
-            justifyContent: 'space-between',
-          }}>
-          <View>
-            <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-              Hej{' '}
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                }}>
-                {this.state.firstName}
-              </Text>
-            </Text>
-          </View>
-          <View
-            style={{
-              position: 'absolute',
-              left: width > height ? wp('48%') : wp('45%'),
-              alignSelf: 'center',
-            }}>
-            <Image
-              style={{
-                width: width > height ? wp('6%') : wp('15%'),
-                height: width > height ? wp('3%') : wp('6%'),
-              }}
-              source={require('../../uploads/Diwologo_png.png')}
-            />
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                style={{
-                  width: width > height ? wp('3.5%') : wp('8%'),
-                  height: width > height ? wp('3%') : wp('7%'),
-                }}
-                source={require('../../uploads/drawer_menu.png')}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={{flex: 1, marginTop: 10}}>
-          <View style={{flex: 0.7}}>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('More_info', {
-                  Firstname: this.state.firstName,
-                  token: this.state.token,
-                })
-              }>
+            <View style={{flex: 0.25}}>
               <View
                 style={{
                   flexDirection: 'row',
                   justifyContent: 'center',
                   alignContent: 'center',
-                  alignItems: 'center',
                 }}>
-                <Text style={styles.upper_txt}>
-                  {Text_EN.Text_en.cooperation}
-                </Text>
-                <Image
-                  style={styles.diamond_icon}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
-                <Image
-                  style={styles.diamond_icon}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
-              </View>
-            </TouchableOpacity>
-            <Text style={styles.profile_title}>Min Profil:</Text>
-            <View style={{marginTop: 25, marginLeft: 10}}>
-              <View style={styles.detail_view}>
                 <Image
                   style={styles.diamond_icon_detail}
                   source={require('../../uploads/diamond_img.png')}
                 />
-                <Text
-                  style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
-                  {this.state.firstName} {this.state.lastName}{' '}
+                <Text style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
+                  Har du en Kommentar?
                 </Text>
-              </View>
-              <View style={styles.detail_view}>
                 <Image
                   style={styles.diamond_icon_detail}
                   source={require('../../uploads/diamond_img.png')}
                 />
-                <Text
-                  style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
-                  {this.state.hoursHired} timer
-                </Text>
               </View>
-              <View style={styles.detail_view}>
-                <Image
-                  style={styles.diamond_icon_detail}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text
-                  style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
-                  {this.state.teamName}
-                </Text>
+              <View>
+                <TouchableOpacity
+                  style={styles.active_submit_btn}
+                  onPress={() => this.send_message()}>
+                  <Text style={styles.submit_btn}>Skriv besked</Text>
+                </TouchableOpacity>
               </View>
             </View>
           </View>
-          <View style={{flex: 0.25}}>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignContent: 'center',
-              }}>
-              <Image
-                style={styles.diamond_icon_detail}
-                source={require('../../uploads/diamond_img.png')}
-              />
-              <Text style={{fontSize: width > height ? wp('2.5%') : wp('4%')}}>
-                Har du en Kommentar?
-              </Text>
-              <Image
-                style={styles.diamond_icon_detail}
-                source={require('../../uploads/diamond_img.png')}
-              />
-            </View>
-            <View>
-              <TouchableOpacity
-                style={styles.active_submit_btn}
-                onPress={() => this.send_message()}>
-                <Text style={styles.submit_btn}>Skriv besked</Text>
+          {/* <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
+            <View style={styles.bottom_btn}>
+              <TouchableOpacity onPress={()=>this.help_workjoy()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
               </TouchableOpacity>
             </View>
-          </View>
+            <View style={styles.bottom_btn}>
+              <TouchableOpacity onPress={()=>this.help_socialkapital()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_two_txt}</Text>                        
+              </TouchableOpacity>
+            </View>                
+            <View style={styles.bottom_btn}>
+              <TouchableOpacity onPress={()=>this.help_experience()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_three_txt}</Text>
+              </TouchableOpacity>
+            </View>
+        </View> */}
+          <HideWithKeyboard>
+            <View style={{marginBottom: 5}}>
+              <Text style={{textAlign: 'center'}}>
+                <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+              </Text>
+            </View>
+          </HideWithKeyboard>
         </View>
-        {/* <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
-          <View style={styles.bottom_btn}>
-            <TouchableOpacity onPress={()=>this.help_workjoy()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.bottom_btn}>
-            <TouchableOpacity onPress={()=>this.help_socialkapital()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_two_txt}</Text>                        
-            </TouchableOpacity>
-          </View>                
-          <View style={styles.bottom_btn}>
-            <TouchableOpacity onPress={()=>this.help_experience()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_three_txt}</Text>
-            </TouchableOpacity>
-          </View>
-      </View> */}
-        <HideWithKeyboard>
-          <View style={{marginBottom: 5}}>
-            <Text style={{textAlign: 'center'}}>
-              <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
-            </Text>
-          </View>
-        </HideWithKeyboard>
-      </View>
+      </SafeAreaView>
     );
   }
 }

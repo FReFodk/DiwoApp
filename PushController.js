@@ -27,6 +27,7 @@ export default class PushController extends Component {
   }
 
   storeDeviceToken(token) {
+    if (token.os) token = token.token;
     var data = new FormData();
     data.append('udid', DeviceInfo.getUniqueId());
     data.append('platform', Platform.OS);
@@ -44,7 +45,6 @@ export default class PushController extends Component {
       .then(response => response.json())
       .then(responseJson => {
         console.log('responseJson', responseJson);
-        PushNotification.setApplicationIconBadgeNumber(10);
       })
       .catch(error => {
         console.log('error' + error);

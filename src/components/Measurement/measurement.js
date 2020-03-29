@@ -13,7 +13,7 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import {Dialog} from 'react-native-simple-dialogs';
 import Text_EN from '../res/lang/static_text';
-import {NavigationEvents} from 'react-navigation';
+import {NavigationEvents, SafeAreaView} from 'react-navigation';
 import {Card} from 'react-native-elements';
 import {LineChart} from 'react-native-chart-kit';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
@@ -334,282 +334,147 @@ export default class home extends Component {
       'December',
     ];
     return (
-      <View style={styles.container}>
-        <NavigationEvents
-          onDidFocus={() => {
-            this.page_reloaded();
-          }}
-        />
-        <Image
-          style={styles.background_diamond}
-          source={require('../../uploads/diamond-dark.png')}
-        />
-        <View
-          style={{
-            padding: 10,
-            flexDirection: 'row',
-            borderBottomColor: '#01a2ff',
-            borderBottomWidth: 2,
-            justifyContent: 'space-between',
-          }}>
-          <View>
-            <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-              Hej{' '}
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                }}>
-                {this.state.firstName}
-              </Text>
-            </Text>
-          </View>
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.container}>
+          <NavigationEvents
+            onDidFocus={() => {
+              this.page_reloaded();
+            }}
+          />
+          <Image
+            style={styles.background_diamond}
+            source={require('../../uploads/diamond-dark.png')}
+          />
           <View
             style={{
-              position: 'absolute',
-              left: width > height ? wp('48%') : wp('45%'),
-              alignSelf: 'center',
+              padding: 10,
+              flexDirection: 'row',
+              borderBottomColor: '#01a2ff',
+              borderBottomWidth: 2,
+              justifyContent: 'space-between',
             }}>
-            <Image
+            <View>
+              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
+                Hej{' '}
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
+                  }}>
+                  {this.state.firstName}
+                </Text>
+              </Text>
+            </View>
+            <View
               style={{
-                width: width > height ? wp('6%') : wp('15%'),
-                height: width > height ? wp('3%') : wp('6%'),
-              }}
-              source={require('../../uploads/Diwologo_png.png')}
-            />
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
+                position: 'absolute',
+                left: width > height ? wp('48%') : wp('45%'),
+                alignSelf: 'center',
+              }}>
               <Image
                 style={{
-                  width: width > height ? wp('3.5%') : wp('8%'),
-                  height: width > height ? wp('3%') : wp('7%'),
+                  width: width > height ? wp('6%') : wp('15%'),
+                  height: width > height ? wp('3%') : wp('6%'),
                 }}
-                source={require('../../uploads/drawer_menu.png')}
+                source={require('../../uploads/Diwologo_png.png')}
               />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={{flex: 1, marginTop: 10, marginBottom: 10}}>
-          <ScrollView>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('More_info', {
-                  Firstname: this.state.firstName,
-                  token: this.state.token,
-                })
-              }>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text style={styles.upper_txt}>
-                  {Text_EN.Text_en.cooperation}
-                </Text>
-                <Image
-                  style={styles.diamond_icon}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
-                <Image
-                  style={styles.diamond_icon}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
-              </View>
-            </TouchableOpacity>
-            <View style={{alignItems: 'center', marginTop: 15}}>
-              <Text style={{fontSize: width > height ? wp('2.2%') : wp('4%')}}>
-                {Text_EN.Text_en.measurement_workjoy_title}
-              </Text>
-              {this.state.dataSource.length != 0 ? (
-                <FlatList
-                  style={{marginTop: 10}}
-                  data={this.state.dataSource}
-                  showsVerticleScrollIndicator={false}
-                  renderItem={({item}) => (
-                    <View style={{flexDirection: 'row', paddingBottom: 15}}>
-                      <Text
-                        style={{
-                          fontSize: width > height ? wp('2.2%') : wp('4%'),
-                          marginRight: 10,
-                        }}>
-                        Uge {('000' + item.week.toString()).slice(-2)}{' '}
-                      </Text>
-
-                      {item.review == 'Bad' ? (
-                        <Image
-                          style={{
-                            width: width > height ? wp('3%') : wp('5%'),
-                            height: width > height ? wp('3%') : wp('5%'),
-                          }}
-                          source={require('../../uploads/red.png')}
-                        />
-                      ) : item.review == 'Average' ? (
-                        <Image
-                          style={{
-                            width: width > height ? wp('3%') : wp('5%'),
-                            height: width > height ? wp('3%') : wp('5%'),
-                          }}
-                          source={require('../../uploads/yellow.png')}
-                        />
-                      ) : item.review == 'Excellent' ? (
-                        <Image
-                          style={{
-                            width: width > height ? wp('3%') : wp('5%'),
-                            height: width > height ? wp('3%') : wp('5%'),
-                          }}
-                          source={require('../../uploads/green.png')}
-                        />
-                      ) : null}
-                      <Text
-                        style={{
-                          fontSize: width > height ? wp('2.2%') : wp('4%'),
-                          marginLeft: 15,
-                          width: '70%',
-                        }}>
-                        Kommentar : {item.comments}
-                      </Text>
-                    </View>
-                  )}
-                  keyExtractor={({id}, index) => id}
-                />
-              ) : (
-                <Text style={styles.nosocialKaptial}>No data found</Text>
-              )}
             </View>
             <View>
-              <Text
-                style={{
-                  fontSize: width > height ? wp('2.2%') : wp('4%'),
-                  alignSelf: 'center',
-                }}>
-                {Text_EN.Text_en.measurement_socialkaptial_title}
-              </Text>
-              <View style={{flexDirection: 'row', marginTop: 10}}>
-                {/* <Text>length:{this.state.dataSocialKapital.length}</Text> */}
-                {/* <View style={{ width: '100%', marginTop: 25, marginLeft: 0, justifyContent: 'center', alignItems: 'center' }}> */}
-                {/* <Text style={{fontSize: width * 0.04}}>gg {this.state.totalGraph}</Text> */}
-                {/* {this.state.dataSocialKapital.length > 1 ? <LineChart
-                    data={{
-                      labels: this.state.monthGraph,
-                      datasets: [
-                        {
-                          data: this.state.totalGraph
-                        }
-                      ]
-                    }}
-                    width={Dimensions.get('window').width}
-                    height={height * 0.35}
-                    chartConfig={{
-                      backgroundColor: "#00a1ff",
-                      backgroundGradientFrom: "#87d9f7",
-                      backgroundGradientTo: "#00a1ff",
-                      decimalPlaces: 0, // optional, defaults to 2dp
-                      color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                      labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
-                      style: {
-                        fontSize: 28,
-                      }
-                    }}
-                  /> : <Text style={styles.nosocialKaptial}>{Text_EN.Text_en.min_two_date}</Text>} */}
-                {/* </View> */}
-              </View>
-              <View style={{width: '100%'}}>
-                {this.state.dataSocialKapital.length != 0 ? (
+              <TouchableOpacity
+                onPress={() => this.props.navigation.openDrawer()}>
+                <Image
+                  style={{
+                    width: width > height ? wp('3.5%') : wp('8%'),
+                    height: width > height ? wp('3%') : wp('7%'),
+                  }}
+                  source={require('../../uploads/drawer_menu.png')}
+                />
+              </TouchableOpacity>
+            </View>
+          </View>
+          <View style={{flex: 1, marginTop: 10, marginBottom: 10}}>
+            <ScrollView>
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('More_info', {
+                    Firstname: this.state.firstName,
+                    token: this.state.token,
+                  })
+                }>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={styles.upper_txt}>
+                    {Text_EN.Text_en.cooperation}
+                  </Text>
+                  <Image
+                    style={styles.diamond_icon}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
+                  <Image
+                    style={styles.diamond_icon}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
+                </View>
+              </TouchableOpacity>
+              <View style={{alignItems: 'center', marginTop: 15}}>
+                <Text style={{fontSize: width > height ? wp('2.2%') : wp('4%')}}>
+                  {Text_EN.Text_en.measurement_workjoy_title}
+                </Text>
+                {this.state.dataSource.length != 0 ? (
                   <FlatList
-                    style={{marginTop: 10, marginBottom: 30}}
-                    data={this.state.dataSocialKapital}
+                    style={{marginTop: 10}}
+                    data={this.state.dataSource}
                     showsVerticleScrollIndicator={false}
                     renderItem={({item}) => (
-                      <View style={styles.dynamic_list_view}>
-                        <Card
-                          borderRadius={10}
-                          containerStyle={{
-                            width: width > height ? wp('50%') : wp('80%'),
+                      <View style={{flexDirection: 'row', paddingBottom: 15}}>
+                        <Text
+                          style={{
+                            fontSize: width > height ? wp('2.2%') : wp('4%'),
+                            marginRight: 10,
                           }}>
-                          <View
+                          Uge {('000' + item.week.toString()).slice(-2)}{' '}
+                        </Text>
+
+                        {item.review == 'Bad' ? (
+                          <Image
                             style={{
-                              flexDirection: 'row',
-                              justifyContent: 'flex-start',
-                            }}>
-                            <View style={{justifyContent: 'center'}}>
-                              <Text
-                                style={{
-                                  fontSize:
-                                    width > height ? wp('2.2%') : wp('4%'),
-                                  fontWeight: 'bold',
-                                }}>
-                                {
-                                  months[
-                                    item.review_date
-                                      .substring(5, 7)
-                                      .replace(/^0+/, '') - 1
-                                  ]
-                                }
-                              </Text>
-                            </View>
-                            <View
-                              style={{
-                                borderLeftWidth: 1,
-                                borderLeftColor: '#00a1ff',
-                                marginRight: 10,
-                                marginLeft:
-                                  width > height ? wp('4%') : wp('1%'),
-                              }}></View>
-                            <View>
-                              {/* {item.question1=="yellow" && item.question2=="yellow"?this.setState({trust_per:20}):item.question1=="green" && item.question2=="green"?this.setState({trust_per:40}):null} */}
-                              <Text
-                                style={{
-                                  fontSize:
-                                    width > height ? wp('2.2%') : wp('3.5%'),
-                                  width: width > height ? wp('25%') : wp('32%'),
-                                }}>
-                                {Text_EN.Text_en.cooperation}:{' '}
-                                <Text style={{fontWeight: 'bold'}}>
-                                  {item.cooperation}%
-                                </Text>
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize:
-                                    width > height ? wp('2.2%') : wp('3.5%'),
-                                  width: width > height ? wp('25%') : wp('32%'),
-                                }}>
-                                {Text_EN.Text_en.trust}:{' '}
-                                <Text style={{fontWeight: 'bold'}}>
-                                  {item.trust}%{' '}
-                                </Text>
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize:
-                                    width > height ? wp('2.2%') : wp('3.5%'),
-                                  width: width > height ? wp('25%') : wp('32%'),
-                                }}>
-                                {Text_EN.Text_en.justice}:{' '}
-                                <Text style={{fontWeight: 'bold'}}>
-                                  {item.justice}%
-                                </Text>
-                              </Text>
-                              <Text
-                                style={{
-                                  fontSize:
-                                    width > height ? wp('2.2%') : wp('3.5%'),
-                                  width: width > height ? wp('25%') : wp('31%'),
-                                  fontWeight: 'bold',
-                                  borderTopWidth: 1,
-                                }}>
-                                {Text_EN.Text_en.total}:{' '}
-                                {item.trust + item.cooperation + item.justice}%{' '}
-                              </Text>
-                            </View>
-                          </View>
-                        </Card>
+                              width: width > height ? wp('3%') : wp('5%'),
+                              height: width > height ? wp('3%') : wp('5%'),
+                            }}
+                            source={require('../../uploads/red.png')}
+                          />
+                        ) : item.review == 'Average' ? (
+                          <Image
+                            style={{
+                              width: width > height ? wp('3%') : wp('5%'),
+                              height: width > height ? wp('3%') : wp('5%'),
+                            }}
+                            source={require('../../uploads/yellow.png')}
+                          />
+                        ) : item.review == 'Excellent' ? (
+                          <Image
+                            style={{
+                              width: width > height ? wp('3%') : wp('5%'),
+                              height: width > height ? wp('3%') : wp('5%'),
+                            }}
+                            source={require('../../uploads/green.png')}
+                          />
+                        ) : null}
+                        <Text
+                          style={{
+                            fontSize: width > height ? wp('2.2%') : wp('4%'),
+                            marginLeft: 15,
+                            width: '70%',
+                          }}>
+                          Kommentar : {item.comments}
+                        </Text>
                       </View>
                     )}
                     keyExtractor={({id}, index) => id}
@@ -618,34 +483,171 @@ export default class home extends Component {
                   <Text style={styles.nosocialKaptial}>No data found</Text>
                 )}
               </View>
+              <View>
+                <Text
+                  style={{
+                    fontSize: width > height ? wp('2.2%') : wp('4%'),
+                    alignSelf: 'center',
+                  }}>
+                  {Text_EN.Text_en.measurement_socialkaptial_title}
+                </Text>
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                  {/* <Text>length:{this.state.dataSocialKapital.length}</Text> */}
+                  {/* <View style={{ width: '100%', marginTop: 25, marginLeft: 0, justifyContent: 'center', alignItems: 'center' }}> */}
+                  {/* <Text style={{fontSize: width * 0.04}}>gg {this.state.totalGraph}</Text> */}
+                  {/* {this.state.dataSocialKapital.length > 1 ? <LineChart
+                      data={{
+                        labels: this.state.monthGraph,
+                        datasets: [
+                          {
+                            data: this.state.totalGraph
+                          }
+                        ]
+                      }}
+                      width={Dimensions.get('window').width}
+                      height={height * 0.35}
+                      chartConfig={{
+                        backgroundColor: "#00a1ff",
+                        backgroundGradientFrom: "#87d9f7",
+                        backgroundGradientTo: "#00a1ff",
+                        decimalPlaces: 0, // optional, defaults to 2dp
+                        color: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        labelColor: (opacity = 1) => `rgba(255, 255, 255, ${opacity})`,
+                        style: {
+                          fontSize: 28,
+                        }
+                      }}
+                    /> : <Text style={styles.nosocialKaptial}>{Text_EN.Text_en.min_two_date}</Text>} */}
+                  {/* </View> */}
+                </View>
+                <View style={{width: '100%'}}>
+                  {this.state.dataSocialKapital.length != 0 ? (
+                    <FlatList
+                      style={{marginTop: 10, marginBottom: 30}}
+                      data={this.state.dataSocialKapital}
+                      showsVerticleScrollIndicator={false}
+                      renderItem={({item}) => (
+                        <View style={styles.dynamic_list_view}>
+                          <Card
+                            borderRadius={10}
+                            containerStyle={{
+                              width: width > height ? wp('50%') : wp('80%'),
+                            }}>
+                            <View
+                              style={{
+                                flexDirection: 'row',
+                                justifyContent: 'flex-start',
+                              }}>
+                              <View style={{justifyContent: 'center'}}>
+                                <Text
+                                  style={{
+                                    fontSize:
+                                      width > height ? wp('2.2%') : wp('4%'),
+                                    fontWeight: 'bold',
+                                  }}>
+                                  {
+                                    months[
+                                      item.review_date
+                                        .substring(5, 7)
+                                        .replace(/^0+/, '') - 1
+                                    ]
+                                  }
+                                </Text>
+                              </View>
+                              <View
+                                style={{
+                                  borderLeftWidth: 1,
+                                  borderLeftColor: '#00a1ff',
+                                  marginRight: 10,
+                                  marginLeft:
+                                    width > height ? wp('4%') : wp('1%'),
+                                }}></View>
+                              <View>
+                                {/* {item.question1=="yellow" && item.question2=="yellow"?this.setState({trust_per:20}):item.question1=="green" && item.question2=="green"?this.setState({trust_per:40}):null} */}
+                                <Text
+                                  style={{
+                                    fontSize:
+                                      width > height ? wp('2.2%') : wp('3.5%'),
+                                    width: width > height ? wp('25%') : wp('32%'),
+                                  }}>
+                                  {Text_EN.Text_en.cooperation}:{' '}
+                                  <Text style={{fontWeight: 'bold'}}>
+                                    {item.cooperation}%
+                                  </Text>
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize:
+                                      width > height ? wp('2.2%') : wp('3.5%'),
+                                    width: width > height ? wp('25%') : wp('32%'),
+                                  }}>
+                                  {Text_EN.Text_en.trust}:{' '}
+                                  <Text style={{fontWeight: 'bold'}}>
+                                    {item.trust}%{' '}
+                                  </Text>
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize:
+                                      width > height ? wp('2.2%') : wp('3.5%'),
+                                    width: width > height ? wp('25%') : wp('32%'),
+                                  }}>
+                                  {Text_EN.Text_en.justice}:{' '}
+                                  <Text style={{fontWeight: 'bold'}}>
+                                    {item.justice}%
+                                  </Text>
+                                </Text>
+                                <Text
+                                  style={{
+                                    fontSize:
+                                      width > height ? wp('2.2%') : wp('3.5%'),
+                                    width: width > height ? wp('25%') : wp('31%'),
+                                    fontWeight: 'bold',
+                                    borderTopWidth: 1,
+                                  }}>
+                                  {Text_EN.Text_en.total}:{' '}
+                                  {item.trust + item.cooperation + item.justice}%{' '}
+                                </Text>
+                              </View>
+                            </View>
+                          </Card>
+                        </View>
+                      )}
+                      keyExtractor={({id}, index) => id}
+                    />
+                  ) : (
+                    <Text style={styles.nosocialKaptial}>No data found</Text>
+                  )}
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+          {/* <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
+            <View style={styles.bottom_btn}>
+              <TouchableOpacity onPress={()=>this.help_workjoy()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
+              </TouchableOpacity>
             </View>
-          </ScrollView>
+            <View style={styles.bottom_btn}>
+              <TouchableOpacity onPress={()=>this.help_socialkapital()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_two_txt}</Text>                        
+              </TouchableOpacity>
+            </View>
+            <View style={styles.bottom_btn}>
+              <TouchableOpacity onPress={()=>this.help_experience()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_three_txt}</Text>
+              </TouchableOpacity>
+            </View>
+          </View> */}
+          <HideWithKeyboard>
+            <View style={{marginBottom: 5}}>
+              <Text style={{textAlign: 'center'}}>
+                <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+              </Text>
+            </View>
+          </HideWithKeyboard>
         </View>
-        {/* <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
-          <View style={styles.bottom_btn}>
-            <TouchableOpacity onPress={()=>this.help_workjoy()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
-            </TouchableOpacity>
-          </View>
-          <View style={styles.bottom_btn}>
-            <TouchableOpacity onPress={()=>this.help_socialkapital()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_two_txt}</Text>                        
-            </TouchableOpacity>
-          </View>
-          <View style={styles.bottom_btn}>
-            <TouchableOpacity onPress={()=>this.help_experience()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_three_txt}</Text>
-            </TouchableOpacity>
-          </View>
-        </View> */}
-        <HideWithKeyboard>
-          <View style={{marginBottom: 5}}>
-            <Text style={{textAlign: 'center'}}>
-              <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
-            </Text>
-          </View>
-        </HideWithKeyboard>
-      </View>
+      </SafeAreaView>
     );
   }
 }

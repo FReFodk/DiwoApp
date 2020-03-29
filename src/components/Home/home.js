@@ -11,6 +11,7 @@ import {
   ScrollView,
   Alert,
   Linking,
+  Platform,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Card, Icon} from 'react-native-elements';
@@ -25,6 +26,7 @@ import {
 } from 'react-native-responsive-screen';
 import {PushController} from '../../../PushController';
 import PushNotification from 'react-native-push-notification';
+import PushNotificationIOS from "@react-native-community/push-notification-ios";
 // import firebase from 'react-native-firebase';
 
 export default class home extends Component {
@@ -780,18 +782,29 @@ export default class home extends Component {
         });
     }
     let self = this;
+    let isSendFirstNotification = false;
 
     let intervalFetch = setInterval(() => {
       if (!self.state.loading) {
         clearInterval(intervalFetch);
-        this.state.badgeCount = 0;
-        if (this.state.message_active == 1) this.state.badgeCount++;
-        if (this.state.isWorkjoy_active == 1) this.state.badgeCount++;
-        if (this.state.isSocialKapital_active == 1) this.state.badgeCount++;
-        if (this.state.badgeCount > 0) {
-          this.sendLocalNotification(this.state.badgeCount);
-          PushNotification.setApplicationIconBadgeNumber(this.state.badgeCount);
+        if (!isSendFirstNotification) {
+          isSendFirstNotification = true;
+          this.state.badgeCount = 0;
+          if (this.state.message_active == 1) this.state.badgeCount++;
+          if (this.state.isWorkjoy_active == 1) this.state.badgeCount++;
+          if (this.state.isSocialKapital_active == 1) this.state.badgeCount++;
+          if (this.state.badgeCount > 0) {
+            console.log("BADGE COUNT", this.state.badgeCount);
+            if (Platform.OS != 'ios') {
+              this.sendLocalNotification(this.state.badgeCount);
+            }
+              PushNotification.setApplicationIconBadgeNumber(this.state.badgeCount);
+            
+          } else {
+            PushNotification.setApplicationIconBadgeNumber(0);
+          }
         }
+        
       }
     }, 1000);
   }
@@ -881,18 +894,28 @@ export default class home extends Component {
     );
   };
   sendLocalNotification = count => {
-    PushNotification.localNotification({
-      /* Android Only Properties */
 
-      /* iOS and Android properties */
-      title: 'Diwo', // (optional)
-      message: `Du har ${count} underretninger`, // (required)
-      playSound: false, // (optional) default: true
-      // soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
-      // number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
-      // repeatType: 'day', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
-      // actions: '["Yes", "No"]', // (Android only) See the doc for notification actions to know more
-    });
+    if (Platform.OS == 'ios') {
+      PushNotificationIOS.presentLocalNotification({
+        alertBody: `Du har ${count} underretninger`,
+        alertTitle: 'Diwo',
+        applicationIconBadgeNumber: count,
+        fireDate: new Date().toISOString(),
+      });
+    } else {
+      PushNotification.localNotification({
+        /* Android Only Properties */
+  
+        /* iOS and Android properties */
+        title: 'Diwo', // (optional)
+        message: `Du har ${count} underretningerhhaa`, // (required)
+        playSound: false, // (optional) default: true
+        // soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
+        // number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
+        // repeatType: 'day', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
+        // actions: '["Yes", "No"]', // (Android only) See the doc for notification actions to know more
+      });
+    }
   };
   render() {
     var {height, width} = Dimensions.get('window');
