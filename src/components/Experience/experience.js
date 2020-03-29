@@ -282,287 +282,290 @@ export default class home extends Component {
   render() {
     var {height, width} = Dimensions.get('window');
     return (
-      <View style={styles.container}>
-        {this.state.loading == true ? (
-          <View style={styles.spinner}>
-            <ActivityIndicator size="large" color="#12075e" />
-          </View>
-        ) : null}
 
-        <Dialog
-          visible={this.state.view_experience}
-          onTouchOutside={() => this.setState({view_experience: false})}>
-          <View style={{position: 'relative'}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() => this.setState({view_experience: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
-                  }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.container}>
+          {this.state.loading == true ? (
+            <View style={styles.spinner}>
+              <ActivityIndicator size="large" color="#12075e" />
             </View>
-            <View style={{paddingBottom: 10, marginTop: 50}}>
-              <View style={{flexDirection: 'row'}}>
-                <Text style={styles.dialog_txt_title}>Date : </Text>
+          ) : null}
+
+          <Dialog
+            visible={this.state.view_experience}
+            onTouchOutside={() => this.setState({view_experience: false})}>
+            <View style={{position: 'relative'}}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() => this.setState({view_experience: false})}>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{paddingBottom: 10, marginTop: 50}}>
+                <View style={{flexDirection: 'row'}}>
+                  <Text style={styles.dialog_txt_title}>Date : </Text>
+                  <Text style={styles.dialog_txt}>
+                    {this.state.experience_date}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                  <Text style={styles.dialog_txt_title}>Experience : </Text>
+                  <Text
+                    style={{
+                      width: '70%',
+                      fontWeight: '500',
+                      color: 'black',
+                      fontSize: width > height ? wp('2%') : wp('4%'),
+                    }}>
+                    {this.state.experience_text_date}
+                  </Text>
+                </View>
+                <View style={{flexDirection: 'row', marginTop: 10}}>
+                  <Text style={styles.dialog_txt_title}>Total likes : </Text>
+                  <Text style={styles.dialog_txt}>
+                    {this.state.experience_total_likes}
+                  </Text>
+                </View>
+              </View>
+            </View>
+          </Dialog>
+          <Dialog
+            visible={this.state.answerSend}
+            onTouchOutside={() => this.setState({answerSend: false})}>
+            <View style={{position: 'relative'}}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() => this.setState({answerSend: false})}>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{width: width > height ? wp('80%') : wp('75%')}}>
                 <Text style={styles.dialog_txt}>
-                  {this.state.experience_date}
+                  {Text_EN.Text_en.experience_pop}
                 </Text>
               </View>
-              <View style={{flexDirection: 'row', marginTop: 10}}>
-                <Text style={styles.dialog_txt_title}>Experience : </Text>
+            </View>
+          </Dialog>
+          <Dialog
+            visible={this.state.error_popup}
+            onTouchOutside={() => this.setState({error_popup: false})}>
+            <View style={{position: 'relative'}}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() => this.setState({error_popup: false})}>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  width: width > height ? wp('80%') : wp('68%'),
+                }}>
+                <Text style={styles.dialog_txt}>
+                  {Text_EN.Text_en.experience_error_pop}
+                </Text>
+              </View>
+            </View>
+          </Dialog>
+
+          <NavigationEvents
+            onDidFocus={() => {
+              this.page_reloaded();
+            }}
+          />
+          <Image
+            style={styles.background_diamond}
+            source={require('../../uploads/diamond-dark.png')}
+          />
+          <View
+            style={{
+              padding: 10,
+              flexDirection: 'row',
+              borderBottomColor: '#01a2ff',
+              borderBottomWidth: 2,
+              justifyContent: 'space-between',
+            }}>
+            <View>
+              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
+                Hej{' '}
                 <Text
                   style={{
-                    width: '70%',
-                    fontWeight: '500',
-                    color: 'black',
-                    fontSize: width > height ? wp('2%') : wp('4%'),
+                    fontWeight: 'bold',
+                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
                   }}>
-                  {this.state.experience_text_date}
+                  {this.state.firstName}
                 </Text>
-              </View>
-              <View style={{flexDirection: 'row', marginTop: 10}}>
-                <Text style={styles.dialog_txt_title}>Total likes : </Text>
-                <Text style={styles.dialog_txt}>
-                  {this.state.experience_total_likes}
-                </Text>
-              </View>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.answerSend}
-          onTouchOutside={() => this.setState({answerSend: false})}>
-          <View style={{position: 'relative'}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() => this.setState({answerSend: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
-                  }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{width: width > height ? wp('80%') : wp('75%')}}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.experience_pop}
               </Text>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.error_popup}
-          onTouchOutside={() => this.setState({error_popup: false})}>
-          <View style={{position: 'relative'}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() => this.setState({error_popup: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
-                  }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
             </View>
             <View
               style={{
-                paddingBottom: 10,
-                width: width > height ? wp('80%') : wp('68%'),
+                position: 'absolute',
+                left: width > height ? wp('48%') : wp('45%'),
+                alignSelf: 'center',
               }}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.experience_error_pop}
-              </Text>
-            </View>
-          </View>
-        </Dialog>
-
-        <NavigationEvents
-          onDidFocus={() => {
-            this.page_reloaded();
-          }}
-        />
-        <Image
-          style={styles.background_diamond}
-          source={require('../../uploads/diamond-dark.png')}
-        />
-        <View
-          style={{
-            padding: 10,
-            flexDirection: 'row',
-            borderBottomColor: '#01a2ff',
-            borderBottomWidth: 2,
-            justifyContent: 'space-between',
-          }}>
-          <View>
-            <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-              Hej{' '}
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                }}>
-                {this.state.firstName}
-              </Text>
-            </Text>
-          </View>
-          <View
-            style={{
-              position: 'absolute',
-              left: width > height ? wp('48%') : wp('45%'),
-              alignSelf: 'center',
-            }}>
-            <Image
-              style={{
-                width: width > height ? wp('6%') : wp('15%'),
-                height: width > height ? wp('3%') : wp('6%'),
-              }}
-              source={require('../../uploads/Diwologo_png.png')}
-            />
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
               <Image
                 style={{
-                  width: width > height ? wp('3.5%') : wp('8%'),
-                  height: width > height ? wp('3%') : wp('7%'),
+                  width: width > height ? wp('6%') : wp('15%'),
+                  height: width > height ? wp('3%') : wp('6%'),
                 }}
-                source={require('../../uploads/drawer_menu.png')}
+                source={require('../../uploads/Diwologo_png.png')}
               />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={{flex: 1, padding: 15}}>
-          <ScrollView>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('More_info', {
-                  Firstname: this.state.firstName,
-                  token: this.state.token,
-                })
-              }>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text style={styles.upper_txt}>
-                  {Text_EN.Text_en.cooperation}
-                </Text>
-                <Image
-                  style={styles.diamond_icon}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
-                <Image
-                  style={styles.diamond_icon}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
-              </View>
-            </TouchableOpacity>
-            <View style={styles.text_view}>
-              <Text style={styles.experience_title}>
-                {Text_EN.Text_en.experience_title}
-              </Text>
-              <Text style={styles.experience_text}>
-                {Text_EN.Text_en.experience_text}
-              </Text>
-              <TextInput
-                defaultValue={this.state.experienceText}
-                style={styles.Text_input}
-                placeholder={Text_EN.Text_en.experience_placeholder}
-                multiline={true}
-                numberOfLines={8}
-                onChangeText={experienceText => this.setState({experienceText})}
-              />
-              <Text
-                style={{
-                  textAlign: 'center',
-                  fontSize: width > height ? wp('1.5%') : wp('3.5%'),
-                }}>
-                {Text_EN.Text_en.experience_note}
-              </Text>
-              <TouchableOpacity
-                style={styles.active_submit_btn}
-                onPress={() => this.send_experience()}>
-                <Text style={styles.submit_btn}>Send</Text>
-              </TouchableOpacity>
             </View>
-
             <View>
-              <View style={styles.text_view}>
-                <Text style={styles.experience_likes}>Delte oplevelser</Text>
-                <FlatList
-                  style={{padding: 5}}
-                  data={this.state.dataSource}
-                  showsVerticleScrollIndicator={false}
-                  renderItem={({item}) => (
-                    <View style={styles.dynamic_list_view}>
-                      <TouchableOpacity
-                        style={styles.list_part1}
-                        onPress={() => this.openExperience(item.id)}>
-                        <Text
-                          style={{
-                            fontSize: width > height ? wp('2%') : wp('4%'),
-                          }}>
-                          {item.date}
-                        </Text>
-                      </TouchableOpacity>
-                      {/* <View style={styles.list_part2}>
-                      <Text style={{ fontSize: width > height ? wp('2%') : wp('4%') }}>
-                        {item.total_likes}
-                      </Text>
-                      <Image
-                        style={styles.like_icon}
-                        source={require('../../uploads/like_color.png')}
-                      />
-                    </View> */}
-                    </View>
-                  )}
-                  keyExtractor={({id}, index) => id}
+              <TouchableOpacity
+                onPress={() => this.props.navigation.openDrawer()}>
+                <Image
+                  style={{
+                    width: width > height ? wp('3.5%') : wp('8%'),
+                    height: width > height ? wp('3%') : wp('7%'),
+                  }}
+                  source={require('../../uploads/drawer_menu.png')}
                 />
-              </View>
-            </View>
-          </ScrollView>
-        </View>
-        {/* {this.state.isKeyboardOpen==0 ?
-          <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
-            <HideWithKeyboard></HideWithKeyboard>
-            <View style={styles.bottom_btn}>
-              <TouchableOpacity onPress={()=>this.help_workjoy()}>
-                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
               </TouchableOpacity>
             </View>
-            <View style={styles.bottom_btn}>
-              <TouchableOpacity onPress={()=>this.help_socialkapital()}>
-                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_two_txt}</Text>                        
-              </TouchableOpacity>
-            </View>
-            <View style={styles.bottom_btn}>
-              <TouchableOpacity onPress={()=>this.help_experience()}>
-                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_three_txt}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>:null} */}
-        <HideWithKeyboard>
-          <View style={{marginBottom: 5}}>
-            <Text style={{textAlign: 'center'}}>
-              <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
-            </Text>
           </View>
-        </HideWithKeyboard>
-      </View>
+          <View style={{flex: 1, padding: 15}}>
+            <ScrollView>
+              <TouchableOpacity
+                onPress={() =>
+                  this.props.navigation.navigate('More_info', {
+                    Firstname: this.state.firstName,
+                    token: this.state.token,
+                  })
+                }>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={styles.upper_txt}>
+                    {Text_EN.Text_en.cooperation}
+                  </Text>
+                  <Image
+                    style={styles.diamond_icon}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
+                  <Image
+                    style={styles.diamond_icon}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
+                </View>
+              </TouchableOpacity>
+              <View style={styles.text_view}>
+                <Text style={styles.experience_title}>
+                  {Text_EN.Text_en.experience_title}
+                </Text>
+                <Text style={styles.experience_text}>
+                  {Text_EN.Text_en.experience_text}
+                </Text>
+                <TextInput
+                  defaultValue={this.state.experienceText}
+                  style={styles.Text_input}
+                  placeholder={Text_EN.Text_en.experience_placeholder}
+                  multiline={true}
+                  numberOfLines={8}
+                  onChangeText={experienceText => this.setState({experienceText})}
+                />
+                <Text
+                  style={{
+                    textAlign: 'center',
+                    fontSize: width > height ? wp('1.5%') : wp('3.5%'),
+                  }}>
+                  {Text_EN.Text_en.experience_note}
+                </Text>
+                <TouchableOpacity
+                  style={styles.active_submit_btn}
+                  onPress={() => this.send_experience()}>
+                  <Text style={styles.submit_btn}>Send</Text>
+                </TouchableOpacity>
+              </View>
+
+              <View>
+                <View style={styles.text_view}>
+                  <Text style={styles.experience_likes}>Delte oplevelser</Text>
+                  <FlatList
+                    style={{padding: 5}}
+                    data={this.state.dataSource}
+                    showsVerticleScrollIndicator={false}
+                    renderItem={({item}) => (
+                      <View style={styles.dynamic_list_view}>
+                        <TouchableOpacity
+                          style={styles.list_part1}
+                          onPress={() => this.openExperience(item.id)}>
+                          <Text
+                            style={{
+                              fontSize: width > height ? wp('2%') : wp('4%'),
+                            }}>
+                            {item.date}
+                          </Text>
+                        </TouchableOpacity>
+                        {/* <View style={styles.list_part2}>
+                        <Text style={{ fontSize: width > height ? wp('2%') : wp('4%') }}>
+                          {item.total_likes}
+                        </Text>
+                        <Image
+                          style={styles.like_icon}
+                          source={require('../../uploads/like_color.png')}
+                        />
+                      </View> */}
+                      </View>
+                    )}
+                    keyExtractor={({id}, index) => id}
+                  />
+                </View>
+              </View>
+            </ScrollView>
+          </View>
+          {/* {this.state.isKeyboardOpen==0 ?
+            <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
+              <HideWithKeyboard></HideWithKeyboard>
+              <View style={styles.bottom_btn}>
+                <TouchableOpacity onPress={()=>this.help_workjoy()}>
+                  <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.bottom_btn}>
+                <TouchableOpacity onPress={()=>this.help_socialkapital()}>
+                  <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_two_txt}</Text>                        
+                </TouchableOpacity>
+              </View>
+              <View style={styles.bottom_btn}>
+                <TouchableOpacity onPress={()=>this.help_experience()}>
+                  <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_three_txt}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>:null} */}
+          <HideWithKeyboard>
+            <View style={{marginBottom: 5}}>
+              <Text style={{textAlign: 'center'}}>
+                <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+              </Text>
+            </View>
+          </HideWithKeyboard>
+        </View>
+      </SafeAreaView>
     );
   }
 }

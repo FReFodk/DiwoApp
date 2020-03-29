@@ -30,6 +30,10 @@ target 'Diwo' do
   pod 'ReactCommon/turbomodule/core', :path => "../node_modules/react-native/ReactCommon"
   pod 'Yoga', :path => '../node_modules/react-native/ReactCommon/yoga'
 
+  
+
+  pod 'BVLinearGradient', :path => '../node_modules/react-native-linear-gradient'
+
   pod 'DoubleConversion', :podspec => '../node_modules/react-native/third-party-podspecs/DoubleConversion.podspec'
   pod 'glog', :podspec => '../node_modules/react-native/third-party-podspecs/glog.podspec'
   pod 'Folly', :podspec => '../node_modules/react-native/third-party-podspecs/Folly.podspec'
@@ -41,14 +45,16 @@ target 'Diwo' do
 
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
-  pod 'RNFirebase', :path => '../node_modules/react-native-firebase'
+  pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
 
-  pod 'RNBackgroundFetch', :path => '../node_modules/react-native-background-fetch'
+  pod 'Firebase/Core'
+  pod 'Firebase/Messaging'
 
   target 'DiwoTests' do
     inherit! :search_paths
     # Pods for testing
   end
+
 
   use_native_modules!
 end

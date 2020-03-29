@@ -10,6 +10,7 @@ import {
   ScrollView,
   ActivityIndicator,
   TextInput,
+
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Card, Icon} from 'react-native-elements';
@@ -588,6 +589,7 @@ export default class home extends Component {
     const {selectedItems} = this.state;
     var {height, width} = Dimensions.get('window');
     return (
+      <SafeAreaView style={{flex: 1}}>
       <View style={styles.container}>
         {this.state.loading == true ? (
           <View style={styles.spinner}>
@@ -1263,6 +1265,7 @@ export default class home extends Component {
           </View>
         </HideWithKeyboard>
       </View>
+      </SafeAreaView>
     );
   }
 }

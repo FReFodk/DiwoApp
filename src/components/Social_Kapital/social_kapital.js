@@ -342,541 +342,543 @@ export default class social_kapital extends Component {
   render() {
     var {height, width} = Dimensions.get('window');
     return (
-      <View style={styles.container}>
-        {this.state.loading == true ? (
-          <View style={styles.spinner}>
-            <ActivityIndicator size="large" color="#12075e" />
-          </View>
-        ) : null}
-        <NavigationEvents
-          onDidFocus={() => {
-            this.page_reloaded();
-          }}
-        />
-        <Dialog
-          visible={this.state.commentbox}
-          title="Kommentarer"
-          onTouchOutside={() => this.setState({commentbox: false})}>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() => this.setState({commentbox: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
-                  }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
+      <SafeAreaView style={{flex: 1}}>
+        <View style={styles.container}>
+          {this.state.loading == true ? (
+            <View style={styles.spinner}>
+              <ActivityIndicator size="large" color="#12075e" />
             </View>
-            <View style={{paddingBottom: 10}}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.social_kapital_commentbox}
-              </Text>
-              <TextInput
-                style={{
-                  borderColor: 'black',
-                  marginTop: 15,
-                  paddingLeft: 15,
-                  borderWidth: 1,
-                  textAlignVertical: 'top',
-                  backgroundColor: 'white',
-                  flexWrap: 'wrap',
-                }}
-                placeholder="Skriv kommentar her.."
-                multiline={true}
-                fontSize={width > height ? wp('1.5') : wp('4%')}
-                numberOfLines={5}
-                onChangeText={commentText => this.setState({commentText})}
-              />
-            </View>
-            <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity
-                color="#00a1ff"
-                onPress={() => this.setState({commentbox: false})}>
-                <Text
-                  style={{
-                    fontSize: width > height ? wp('1.5') : wp('3.5%'),
-                    color: 'white',
-                    fontWeight: 'bold',
-                  }}>
-                  Send Kommentar
+          ) : null}
+          <NavigationEvents
+            onDidFocus={() => {
+              this.page_reloaded();
+            }}
+          />
+          <Dialog
+            visible={this.state.commentbox}
+            title="Kommentarer"
+            onTouchOutside={() => this.setState({commentbox: false})}>
+            <View style={{position: 'relative', padding: 15}}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() => this.setState({commentbox: false})}>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{paddingBottom: 10}}>
+                <Text style={styles.dialog_txt}>
+                  {Text_EN.Text_en.social_kapital_commentbox}
                 </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.errorAlert}
-          onTouchOutside={() => this.setState({errorAlert: false})}>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon_submit}>
-              <TouchableOpacity
-                onPress={() => this.setState({errorAlert: false})}>
-                <Image
+                <TextInput
                   style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
+                    borderColor: 'black',
+                    marginTop: 15,
+                    paddingLeft: 15,
+                    borderWidth: 1,
+                    textAlignVertical: 'top',
+                    backgroundColor: 'white',
+                    flexWrap: 'wrap',
                   }}
-                  source={require('../../uploads/close.png')}
+                  placeholder="Skriv kommentar her.."
+                  multiline={true}
+                  fontSize={width > height ? wp('1.5') : wp('4%')}
+                  numberOfLines={5}
+                  onChangeText={commentText => this.setState({commentText})}
                 />
-              </TouchableOpacity>
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  color="#00a1ff"
+                  onPress={() => this.setState({commentbox: false})}>
+                  <Text
+                    style={{
+                      fontSize: width > height ? wp('1.5') : wp('3.5%'),
+                      color: 'white',
+                      fontWeight: 'bold',
+                    }}>
+                    Send Kommentar
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <View style={{paddingBottom: 10}}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.social_kapital_error}
-              </Text>
+          </Dialog>
+          <Dialog
+            visible={this.state.errorAlert}
+            onTouchOutside={() => this.setState({errorAlert: false})}>
+            <View style={{position: 'relative', padding: 15}}>
+              <View style={styles.dialog_close_icon_submit}>
+                <TouchableOpacity
+                  onPress={() => this.setState({errorAlert: false})}>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{paddingBottom: 10}}>
+                <Text style={styles.dialog_txt}>
+                  {Text_EN.Text_en.social_kapital_error}
+                </Text>
+              </View>
             </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.answerSend}
-          onTouchOutside={() => this.setState({answerSend: false})}>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon_submit}>
-              <TouchableOpacity
-                onPress={() => this.setState({answerSend: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
-                  }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
+          </Dialog>
+          <Dialog
+            visible={this.state.answerSend}
+            onTouchOutside={() => this.setState({answerSend: false})}>
+            <View style={{position: 'relative', padding: 15}}>
+              <View style={styles.dialog_close_icon_submit}>
+                <TouchableOpacity
+                  onPress={() => this.setState({answerSend: false})}>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={{paddingBottom: 10}}>
+                <Text style={styles.dialog_txt}>
+                  {Text_EN.Text_en.social_kapital_submit_message}
+                </Text>
+              </View>
             </View>
-            <View style={{paddingBottom: 10}}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.social_kapital_submit_message}
-              </Text>
-            </View>
-          </View>
-        </Dialog>
+          </Dialog>
 
-        <Image
-          style={styles.background_diamond}
-          source={require('../../uploads/diamond-dark.png')}
-        />
-        <View
-          style={{
-            padding: 10,
-            flexDirection: 'row',
-            borderBottomColor: '#01a2ff',
-            borderBottomWidth: 2,
-            justifyContent: 'space-between',
-          }}>
-          <View>
-            <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-              Hej{' '}
-              <Text
-                style={{
-                  fontWeight: 'bold',
-                  fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                }}>
-                {this.state.firstName}
-              </Text>
-            </Text>
-          </View>
+          <Image
+            style={styles.background_diamond}
+            source={require('../../uploads/diamond-dark.png')}
+          />
           <View
             style={{
-              position: 'absolute',
-              left: width > height ? wp('48%') : wp('45%'),
-              alignSelf: 'center',
+              padding: 10,
+              flexDirection: 'row',
+              borderBottomColor: '#01a2ff',
+              borderBottomWidth: 2,
+              justifyContent: 'space-between',
             }}>
-            <Image
-              style={{
-                width: width > height ? wp('6%') : wp('15%'),
-                height: width > height ? wp('3%') : wp('6%'),
-              }}
-              source={require('../../uploads/Diwologo_png.png')}
-            />
-          </View>
-          <View>
-            <TouchableOpacity
-              onPress={() => this.props.navigation.openDrawer()}>
-              <Image
-                style={{
-                  width: width > height ? wp('3.5%') : wp('8%'),
-                  height: width > height ? wp('3%') : wp('7%'),
-                }}
-                source={require('../../uploads/drawer_menu.png')}
-              />
-            </TouchableOpacity>
-          </View>
-        </View>
-        <View style={{flex: 1, paddingBottom: 15, marginTop: 10}}>
-          <TouchableOpacity
-            onPress={() =>
-              this.props.navigation.navigate('More_info', {
-                Firstname: this.state.firstName,
-                token: this.state.token,
-              })
-            }>
+            <View>
+              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
+                Hej{' '}
+                <Text
+                  style={{
+                    fontWeight: 'bold',
+                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
+                  }}>
+                  {this.state.firstName}
+                </Text>
+              </Text>
+            </View>
             <View
               style={{
-                flexDirection: 'row',
-                justifyContent: 'center',
-                alignContent: 'center',
-                alignItems: 'center',
+                position: 'absolute',
+                left: width > height ? wp('48%') : wp('45%'),
+                alignSelf: 'center',
               }}>
-              <Text style={styles.upper_txt}>
-                {Text_EN.Text_en.cooperation}
-              </Text>
               <Image
-                style={styles.diamond_icon_top}
-                source={require('../../uploads/diamond_img.png')}
+                style={{
+                  width: width > height ? wp('6%') : wp('15%'),
+                  height: width > height ? wp('3%') : wp('6%'),
+                }}
+                source={require('../../uploads/Diwologo_png.png')}
               />
-              <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
-              <Image
-                style={styles.diamond_icon_top}
-                source={require('../../uploads/diamond_img.png')}
-              />
-              <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
             </View>
-          </TouchableOpacity>
-          <Text style={styles.social_title}>
-            <Text style={{fontWeight: 'bold'}}>
-              {Text_EN.Text_en.social_kapital}:{' '}
-            </Text>
-            {Text_EN.Text_en.socialkapital_title}
-          </Text>
-          <ScrollView>
-            <Card borderRadius={15}>
-              <View style={{flexDirection: 'row'}}>
-                <View style={styles.diamond_css}>
-                  <Image
-                    style={styles.diamond_icon}
-                    source={require('../../uploads/diamond_img.png')}
-                  />
-                </View>
-                <View style={styles.question_card_text}>
-                  <Text
-                    style={{
-                      fontSize: width > height ? wp('2.5%') : wp('3.5%'),
-                    }}>
-                    {Text_EN.Text_en.socialkapital_question_one}
-                  </Text>
-                </View>
-                <View style={styles.icon_view}>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({firstAnswer: 'green'})}>
-                    <Image
-                      style={
-                        this.state.firstAnswer == 'green'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/like.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({firstAnswer: 'yellow'})}>
-                    <Image
-                      style={
-                        this.state.firstAnswer == 'yellow'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/normal.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({firstAnswer: 'red'})}>
-                    <Image
-                      style={
-                        this.state.firstAnswer == 'red'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/dislike.png')}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Card>
-            <Card borderRadius={15}>
-              <View style={{flexDirection: 'row'}}>
-                <View style={styles.diamond_css}>
-                  <Image
-                    style={styles.diamond_icon}
-                    source={require('../../uploads/diamond_img.png')}
-                  />
-                </View>
-                <View style={styles.question_card_text}>
-                  <Text
-                    style={{
-                      fontSize: width > height ? wp('2.5%') : wp('3.5%'),
-                    }}>
-                    {Text_EN.Text_en.socialkapital_question_two}
-                  </Text>
-                </View>
-                <View style={styles.icon_view}>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({secondAnswer: 'green'})}>
-                    <Image
-                      style={
-                        this.state.secondAnswer == 'green'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/like.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({secondAnswer: 'yellow'})}>
-                    <Image
-                      style={
-                        this.state.secondAnswer == 'yellow'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/normal.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({secondAnswer: 'red'})}>
-                    <Image
-                      style={
-                        this.state.secondAnswer == 'red'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/dislike.png')}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Card>
-            <Card borderRadius={15}>
-              <View style={{flexDirection: 'row'}}>
-                <View style={styles.diamond_css}>
-                  <Image
-                    style={styles.diamond_icon}
-                    source={require('../../uploads/diamond_img.png')}
-                  />
-                </View>
-                <View style={styles.question_card_text}>
-                  <Text
-                    style={{
-                      fontSize: width > height ? wp('2.5%') : wp('3.5%'),
-                    }}>
-                    {Text_EN.Text_en.socialkapital_question_three}
-                  </Text>
-                </View>
-                <View style={styles.icon_view}>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({thirdAnswer: 'green'})}>
-                    <Image
-                      style={
-                        this.state.thirdAnswer == 'green'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/like.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({thirdAnswer: 'yellow'})}>
-                    <Image
-                      style={
-                        this.state.thirdAnswer == 'yellow'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/normal.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({thirdAnswer: 'red'})}>
-                    <Image
-                      style={
-                        this.state.thirdAnswer == 'red'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/dislike.png')}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Card>
-            <Card borderRadius={15}>
-              <View style={{flexDirection: 'row'}}>
-                <View style={styles.diamond_css}>
-                  <Image
-                    style={styles.diamond_icon}
-                    source={require('../../uploads/diamond_img.png')}
-                  />
-                </View>
-                <View style={styles.question_card_text}>
-                  <Text
-                    style={{
-                      fontSize: width > height ? wp('2.5%') : wp('3.5%'),
-                    }}>
-                    {Text_EN.Text_en.socialkapital_question_four}
-                  </Text>
-                </View>
-                <View style={styles.icon_view}>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({fourthAnswer: 'green'})}>
-                    <Image
-                      style={
-                        this.state.fourthAnswer == 'green'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/like.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({fourthAnswer: 'yellow'})}>
-                    <Image
-                      style={
-                        this.state.fourthAnswer == 'yellow'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/normal.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({fourthAnswer: 'red'})}>
-                    <Image
-                      style={
-                        this.state.fourthAnswer == 'red'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/dislike.png')}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Card>
-            <Card borderRadius={15}>
-              <View style={{flexDirection: 'row'}}>
-                <View style={styles.diamond_css}>
-                  <Image
-                    style={styles.diamond_icon}
-                    source={require('../../uploads/diamond_img.png')}
-                  />
-                </View>
-                <View style={styles.question_card_text}>
-                  <Text
-                    style={{
-                      fontSize: width > height ? wp('2.5%') : wp('3.5%'),
-                    }}>
-                    {Text_EN.Text_en.socialkapital_question_five}
-                  </Text>
-                </View>
-                <View style={styles.icon_view}>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({fiveAnswer: 'green'})}>
-                    <Image
-                      style={
-                        this.state.fiveAnswer == 'green'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/like.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({fiveAnswer: 'yellow'})}>
-                    <Image
-                      style={
-                        this.state.fiveAnswer == 'yellow'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/normal.png')}
-                    />
-                  </TouchableOpacity>
-                  <TouchableOpacity
-                    style={styles.btn_view}
-                    onPress={() => this.setState({fiveAnswer: 'red'})}>
-                    <Image
-                      style={
-                        this.state.fiveAnswer == 'red'
-                          ? styles.active_review_icon
-                          : styles.review_icon
-                      }
-                      source={require('../../uploads/dislike.png')}
-                    />
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </Card>
-
-            <View style={styles.submit_btn}>
-              <TouchableOpacity onPress={() => this.redirect_measurement()}>
-                <Text style={styles.btn_txt}>
-                  {Text_EN.Text_en.link_measurement_btn}
-                </Text>
+            <View>
+              <TouchableOpacity
+                onPress={() => this.props.navigation.openDrawer()}>
+                <Image
+                  style={{
+                    width: width > height ? wp('3.5%') : wp('8%'),
+                    height: width > height ? wp('3%') : wp('7%'),
+                  }}
+                  source={require('../../uploads/drawer_menu.png')}
+                />
               </TouchableOpacity>
-              {this.state.activeBtn == 0 ? (
-                <TouchableOpacity
-                  style={{marginLeft: 10}}
-                  onPress={() => this.inactive_press()}>
-                  <Text style={styles.inactive_btn_txt}>
-                    {Text_EN.Text_en.submit_answer}
-                  </Text>
-                </TouchableOpacity>
-              ) : (
-                <TouchableOpacity
-                  style={{marginLeft: 10}}
-                  onPress={() => this.send_answer()}>
-                  <Text style={styles.btn_txt}>
-                    {Text_EN.Text_en.submit_answer}
-                  </Text>
-                </TouchableOpacity>
-              )}
             </View>
-            {/* <TouchableOpacity style={styles.redirect_submit_btn} onPress={()=>this.redirect_measurement()}>
-              <Text style={styles.btn_redirect}>{Text_EN.Text_en.link_measurement_btn}</Text>
-          </TouchableOpacity> */}
-          </ScrollView>
-        </View>
-        {/* <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
-        <View style={styles.bottom_btn}>
-          <TouchableOpacity onPress={()=>this.help_workjoy()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.bottom_btn}>
-          <TouchableOpacity onPress={()=>this.help_socialkapital()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_two_txt}</Text>
-          </TouchableOpacity>
-        </View>                
-        <View style={styles.bottom_btn}>
-          <TouchableOpacity onPress={()=>this.help_experience()}>
-              <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_three_txt}</Text>
-          </TouchableOpacity>
-        </View>
-      </View> */}
-        <HideWithKeyboard>
-          <View style={{marginBottom: 5}}>
-            <Text style={{textAlign: 'center'}}>
-              <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
-            </Text>
           </View>
-        </HideWithKeyboard>
-      </View>
+          <View style={{flex: 1, paddingBottom: 15, marginTop: 10}}>
+            <TouchableOpacity
+              onPress={() =>
+                this.props.navigation.navigate('More_info', {
+                  Firstname: this.state.firstName,
+                  token: this.state.token,
+                })
+              }>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                  alignContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Text style={styles.upper_txt}>
+                  {Text_EN.Text_en.cooperation}
+                </Text>
+                <Image
+                  style={styles.diamond_icon_top}
+                  source={require('../../uploads/diamond_img.png')}
+                />
+                <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
+                <Image
+                  style={styles.diamond_icon_top}
+                  source={require('../../uploads/diamond_img.png')}
+                />
+                <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
+              </View>
+            </TouchableOpacity>
+            <Text style={styles.social_title}>
+              <Text style={{fontWeight: 'bold'}}>
+                {Text_EN.Text_en.social_kapital}:{' '}
+              </Text>
+              {Text_EN.Text_en.socialkapital_title}
+            </Text>
+            <ScrollView>
+              <Card borderRadius={15}>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={styles.diamond_css}>
+                    <Image
+                      style={styles.diamond_icon}
+                      source={require('../../uploads/diamond_img.png')}
+                    />
+                  </View>
+                  <View style={styles.question_card_text}>
+                    <Text
+                      style={{
+                        fontSize: width > height ? wp('2.5%') : wp('3.5%'),
+                      }}>
+                      {Text_EN.Text_en.socialkapital_question_one}
+                    </Text>
+                  </View>
+                  <View style={styles.icon_view}>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({firstAnswer: 'green'})}>
+                      <Image
+                        style={
+                          this.state.firstAnswer == 'green'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/like.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({firstAnswer: 'yellow'})}>
+                      <Image
+                        style={
+                          this.state.firstAnswer == 'yellow'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/normal.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({firstAnswer: 'red'})}>
+                      <Image
+                        style={
+                          this.state.firstAnswer == 'red'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/dislike.png')}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Card>
+              <Card borderRadius={15}>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={styles.diamond_css}>
+                    <Image
+                      style={styles.diamond_icon}
+                      source={require('../../uploads/diamond_img.png')}
+                    />
+                  </View>
+                  <View style={styles.question_card_text}>
+                    <Text
+                      style={{
+                        fontSize: width > height ? wp('2.5%') : wp('3.5%'),
+                      }}>
+                      {Text_EN.Text_en.socialkapital_question_two}
+                    </Text>
+                  </View>
+                  <View style={styles.icon_view}>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({secondAnswer: 'green'})}>
+                      <Image
+                        style={
+                          this.state.secondAnswer == 'green'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/like.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({secondAnswer: 'yellow'})}>
+                      <Image
+                        style={
+                          this.state.secondAnswer == 'yellow'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/normal.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({secondAnswer: 'red'})}>
+                      <Image
+                        style={
+                          this.state.secondAnswer == 'red'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/dislike.png')}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Card>
+              <Card borderRadius={15}>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={styles.diamond_css}>
+                    <Image
+                      style={styles.diamond_icon}
+                      source={require('../../uploads/diamond_img.png')}
+                    />
+                  </View>
+                  <View style={styles.question_card_text}>
+                    <Text
+                      style={{
+                        fontSize: width > height ? wp('2.5%') : wp('3.5%'),
+                      }}>
+                      {Text_EN.Text_en.socialkapital_question_three}
+                    </Text>
+                  </View>
+                  <View style={styles.icon_view}>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({thirdAnswer: 'green'})}>
+                      <Image
+                        style={
+                          this.state.thirdAnswer == 'green'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/like.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({thirdAnswer: 'yellow'})}>
+                      <Image
+                        style={
+                          this.state.thirdAnswer == 'yellow'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/normal.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({thirdAnswer: 'red'})}>
+                      <Image
+                        style={
+                          this.state.thirdAnswer == 'red'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/dislike.png')}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Card>
+              <Card borderRadius={15}>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={styles.diamond_css}>
+                    <Image
+                      style={styles.diamond_icon}
+                      source={require('../../uploads/diamond_img.png')}
+                    />
+                  </View>
+                  <View style={styles.question_card_text}>
+                    <Text
+                      style={{
+                        fontSize: width > height ? wp('2.5%') : wp('3.5%'),
+                      }}>
+                      {Text_EN.Text_en.socialkapital_question_four}
+                    </Text>
+                  </View>
+                  <View style={styles.icon_view}>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({fourthAnswer: 'green'})}>
+                      <Image
+                        style={
+                          this.state.fourthAnswer == 'green'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/like.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({fourthAnswer: 'yellow'})}>
+                      <Image
+                        style={
+                          this.state.fourthAnswer == 'yellow'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/normal.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({fourthAnswer: 'red'})}>
+                      <Image
+                        style={
+                          this.state.fourthAnswer == 'red'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/dislike.png')}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Card>
+              <Card borderRadius={15}>
+                <View style={{flexDirection: 'row'}}>
+                  <View style={styles.diamond_css}>
+                    <Image
+                      style={styles.diamond_icon}
+                      source={require('../../uploads/diamond_img.png')}
+                    />
+                  </View>
+                  <View style={styles.question_card_text}>
+                    <Text
+                      style={{
+                        fontSize: width > height ? wp('2.5%') : wp('3.5%'),
+                      }}>
+                      {Text_EN.Text_en.socialkapital_question_five}
+                    </Text>
+                  </View>
+                  <View style={styles.icon_view}>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({fiveAnswer: 'green'})}>
+                      <Image
+                        style={
+                          this.state.fiveAnswer == 'green'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/like.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({fiveAnswer: 'yellow'})}>
+                      <Image
+                        style={
+                          this.state.fiveAnswer == 'yellow'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/normal.png')}
+                      />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                      style={styles.btn_view}
+                      onPress={() => this.setState({fiveAnswer: 'red'})}>
+                      <Image
+                        style={
+                          this.state.fiveAnswer == 'red'
+                            ? styles.active_review_icon
+                            : styles.review_icon
+                        }
+                        source={require('../../uploads/dislike.png')}
+                      />
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              </Card>
+
+              <View style={styles.submit_btn}>
+                <TouchableOpacity onPress={() => this.redirect_measurement()}>
+                  <Text style={styles.btn_txt}>
+                    {Text_EN.Text_en.link_measurement_btn}
+                  </Text>
+                </TouchableOpacity>
+                {this.state.activeBtn == 0 ? (
+                  <TouchableOpacity
+                    style={{marginLeft: 10}}
+                    onPress={() => this.inactive_press()}>
+                    <Text style={styles.inactive_btn_txt}>
+                      {Text_EN.Text_en.submit_answer}
+                    </Text>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    style={{marginLeft: 10}}
+                    onPress={() => this.send_answer()}>
+                    <Text style={styles.btn_txt}>
+                      {Text_EN.Text_en.submit_answer}
+                    </Text>
+                  </TouchableOpacity>
+                )}
+              </View>
+              {/* <TouchableOpacity style={styles.redirect_submit_btn} onPress={()=>this.redirect_measurement()}>
+                <Text style={styles.btn_redirect}>{Text_EN.Text_en.link_measurement_btn}</Text>
+            </TouchableOpacity> */}
+            </ScrollView>
+          </View>
+          {/* <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
+          <View style={styles.bottom_btn}>
+            <TouchableOpacity onPress={()=>this.help_workjoy()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.bottom_btn}>
+            <TouchableOpacity onPress={()=>this.help_socialkapital()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_two_txt}</Text>
+            </TouchableOpacity>
+          </View>                
+          <View style={styles.bottom_btn}>
+            <TouchableOpacity onPress={()=>this.help_experience()}>
+                <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_three_txt}</Text>
+            </TouchableOpacity>
+          </View>
+        </View> */}
+          <HideWithKeyboard>
+            <View style={{marginBottom: 5}}>
+              <Text style={{textAlign: 'center'}}>
+                <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+              </Text>
+            </View>
+          </HideWithKeyboard>
+        </View>
+      </SafeAreaView>
     );
   }
 }
