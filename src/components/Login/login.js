@@ -78,7 +78,7 @@ export default class login extends Component {
       method: 'POST',
       body: data,
     })
-      .then(response => response.json())
+      .then(response => console.log(response))
       .then(responseJson => {
         this.setState({loading: false});
 
@@ -282,12 +282,7 @@ export default class login extends Component {
                     textAlign: 'center',
                     fontSize: width > height ? wp('1.3%') : wp('3.5%'),
                   }}>
-                  {Text_EN.Text_en.register}{' '}
-                  <Text
-                    style={{color: '#01a2ff', textDecorationLine: 'underline'}}
-                    onPress={() => Linking.openURL('http://diwo.nu/')}>
-                    {Text_EN.Text_en.click_here}
-                  </Text>
+                  {Text_EN.Text_en.register}
                 </Text>
               </View>
             </HideWithKeyboard>

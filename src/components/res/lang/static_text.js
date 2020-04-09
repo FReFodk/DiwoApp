@@ -17,7 +17,7 @@ module.exports = {
         home_btn_send: 'Svar',
         home_exp_share_btn: 'Del',
         home_msg_btn: 'Indbakke',
-        register: 'Har du ikke adgang?',
+        register: 'Har du ikke adgang? Kontakt DIWO eller FReFo.',
         click_here: 'Tryk her',
         cooperation: 'Samarbejde',
         trust: 'Tillid',
