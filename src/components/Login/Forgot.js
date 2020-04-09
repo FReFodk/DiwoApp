@@ -147,7 +147,7 @@ export default class App extends Component {
                   start={{x: 0, y: 0}}
                   end={{x: 1, y: 0}}
                   style={styles.log_btn}>
-                  <TouchableOpacity onPress={() => this.login_clicked()}>
+                  <TouchableOpacity onPress={() => this.email_submit()}>
                     <Text
                       style={{
                         textAlign: 'center',

@@ -78,7 +78,7 @@ export default class login extends Component {
       method: 'POST',
       body: data,
     })
-      .then(response => console.log(response))
+      .then(response => response.json())
       .then(responseJson => {
         this.setState({loading: false});
 
