@@ -78,7 +78,7 @@ export default class login extends Component {
       method: 'POST',
       body: data,
     })
-      .then(response => console.log(response))
+      .then(response => response.json())
       .then(responseJson => {
         this.setState({loading: false});
 
@@ -270,7 +270,7 @@ export default class login extends Component {
           </View>
 
           <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-            <HideWithKeyboard>
+            {/* <HideWithKeyboard>
               <View
                 style={{
                   paddingBottom: 10,
@@ -285,7 +285,7 @@ export default class login extends Component {
                   {Text_EN.Text_en.register}
                 </Text>
               </View>
-            </HideWithKeyboard>
+            </HideWithKeyboard> */}
 
             <HideWithKeyboard>
               <View style={{marginBottom: 5}}>
