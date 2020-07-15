@@ -64,6 +64,8 @@ export default class home extends Component {
     this.red_selected = this.red_selected.bind(this);
     this.green_selected = this.green_selected.bind(this);
     this.page_reloaded = this.page_reloaded.bind(this);
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
   }
   onSelectedItemsChange = selectedItems => {
     this.setState({selectedItems, errorText: false});
@@ -457,6 +459,16 @@ export default class home extends Component {
       this.setState({errorText: true});
     }
   };
+
+  gotoMessage(){
+    this.setState({redDialogVisible: false, errorText: false});
+    this.setState({yellowDialogVisible: false});
+    AsyncStorage.setItem('isOpenMessage', 'true');
+    this.props.navigation.navigate('Message', {
+      Firstname: this.state.firstName,
+      token: this.state.token,
+    });
+  }
 
   componentDidMount() {
     this.setState({yellow_selected: 1, red_selected: 0, green_selected: 0});
@@ -883,7 +895,7 @@ export default class home extends Component {
                   borderRadius: 5,
                 }}
                 onPress={() => {
-                  this.setState({message_dialog: true});
+                  this.gotoMessage();
                 }}>
                 <Text style={styles.submit_btn}>
                   {Text_EN.Text_en.send_message}
@@ -927,7 +939,7 @@ export default class home extends Component {
           <View style={{position: 'relative', padding: 15}}>
             <View style={styles.dialog_close_icon}>
               <TouchableOpacity
-                onPress={() => this.setState({yellowDialogVisible: false})}>
+                onPress={() =>  this.setState({yellowDialogVisible: false})}>
                 <Image
                   style={{
                     width: width > height ? wp('3.5%') : wp('8%'),
@@ -966,7 +978,7 @@ export default class home extends Component {
                   borderRadius: 5,
                 }}
                 onPress={() => {
-                  this.setState({message_dialog: true});
+                  this.gotoMessage()
                 }}>
                 <Text style={styles.submit_btn}>
                   {Text_EN.Text_en.send_message}

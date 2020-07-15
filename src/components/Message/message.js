@@ -29,6 +29,7 @@ export default class home extends Component {
   Newitem = [];
   constructor(props) {
     super(props);
+    
     this._retrieveData = this._retrieveData.bind(this);
     this.state = {
       tokenValue: '',
@@ -58,6 +59,8 @@ export default class home extends Component {
     };
     this._retrieveData();
     this.page_reloaded = this.page_reloaded.bind(this);
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
   }
   onSelectedItemsChange = selectedItems => {
     this.setState({selectedItems, errorText: false});
@@ -68,6 +71,11 @@ export default class home extends Component {
   _retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('visited_onces');
+      const openMessageBox = await AsyncStorage.getItem("isOpenMessage");
+      if (openMessageBox == 'true') {
+        this.send_message();
+        AsyncStorage.setItem('isOpenMessage', 'false');
+      }
       if (value !== null) {
         this.setState({token: JSON.parse(value), count: 1});
         this.componentDidMount();

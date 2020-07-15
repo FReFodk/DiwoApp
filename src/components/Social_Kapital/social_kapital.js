@@ -44,6 +44,8 @@ export default class social_kapital extends Component {
       loading: false,
     };
     this._retrieveData();
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
   }
   page_reloaded = () => {
     this._retrieveData();

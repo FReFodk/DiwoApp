@@ -50,6 +50,8 @@ export default class Profile extends Component {
     };
 
     this.page_reloaded = this.page_reloaded.bind(this);
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
   }
   onSelectedItemsChange = selectedItems => {
     this.setState({selectedItems, errorText: false});

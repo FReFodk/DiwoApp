@@ -45,6 +45,8 @@ export default class home extends Component {
     };
     this._retrieveData();
     this.page_reloaded = this.page_reloaded.bind(this);
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
   }
   page_reloaded() {
     this._retrieveData();
@@ -190,7 +192,7 @@ export default class home extends Component {
               'Feb',
               'Mar',
               'Apl',
-              'Kan',
+              'Maj',
               'Jun',
               'Jul',
               'Aug',
@@ -324,7 +326,7 @@ export default class home extends Component {
       'Februar',
       'Marts',
       'April',
-      'Kan',
+      'Maj',
       'Juni',
       'Juli',
       'August',

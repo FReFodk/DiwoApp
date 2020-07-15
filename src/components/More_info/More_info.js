@@ -43,6 +43,8 @@ export default class More_info extends Component {
     };
     this._retrieveData();
     this.page_reloaded = this.page_reloaded.bind(this);
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
   }
   page_reloaded() {
     this._retrieveData();

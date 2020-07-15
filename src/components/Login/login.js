@@ -39,6 +39,8 @@ export default class login extends Component {
     this.login_clicked = this.login_clicked.bind(this);
     this.storeData = this.storeData.bind(this);
     this.handleBackButtonClick = this.handleBackButtonClick.bind(this);
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
   }
 
   // _retrieveData = async () => {
@@ -148,7 +150,8 @@ export default class login extends Component {
     console.log(width);
     // console.log(height);
     return (
-      <View style={styles.container} behavior="height">
+      <KeyboardAvoidingView style={styles.container} behavior="height"> 
+      
         {this.state.loading == true ? (
           <View style={styles.spinner} pointerEvents={'none'}>
             <ActivityIndicator
@@ -172,7 +175,7 @@ export default class login extends Component {
             }}
             source={require('../../uploads/diamond.png')}
           />
-
+          
           <View style={styles.first_container}>
             <Image
               style={{
@@ -181,7 +184,7 @@ export default class login extends Component {
               }}
               source={require('../../uploads/Diwo_logo_txt.png')}
             />
-            <KeyboardAvoidingView>
+            
               <View style={{marginTop: height * 0.02}}>
                 <Text
                   style={{
@@ -266,9 +269,9 @@ export default class login extends Component {
                   </TouchableOpacity>
                 </LinearGradient>
               </View>
-            </KeyboardAvoidingView>
+            
           </View>
-
+          
           <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
             {/* <HideWithKeyboard>
               <View
@@ -296,7 +299,7 @@ export default class login extends Component {
             </HideWithKeyboard>
           </View>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     );
   }
 }

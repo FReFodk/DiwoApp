@@ -51,6 +51,8 @@ export default class home extends Component {
     this._retrieveData();
     this.workjoyPage = this.workjoyPage.bind(this);
     this.page_reloaded = this.page_reloaded.bind(this);
+    Text.defaultProps = Text.defaultProps || {};
+    Text.defaultProps.allowFontScaling = false;
 
     // this.help_workjoy = this.help_workjoy.bind(this);
     // this.learnMore = this.learnMore.bind(this);
