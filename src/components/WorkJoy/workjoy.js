@@ -10,12 +10,13 @@ import {
   ScrollView,
   ActivityIndicator,
   TextInput,
-
+  CheckBox,
 } from 'react-native';
+import Checkbox from '@react-native-community/checkbox'
 import AsyncStorage from '@react-native-community/async-storage';
-import {Card, Icon} from 'react-native-elements';
+import {Card} from 'react-native-elements';
 import {Dialog} from 'react-native-simple-dialogs';
-import Text_EN from '../res/lang/static_text';
+// import Text_EN from '../res/lang/static_text';
 import {NavigationEvents, SafeAreaView} from 'react-navigation';
 import MultiSelect from 'react-native-multiple-select';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
@@ -23,8 +24,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/Feather';
+import Carousel from 'react-native-snap-carousel';
+import {translate} from 'react-i18next';
+import i18n from 'i18next';
 
-export default class home extends Component {
+class home extends Component {
   myInterval = '';
   Newitem = [];
   constructor(props) {
@@ -58,6 +63,15 @@ export default class home extends Component {
       errorText: '',
       redMessage_dialog: false,
       loading: false,
+
+      gotoShareBox: false,
+      isGotoShare: false,
+
+      isFocusTextArea: false,
+      searchText: '',
+      listItemCheck: [],
+
+      showOpen: true,
     };
     this._retrieveData();
     this.yellow_selected = this.yellow_selected.bind(this);
@@ -68,7 +82,10 @@ export default class home extends Component {
     Text.defaultProps.allowFontScaling = false;
   }
   onSelectedItemsChange = selectedItems => {
-    this.setState({selectedItems, errorText: false});
+    this.setState({
+      selectedItems,
+      errorText: false,
+    });
   };
   page_reloaded() {
     this._retrieveData();
@@ -77,7 +94,10 @@ export default class home extends Component {
     try {
       const value = await AsyncStorage.getItem('visited_onces');
       if (value !== null) {
-        this.setState({token: JSON.parse(value), count: 1});
+        this.setState({
+          token: JSON.parse(value),
+          count: 1,
+        });
         this.componentDidMount();
       }
     } catch (error) {
@@ -85,13 +105,25 @@ export default class home extends Component {
     }
   };
   red_selected() {
-    this.setState({yellow_selected: '', green_selected: '', red_selected: 1});
+    this.setState({
+      yellow_selected: '',
+      green_selected: '',
+      red_selected: 1,
+    });
   }
   green_selected() {
-    this.setState({yellow_selected: '', green_selected: 1, red_selected: ''});
+    this.setState({
+      yellow_selected: '',
+      green_selected: 1,
+      red_selected: '',
+    });
   }
   yellow_selected() {
-    this.setState({yellow_selected: 1, green_selected: '', red_selected: ''});
+    this.setState({
+      yellow_selected: 1,
+      green_selected: '',
+      red_selected: '',
+    });
   }
 
   learnMore = () => {
@@ -99,48 +131,60 @@ export default class home extends Component {
   };
 
   help_workjoy = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er arbejdsglæde?',
-      Text_EN.Text_en.workjoy_help_popup,
+      t('common:sastisfaction_question'),
+      t('common:workjoy_help_popup'),
       [
         {
           text: 'Ok',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        {text: 'Learn More', onPress: () => this.learnMore()},
+        {
+          text: 'Learn More',
+          onPress: () => this.learnMore(),
+        },
       ],
       {cancelable: false},
     );
   };
 
   help_socialkapital = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er social Kapital?',
-      Text_EN.Text_en.socialkapital_help_popup,
+      t('common:social_kapital_question'),
+      t('common:socialkapital_help_popup'),
       [
         {
           text: 'Ok',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        {text: 'Learn More', onPress: () => this.learnMore()},
+        {
+          text: 'Learn More',
+          onPress: () => this.learnMore(),
+        },
       ],
       {cancelable: false},
     );
   };
 
   help_experience = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvorfor skal jeg svareliht?',
-      Text_EN.Text_en.experience_help_popup,
+      t('common:why_answer'),
+      t('common:experience_help_popup'),
       [
         {
           text: 'Ok',
           onPress: () => console.log('Cancel Pressed'),
           style: 'cancel',
         },
-        {text: 'Learn More', onPress: () => this.learnMore()},
+        {
+          text: 'Learn More',
+          onPress: () => this.learnMore(),
+        },
       ],
       {cancelable: false},
     );
@@ -163,8 +207,10 @@ export default class home extends Component {
     let auth = 'Bearer ' + user_details.token;
     headers.append('Authorization', auth);
 
+    const {t} = this.props.screenProps;
+
     if (this.state.green_selected == 1) {
-      var review_value = Text_EN.Text_en.workjoy_green_selected;
+      var review_value = t('workjoy:workjoy_green_selected');
       var data = new FormData();
       data.append('user_id', this.state.userId);
       data.append('review_date', reviewDate);
@@ -183,8 +229,13 @@ export default class home extends Component {
           if (responseJson.status == 200) {
             console.log(responseJson);
             this.setState({submit_btn_active: 0});
-            this.setState({greenDialogVisible: true});
-            this.setState({last_inserted_id: responseJson.last_inserted_id});
+            this.setState({
+              commentBox: true,
+              isGotoShare: true,
+            });
+            this.setState({
+              last_inserted_id: responseJson.last_inserted_id,
+            });
           } else {
             alert('Something went wrong. Please try later.');
           }
@@ -193,7 +244,7 @@ export default class home extends Component {
           console.error(error);
         });
     } else if (this.state.red_selected == 1) {
-      var review_value = Text_EN.Text_en.workjoy_red_selected;
+      var review_value = t('workjoy:workjoy_red_selected');
       var data = new FormData();
       data.append('user_id', this.state.userId);
       data.append('review_date', reviewDate);
@@ -212,7 +263,9 @@ export default class home extends Component {
           if (responseJson.status == 200) {
             console.log(responseJson);
             this.setState({submit_btn_active: 0});
-            this.setState({last_inserted_id: responseJson.last_inserted_id});
+            this.setState({
+              last_inserted_id: responseJson.last_inserted_id,
+            });
             this.setState({loading: true});
             fetch('http://diwo.nu/public/api/latestWorkJoy', {
               method: 'POST',
@@ -232,10 +285,16 @@ export default class home extends Component {
                     }
                     // console.log(count);console.log("if");
                   }
-                  if (count > 1) {
-                    this.setState({threeTimesRed: true});
+                  if (count >= 3) {
+                    this.setState({
+                      redDialogVisible: true,
+                      threeTimesRed: true,
+                    });
                   } else {
-                    this.setState({redDialogVisible: true});
+                    this.setState({
+                      redDialogVisible: true,
+                      isGotoShare: false,
+                    });
                   }
                 } else {
                   alert('Something went wrong. Please try later.');
@@ -252,7 +311,7 @@ export default class home extends Component {
           console.error(error);
         });
     } else {
-      var review_value = Text_EN.Text_en.workjoy_yellow_selected;
+      var review_value = t('workjoy:workjoy_yellow_selected');
       var data = new FormData();
       data.append('user_id', this.state.userId);
       data.append('review_date', reviewDate);
@@ -271,8 +330,13 @@ export default class home extends Component {
           if (responseJson.status == 200) {
             console.log(responseJson);
             this.setState({submit_btn_active: 0});
-            this.setState({yellowDialogVisible: true});
-            this.setState({last_inserted_id: responseJson.last_inserted_id});
+            this.setState({
+              yellowDialogVisible: true,
+              isGotoShare: false,
+            });
+            this.setState({
+              last_inserted_id: responseJson.last_inserted_id,
+            });
           } else {
             alert('Something went wrong. Please try later.');
           }
@@ -306,11 +370,29 @@ export default class home extends Component {
         this.setState({loading: false});
         if (responseJson) {
           console.log(responseJson);
-          this.setState({
-            commentBox: false,
-            greenDialogVisible: false,
-            redMessage_dialog: false,
-          });
+          if( this.state.green_selected == 1) {
+            this.setState({
+              commentBox: false,
+              greenDialogVisible: true,
+              redMessage_dialog: false,
+
+              gotoShareBox: false,
+            });
+          } else if (this.state.isGotoShare) {
+            this.setState({
+              commentBox: false,
+              greenDialogVisible: false,
+              redMessage_dialog: false,
+
+              gotoShareBox: true,
+            });
+          } else {
+            this.setState({
+              commentBox: false,
+              greenDialogVisible: false,
+              redMessage_dialog: false,
+            });
+          }
         } else {
           alert('Something went wrong. Please try later.');
         }
@@ -321,9 +403,10 @@ export default class home extends Component {
   };
 
   inactive_press = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
       '',
-      Text_EN.Text_en.inactive_workjoy_submit,
+      t('workjoy:inactive_workjoy_submit'),
       [
         {
           text: 'Ok',
@@ -437,12 +520,19 @@ export default class home extends Component {
           console.log(responseJson);
           if (responseJson.status == 200) {
             console.log(responseJson);
+            const {listItemCheck} = this.state;
+            const temp = [];
+            for (let item of listItemCheck) {
+              temp.push(false);
+            }
+
             this.setState({
               message_dialog: false,
               title: '',
               message_title: '',
               message_text: '',
               selectedItems: [],
+              listItemCheck: [...temp],
               threeTimesRed: false,
               commentBox: true,
               redDialogVisible: false,
@@ -460,8 +550,11 @@ export default class home extends Component {
     }
   };
 
-  gotoMessage(){
-    this.setState({redDialogVisible: false, errorText: false});
+  gotoMessage() {
+    this.setState({
+      redDialogVisible: false,
+      errorText: false,
+    });
     this.setState({yellowDialogVisible: false});
     AsyncStorage.setItem('isOpenMessage', 'true');
     this.props.navigation.navigate('Message', {
@@ -471,8 +564,14 @@ export default class home extends Component {
   }
 
   componentDidMount() {
-    this.setState({yellow_selected: 1, red_selected: 0, green_selected: 0});
+    this.setState({
+      yellow_selected: 1,
+      red_selected: 0,
+      green_selected: 0,
+    });
     const {navigation} = this.props;
+    const {t} = this.props.screenProps;
+
     if (this.state.count == 1) {
       const user_details = this.state.token;
       // this.setState({token:userToken.token});
@@ -504,15 +603,15 @@ export default class home extends Component {
         .then(responseJson => {
           if (responseJson.status == 200) {
             console.log(responseJson);
-            if (responseJson.workjoy_data[0]) {
+            if (responseJson.workjoy_data && responseJson.workjoy_data[0]) {
               this.setState({
                 lastReviewDate: responseJson.workjoy_data[0].last_review_date,
               });
 
               var date = responseJson.workjoy_data[0].last_review_date;
-              var t = date.split(/[- :]/);
-              var d = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-
+              var z = date.split(/[- :]/);
+              var d = new Date(z[0], z[1] - 1, z[2], z[3], z[4], z[5]);
+              console.log('lastReviewDate: ' + d + 'Today: ' + new Date());
               let dayWord = [
                 'Sunday',
                 'Monday',
@@ -522,46 +621,78 @@ export default class home extends Component {
                 'Friday',
                 'Saturday',
               ];
-              var day = new Date().getDay(); //Current Date
-              var month = new Date().getMonth() + 1; //Current month
-              var year = new Date().getFullYear(); //Current year
-              var hours = new Date().getHours(); //Current Hours
-              var min = new Date().getMinutes();
+              // var day = new Date().getDay(); //Current Date
+              // var month = new Date().getMonth() + 1; //Current month
+              // var year = new Date().getFullYear(); //Current year
+              // var hours = new Date().getHours(); //Current Hours
+              // var min = new Date().getMinutes();
 
               var now = new Date();
-              for (
-                var dt = new Date(d);
-                dt <= now;
-                dt.setDate(dt.getDate() + 1)
+              const {showOpen} = this.state;
+              console.log(
+                'Day of week today ' +
+                  now.getDay() +
+                  ' Day of week last lastReviewDate  ' +
+                  d.getDay(),
+              );
+              if (
+                // now is 5, lastrw is 2
+                (now.getDay() >= 4 && now.getDay() <= 6) || now.getDay() == 0
               ) {
-                if (dayWord[dt.getDay()] == 'Thursday') {
-                  if (
-                    dt.getDate() == d.getDate() &&
-                    dt.getMonth() == d.getMonth() &&
-                    dt.getFullYear() == d.getFullYear()
-                  ) {
-                    this.setState({submit_btn_active: 0});
-                  } else {
-                    this.setState({submit_btn_active: 1});
-                  }
-                  if (
-                    dt.getDate() == now.getDate() &&
-                    dt.getMonth() == now.getMonth() &&
-                    dt.getFullYear() == now.getFullYear()
-                  ) {
-                    this.setState({submit_btn_active: 0});
-                  }
-                } else if (dayWord[now.getDay()] == 'Thursday') {
-                  this.setState({submit_btn_active: 1});
-                }
+                  var sunday = this.getSunday();
+                  if (d<sunday){
+                      if (showOpen) {
+                        alert(t('common:question_open'));
+                        this.setState({submit_btn_active: 1, showOpen: false});
+                      }
+                    } else this.setState({submit_btn_active: 0});
+              } else {
+                this.setState({submit_btn_active: 0});
               }
-              // var currentDate = year +'-'+ month +'-'+day;
-              var currentTime = dayWord[day] + ':' + hours + ':' + min;
-              if (currentTime == 'Thursday:12:00') {
-                this.setState({submit_btn_active: 1});
-              }
+
+              // for (
+              //   var dt = new Date(d);
+              //   dt <= now;
+              //   dt.setDate(dt.getDate() + 1)
+              // ) {
+              //   if (dayWord[dt.getDay()] == 'Thursday') {
+              //     if (
+              //       dt.getDate() == d.getDate() &&
+              //       dt.getMonth() == d.getMonth() &&
+              //       dt.getFullYear() == d.getFullYear()
+              //     ) {
+              //       this.setState({submit_btn_active: 0});
+              //     } else {
+              //       this.setState({submit_btn_active: 1});
+              //     }
+              //     if (
+              //       dt.getDate() == now.getDate() &&
+              //       dt.getMonth() == now.getMonth() &&
+              //       dt.getFullYear() == now.getFullYear()
+              //     ) {
+              //       this.setState({submit_btn_active: 0});
+              //     }
+              //   }
+              // }
+              // if (dayWord[now.getDay()] == 'Thursday') {
+              //   this.setState({submit_btn_active: 1});
+              // }
+              // // var currentDate = year +'-'+ month +'-'+day;
+              // var currentTime = dayWord[day] + ':' + hours + ':' + min;
+              // if (currentTime == 'Thursday:12:00') {
+              //   this.setState({submit_btn_active: 1});
+              // }
             } else {
-              this.setState({submit_btn_active: 1});
+              if ((now.getDay() >= 4 && now.getDay() <= 5)|| now.getDay() == 0) {
+                const {showOpen} = this.state;
+
+                if (showOpen) {
+                  alert(t('common:question_open'));
+                  this.setState({submit_btn_active: 1, showOpen: false});
+                }
+              } else {
+                this.setState({submit_btn_active: 0});
+              }
             }
           }
         })
@@ -597,662 +728,1212 @@ export default class home extends Component {
     }
   }
 
+  getThursday(){
+    let d = new Date();
+    let day = d.getDay();
+    let diff = d.getDate() - day + 4;
+    const rt = new Date(d.setDate(diff));
+    return new Date(rt).setHours(0,0,0,0);
+  }
+  getSunday(){
+    let d = new Date();
+    let day = d.getDay();
+    if (day == 0) day = 7;
+    let diff = d.getDate() - day;
+    const rt = new Date(d.setDate(diff));
+    return new Date(rt).setHours(23,59,59,999);
+  }
+  pickUser = (index, itemId) => {
+    const listItemCheck = [...this.state.listItemCheck];
+    const selectedItems = [...this.state.selectedItems];
+
+    const i = selectedItems.findIndex(it => it === itemId);
+
+    if (listItemCheck[index]) {
+      listItemCheck[index] = false;
+      selectedItems.splice(i, 1);
+    } else {
+      listItemCheck[index] = true;
+      selectedItems.push(itemId);
+    }
+    console.log(selectedItems);
+
+    this.setState({
+      listItemCheck: listItemCheck,
+      selectedItems: selectedItems,
+    });
+  };
+
+  _renderItem = ({item, index}) => {
+    const {t} = this.props.screenProps;
+    if (index === 0) {
+      return (
+        <View
+          style={{
+            position: 'relative',
+            padding: 15,
+            maxHeight: 550,
+          }}>
+          <View
+            style={{
+              paddingBottom: 10,
+              marginTop: 50,
+            }}>
+            {this.state.errorText == true ? (
+              <Text
+                style={{
+                  paddingLeft: 15,
+                  color: 'red',
+                }}>
+                {t('common:select_user_error')}
+              </Text>
+            ) : null}
+
+            <Text
+              style={{
+                textAlign: 'right',
+                color: '#bdbdbd',
+              }}>
+              {t('workjoy:slide_to_write')}
+            </Text>
+
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 20,
+              }}>
+              {t('workjoy:choose_receiver')}
+            </Text>
+
+            <TextInput
+              onFocus={() =>
+                this.setState({
+                  isFocusTextArea: true,
+                })
+              }
+              style={{
+                ...styles.Text_input_title,
+                paddingLeft: 0,
+              }}
+              placeholder={t('common:search')}
+              onChangeText={text => this.setState({searchText: text})}
+              onBlur={() =>
+                this.setState({
+                  isFocusTextArea: false,
+                })
+              }
+            />
+            <ScrollView
+              style={{
+                marginBottom: this.state.isFocusTextArea ? wp('55%') : 0,
+              }}>
+              {this.Newitem.map((item, index) => {
+                const search = this.state.searchText.toLowerCase();
+                const itemName = item.name.toLowerCase();
+
+                const {listItemCheck} = this.state;
+
+                if (itemName.indexOf(search) !== -1) {
+                  return (
+                    <View style={styles._container}>
+                      <View style={styles.checkboxContainer}>
+                        <Checkbox
+                          value={listItemCheck[index]}
+                          onValueChange={() => this.pickUser(index, item.id)}
+                          style={styles.checkbox}
+                        />
+                        <TouchableOpacity>
+                          <Text
+                            onPress={() => this.pickUser(index, item.id)}
+                            style={styles.label}>
+                            {item.name}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  );
+                }
+                return null;
+              })}
+            </ScrollView>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            position: 'relative',
+            padding: 15,
+            maxHeight: 550,
+          }}>
+          <View
+            style={{
+              paddingBottom: 10,
+              marginTop: 50,
+            }}>
+            {this.state.errorText == true ? (
+              <Text
+                style={{
+                  paddingLeft: 15,
+                  color: 'red',
+                }}>
+                {t('common:select_user_error')}
+              </Text>
+            ) : null}
+
+            <TextInput
+              defaultValue={this.state.message_title}
+              style={styles.Text_input_title}
+              placeholder={t('common:title')}
+              onChangeText={message_title =>
+                this.setState({
+                  message_title,
+                  errorText: false,
+                })
+              }
+            />
+            {this.state.errorText == true ? (
+              <Text
+                style={{
+                  paddingLeft: 15,
+                  color: 'red',
+                }}
+              />
+            ) : null}
+            <TextInput
+              defaultValue={this.state.message_text}
+              style={styles.Text_input_message}
+              placeholder={t('common:comment_to_mng')}
+              multiline={true}
+              numberOfLines={5}
+              onChangeText={message_text =>
+                this.setState({
+                  message_text,
+                  errorText: false,
+                })
+              }
+            />
+            <View style={styles.dialog_submit_btn}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#00a1ff',
+                  padding: 10,
+                  paddingRight: 25,
+                  paddingLeft: 25,
+                  borderRadius: 5,
+                  marginBottom: 20,
+                }}
+                onPress={() => {
+                  this.message_send();
+                }}>
+                <Text style={styles.submit_btn}>
+                  {t('common:send_message')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      );
+    }
+  };
+
   render() {
     const {selectedItems} = this.state;
     var {height, width} = Dimensions.get('window');
+    const {t} = this.props.screenProps;
+
     return (
       <SafeAreaView style={{flex: 1}}>
-      <View style={styles.container}>
-        {this.state.loading == true ? (
-          <View style={styles.spinner}>
-            <ActivityIndicator size="large" color="#12075e" />
-          </View>
-        ) : null}
-        <NavigationEvents
-          onDidFocus={() => {
-            this.page_reloaded();
-          }}
-        />
-        <Dialog
-          visible={this.state.message_dialog}
-          onTouchOutside={() =>
-            this.setState({message_dialog: false, errorText: false})
-          }>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() =>
-                  this.setState({message_dialog: false, errorText: false})
-                }>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
-                  }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
+        <View style={styles.container}>
+          {this.state.loading == true ? (
+            <View style={styles.spinner}>
+              <ActivityIndicator size="large" color="#12075e" />
             </View>
-            <View style={{paddingBottom: 10, marginTop: 50}}>
-              {this.state.errorText == true ? (
-                <Text
-                  style={{
+          ) : null}
+          <NavigationEvents
+            onDidFocus={() => {
+              console.log('DID FOCUS workjoy')
+              this.page_reloaded();
+            }}
+          />
+          {/* <Dialog
+            visible={this.state.message_dialog}
+            onTouchOutside={() =>
+              this.setState({
+                message_dialog: false,
+                errorText: false,
+              })
+            }>
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      message_dialog: false,
+                      errorText: false,
+                    })
+                  }>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  marginTop: 50,
+                }}>
+                {this.state.errorText == true ? (
+                  <Text
+                    style={{
+                      paddingLeft: 15,
+                      color: 'red',
+                      fontSize: width > height ? wp('1.5%') : wp('2.6%'),
+                    }}>
+                    {Text_EN.Text_en.select_user_error}
+                  </Text>
+                ) : null}
+                <MultiSelect
+                  styleTextDropdown={{
                     paddingLeft: 15,
-                    color: 'red',
-                    fontSize: width > height ? wp('1.5%') : wp('2.6%'),
-                  }}>
-                  {Text_EN.Text_en.select_user_error}
-                </Text>
-              ) : null}
-              <MultiSelect
-                styleTextDropdown={{paddingLeft: 15}}
-                styleTextDropdownSelected={{paddingLeft: 15}}
-                styleDropdownMenu={{marginTop: 20}}
-                hideSubmitButton
-                hideTags
-                items={this.Newitem}
-                uniqueKey="id"
-                ref={component => {
-                  this.multiSelect = component;
-                }}
-                onSelectedItemsChange={this.onSelectedItemsChange}
-                selectedItems={selectedItems}
-                selectText="Users"
-                fontSize={width > height ? wp('1.5%') : wp('4%')}
-                searchInputPlaceholderText="Search Name..."
-                onChangeInput={text => console.log(text)}
-                tagRemoveIconColor="#68c5fc"
-                tagBorderColor="#68c5fc"
-                tagTextColor="#68c5fc"
-                selectedItemTextColor="#68c5fc"
-                selectedItemIconColor="#CCC"
-                itemTextColor="#000"
-                displayKey="name"
-                searchInputStyle={{color: '#CCC'}}
-                submitButtonColor="#48d22b"
-                submitButtonText="Submit"
-              />
-              <TextInput
-                defaultValue={this.state.message_title}
-                style={styles.Text_input_title}
-                placeholder={Text_EN.Text_en.title}
-                onChangeText={message_title =>
-                  this.setState({message_title, errorText: false})
-                }
-              />
-              {this.state.errorText == true ? (
-                <Text style={{paddingLeft: 15, color: 'red'}}></Text>
-              ) : null}
-              <TextInput
-                defaultValue={this.state.message_text}
-                style={styles.Text_input_message}
-                placeholder="Kommentar til din leder"
-                multiline={true}
-                numberOfLines={8}
-                onChangeText={message_text =>
-                  this.setState({message_text, errorText: false})
-                }
-              />
-            </View>
-            <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 25,
-                  paddingLeft: 25,
-                  borderRadius: 5,
-                }}
-                onPress={() => this.message_send()}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.send_message}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.redMessage_dialog}
-          onTouchOutside={() =>
-            this.setState({redMessage_dialog: false, errorText: false})
-          }>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() =>
-                  this.setState({redMessage_dialog: false, errorText: false})
-                }>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
                   }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{paddingBottom: 10, marginTop: 50}}>
-              {this.state.errorText == true ? (
-                <Text
-                  style={{
+                  styleTextDropdownSelected={{
                     paddingLeft: 15,
-                    color: 'red',
-                    fontSize: width > height ? wp('1.5%') : wp('2.6%'),
-                  }}>
-                  {Text_EN.Text_en.select_user_error}
-                </Text>
-              ) : null}
-              <MultiSelect
-                styleTextDropdown={{paddingLeft: 15}}
-                styleTextDropdownSelected={{paddingLeft: 15}}
-                styleDropdownMenu={{marginTop: 20}}
-                hideSubmitButton
-                hideTags
-                items={this.Newitem}
-                uniqueKey="id"
-                ref={component => {
-                  this.multiSelect = component;
-                }}
-                onSelectedItemsChange={this.onSelectedItemsChange}
-                selectedItems={selectedItems}
-                selectText="Users"
-                fontSize={width > height ? wp('1.5%') : wp('4%')}
-                searchInputPlaceholderText="Search Name..."
-                onChangeInput={text => console.log(text)}
-                tagRemoveIconColor="#68c5fc"
-                tagBorderColor="#68c5fc"
-                tagTextColor="#68c5fc"
-                selectedItemTextColor="#68c5fc"
-                selectedItemIconColor="#CCC"
-                itemTextColor="#000"
-                displayKey="name"
-                searchInputStyle={{color: '#CCC'}}
-                submitButtonColor="#48d22b"
-                submitButtonText="Submit"
-              />
-              <TextInput
-                defaultValue={this.state.message_title}
-                style={styles.Text_input_title}
-                placeholder={Text_EN.Text_en.title}
-                onChangeText={message_title =>
-                  this.setState({message_title, errorText: false})
-                }
-              />
-              {this.state.errorText == true ? (
-                <Text style={{paddingLeft: 15, color: 'red'}}></Text>
-              ) : null}
-              <TextInput
-                defaultValue={this.state.message_text}
-                style={styles.Text_input_message}
-                placeholder="Kommentar til din leder"
-                multiline={true}
-                numberOfLines={8}
-                onChangeText={message_text =>
-                  this.setState({message_text, errorText: false})
-                }
-              />
-            </View>
-            <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 25,
-                  paddingLeft: 25,
-                  borderRadius: 5,
-                }}
-                onPress={() => this.redMessage_Send()}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.send_message}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.greenDialogVisible}
-          onTouchOutside={() => this.setState({greenDialogVisible: false})}>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() => this.setState({greenDialogVisible: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
                   }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{paddingBottom: 10, marginTop: 50}}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.workjoy_greenselected_popup}
-              </Text>
-            </View>
-            <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 15,
-                  paddingLeft: 15,
-                  borderRadius: 5,
-                }}
-                onPress={() => {
-                  this.setState({commentBox: true, greenDialogVisible: false});
-                }}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.workjoy_yes}
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  marginLeft: 15,
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 15,
-                  paddingLeft: 15,
-                  borderRadius: 5,
-                }}
-                onPress={() => this.experience_Page()}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.share_experience}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.redDialogVisible}
-          onTouchOutside={() => this.setState({redDialogVisible: false})}>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() => this.setState({redDialogVisible: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
+                  styleDropdownMenu={{
+                    marginTop: 20,
                   }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{paddingBottom: 10, marginTop: 50}}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.workjoy_redselected_popup}
-              </Text>
-            </View>
-            <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity
-                style={{
-                  marginLeft: 15,
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 25,
-                  paddingLeft: 25,
-                  borderRadius: 5,
-                }}
-                onPress={() => {
-                  this.gotoMessage();
-                }}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.send_message}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.threeTimesRed}
-          onTouchOutside={() => this.setState({threeTimesRed: false})}>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={{paddingBottom: 10}}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.three_time_red}
-              </Text>
-            </View>
-            <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity
-                style={{
-                  marginLeft: 15,
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 25,
-                  paddingLeft: 25,
-                  borderRadius: 5,
-                }}
-                onPress={() => {
-                  this.setState({redMessage_dialog: true});
-                }}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.send_message}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.yellowDialogVisible}
-          onTouchOutside={() => this.setState({yellowDialogVisible: false})}>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon}>
-              <TouchableOpacity
-                onPress={() =>  this.setState({yellowDialogVisible: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
+                  hideSubmitButton
+                  hideTags
+                  items={this.Newitem}
+                  uniqueKey="id"
+                  ref={component => {
+                    this.multiSelect = component;
                   }}
-                  source={require('../../uploads/close.png')}
-                />
-              </TouchableOpacity>
-            </View>
-            <View style={{paddingBottom: 10, marginTop: 50}}>
-              <Text style={styles.dialog_txt}>
-                {Text_EN.Text_en.workjoy_yellowselected_popup}
-              </Text>
-            </View>
-            <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 15,
-                  paddingLeft: 15,
-                  borderRadius: 5,
-                }}
-                onPress={() => {
-                  this.setState({commentBox: true, yellowDialogVisible: false});
-                }}>
-                <Text style={styles.submit_btn}>{Text_EN.Text_en.no}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  marginLeft: 15,
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 15,
-                  paddingLeft: 15,
-                  borderRadius: 5,
-                }}
-                onPress={() => {
-                  this.gotoMessage()
-                }}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.send_message}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Dialog>
-        <Dialog
-          visible={this.state.commentBox}
-          title="Kommentar"
-          onTouchOutside={() => this.setState({commentBox: false})}>
-          <View style={{position: 'relative', padding: 15}}>
-            <View style={styles.dialog_close_icon_comment}>
-              <TouchableOpacity
-                onPress={() => this.setState({commentBox: false})}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3.5%') : wp('8%'),
+                  onSelectedItemsChange={this.onSelectedItemsChange}
+                  selectedItems={selectedItems}
+                  selectText="Users"
+                  fontSize={width > height ? wp('1.5%') : wp('4%')}
+                  searchInputPlaceholderText="Search Name..."
+                  onChangeInput={text => console.log(text)}
+                  tagRemoveIconColor="#68c5fc"
+                  tagBorderColor="#68c5fc"
+                  tagTextColor="#68c5fc"
+                  selectedItemTextColor="#68c5fc"
+                  selectedItemIconColor="#CCC"
+                  itemTextColor="#000"
+                  displayKey="name"
+                  searchInputStyle={{
+                    color: '#CCC',
                   }}
-                  source={require('../../uploads/close.png')}
+                  submitButtonColor="#48d22b"
+                  submitButtonText="Submit"
                 />
-              </TouchableOpacity>
+                <TextInput
+                  defaultValue={this.state.message_title}
+                  style={styles.Text_input_title}
+                  placeholder={Text_EN.Text_en.title}
+                  onChangeText={message_title =>
+                    this.setState({
+                      message_title,
+                      errorText: false,
+                    })
+                  }
+                />
+                {this.state.errorText == true ? (
+                  <Text
+                    style={{
+                      paddingLeft: 15,
+                      color: 'red',
+                    }}
+                  />
+                ) : null}
+                <TextInput
+                  defaultValue={this.state.message_text}
+                  style={styles.Text_input_message}
+                  placeholder="Kommentar til din leder"
+                  multiline={true}
+                  numberOfLines={8}
+                  onChangeText={message_text =>
+                    this.setState({
+                      message_text,
+                      errorText: false,
+                    })
+                  }
+                />
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 25,
+                    paddingLeft: 25,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => this.message_send()}>
+                  <Text style={styles.submit_btn}>
+                    {Text_EN.Text_en.send_message}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <Text style={{fontSize: width > height ? wp('2%') : wp('4%')}}>
-              {Text_EN.Text_en.comment_text}
-            </Text>
-            <View style={{paddingBottom: 10, marginTop: 20}}>
-              <TextInput
-                style={styles.Text_input}
-                placeholder="skriv din kommentar..."
-                multiline={true}
-                fontSize={width > height ? wp('1.5%') : wp('4%')}
-                numberOfLines={4}
-                onChangeText={commentText => this.setState({commentText})}
-              />
-            </View>
-            <View style={styles.dialog_submit_btn}>
-              <TouchableOpacity
-                style={{
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 30,
-                  paddingLeft: 30,
-                  borderRadius: 5,
-                }}
-                onPress={() => this.save_comment()}>
-                <Text style={styles.submit_btn}>{Text_EN.Text_en.ja}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={{
-                  marginLeft: 15,
-                  backgroundColor: '#00a1ff',
-                  padding: 10,
-                  paddingRight: 25,
-                  paddingLeft: 25,
-                  borderRadius: 5,
-                }}
-                onPress={() => {
-                  this.setState({commentBox: false, redMessage_dialog: false});
-                }}>
-                <Text style={styles.submit_btn}>{Text_EN.Text_en.no}</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </Dialog>
+          </Dialog>
+           */}
 
-        <Image
-          style={styles.background_diamond}
-          source={require('../../uploads/diamond-dark.png')}
-        />
-        <ScrollView>
-          <View
-            style={{
-              padding: 10,
-              flexDirection: 'row',
-              borderBottomColor: '#01a2ff',
-              borderBottomWidth: 2,
-              justifyContent: 'space-between',
+          <Dialog
+            visible={this.state.message_dialog}
+            onTouchOutside={() => {
+              const {listItemCheck} = this.state;
+              const temp = [];
+              for (let item of listItemCheck) {
+                temp.push(false);
+              }
+              this.setState({
+                message_dialog: false,
+                errorText: false,
+                message_title: '',
+                message_text: '',
+                selectedItems: [],
+                listItemCheck: [...temp],
+              });
             }}>
-            <View>
-              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-                Hej{' '}
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() => {
+                    const {listItemCheck} = this.state;
+                    const temp = [];
+                    for (let item of listItemCheck) {
+                      temp.push(false);
+                    }
+
+                    this.setState({
+                      message_dialog: false,
+                      errorText: false,
+                      message_title: '',
+                      message_text: '',
+                      selectedItems: [],
+                      listItemCheck: [...temp],
+                    });
                   }}>
-                  {this.state.firstName}
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <Carousel
+              ref={c => {
+                this._carousel = c;
+              }}
+              data={[1, 2]}
+              renderItem={this._renderItem}
+              sliderWidth={wp('73%')}
+              itemWidth={wp('73%')}
+            />
+          </Dialog>
+
+          <Dialog
+            visible={this.state.redMessage_dialog}
+            onTouchOutside={() =>
+              this.setState({
+                redMessage_dialog: false,
+                errorText: false,
+              })
+            }>
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      redMessage_dialog: false,
+                      errorText: false,
+                    })
+                  }>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  marginTop: 50,
+                }}>
+                {this.state.errorText == true ? (
+                  <Text
+                    style={{
+                      paddingLeft: 15,
+                      color: 'red',
+                      fontSize: width > height ? wp('1.5%') : wp('2.6%'),
+                    }}>
+                    {t('common:select_user_error')}
+                  </Text>
+                ) : null}
+                <MultiSelect
+                  styleTextDropdown={{
+                    paddingLeft: 15,
+                  }}
+                  styleTextDropdownSelected={{
+                    paddingLeft: 15,
+                  }}
+                  styleDropdownMenu={{
+                    marginTop: 20,
+                  }}
+                  hideSubmitButton
+                  hideTags
+                  items={this.Newitem}
+                  uniqueKey="id"
+                  ref={component => {
+                    this.multiSelect = component;
+                  }}
+                  onSelectedItemsChange={this.onSelectedItemsChange}
+                  selectedItems={selectedItems}
+                  selectText="Users"
+                  fontSize={width > height ? wp('1.5%') : wp('4%')}
+                  searchInputPlaceholderText="Search Name..."
+                  onChangeInput={text => console.log(text)}
+                  tagRemoveIconColor="#68c5fc"
+                  tagBorderColor="#68c5fc"
+                  tagTextColor="#68c5fc"
+                  selectedItemTextColor="#68c5fc"
+                  selectedItemIconColor="#CCC"
+                  itemTextColor="#000"
+                  displayKey="name"
+                  searchInputStyle={{
+                    color: '#CCC',
+                  }}
+                  submitButtonColor="#48d22b"
+                  submitButtonText="Submit"
+                />
+                <TextInput
+                  defaultValue={this.state.message_title}
+                  style={styles.Text_input_title}
+                  placeholder={t('common:title')}
+                  onChangeText={message_title =>
+                    this.setState({
+                      message_title,
+                      errorText: false,
+                    })
+                  }
+                />
+                {this.state.errorText == true ? (
+                  <Text
+                    style={{
+                      paddingLeft: 15,
+                      color: 'red',
+                    }}
+                  />
+                ) : null}
+                <TextInput
+                  defaultValue={this.state.message_text}
+                  style={styles.Text_input_message}
+                  placeholder={t('common:comment_to_mng')}
+                  multiline={true}
+                  numberOfLines={8}
+                  onChangeText={message_text =>
+                    this.setState({
+                      message_text,
+                      errorText: false,
+                    })
+                  }
+                />
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 25,
+                    paddingLeft: 25,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => this.redMessage_Send()}>
+                  <Text style={styles.submit_btn}>
+                    {t('common:send_message')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Dialog>
+          <Dialog
+            visible={this.state.greenDialogVisible}
+            onTouchOutside={() =>
+              this.setState({
+                greenDialogVisible: false,
+              })
+            }>
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      greenDialogVisible: false,
+                    })
+                  }>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  marginTop: 50,
+                }}>
+                <Text style={styles.dialog_txt}>
+                  {t('workjoy:workjoy_greenselected_popup')}
                 </Text>
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => {
+                    this.setState({
+                      greenDialogVisible: false,
+                      gotoShareBox: false,
+                    });
+                    
+                  }
+                  }
+                  // onPress={() => {
+                  //   this.setState({
+                  //     commentBox: true,
+                  //     greenDialogVisible: false,
+                  //   });
+                  // }}
+                >
+                  <Text style={styles.submit_btn}>{t('common:no')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    marginLeft: 15,
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    borderRadius: 5,
+                  }}
+                  // onPress={() => this.experience_Page()}
+                  onPress={() => {
+                    this.setState({
+                      commentBox: false,
+                      greenDialogVisible: false,
+                    });
+                    this.experience_Page()
+                  }}>
+                  <Text style={styles.submit_btn}>{t('common:yes')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Dialog>
+          <Dialog
+            visible={this.state.redDialogVisible}
+            onTouchOutside={() =>
+              this.setState({
+                redDialogVisible: false,
+              })
+            }>
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      redDialogVisible: false,
+                    })
+                  }>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  marginTop: 50,
+                }}>
+                <Text style={styles.dialog_txt}>
+                  {this.state.threeTimesRed
+                    ? t('workjoy:three_time_red')
+                    : t('workjoy:workjoy_redselected_popup')}
+                </Text>
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                {this.state.threeTimesRed ? null : (
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#00a1ff',
+                      padding: 10,
+                      paddingRight: 15,
+                      paddingLeft: 15,
+                      borderRadius: 5,
+                    }}
+                    onPress={() => {
+                      this.setState({
+                        commentBox: true,
+                        redDialogVisible: false,
+                      });
+                    }}>
+                    <Text style={styles.submit_btn}>{t('common:no')}</Text>
+                  </TouchableOpacity>
+                )}
+                <TouchableOpacity
+                  style={{
+                    marginLeft: 15,
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 25,
+                    paddingLeft: 25,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => {
+                    // this.gotoMessage();
+                    this.setState({
+                      redDialogVisible: false,
+                      message_dialog: true,
+                    });
+                  }}>
+                  <Text style={styles.submit_btn}>
+                    {t('common:send_message')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Dialog>
+          {/* <Dialog
+            visible={this.state.threeTimesRed}
+            onTouchOutside={() =>
+              this.setState({
+                threeTimesRed: false,
+              })
+            }>
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={{paddingBottom: 10}}>
+                <Text style={styles.dialog_txt}>
+                  {Text_EN.Text_en.three_time_red}
+                </Text>
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  style={{
+                    marginLeft: 15,
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 25,
+                    paddingLeft: 25,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => {
+                    this.setState({
+                      redMessage_dialog: true,
+                    });
+                  }}>
+                  <Text style={styles.submit_btn}>
+                    {Text_EN.Text_en.send_message}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Dialog>
+           */}
+          <Dialog
+            visible={this.state.yellowDialogVisible}
+            onTouchOutside={() =>
+              this.setState({
+                yellowDialogVisible: false,
+                commentBox: true,
+              })
+            }>
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      yellowDialogVisible: false,
+                      commentBox: true,
+                    })
+                  }>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  marginTop: 50,
+                }}>
+                <Text style={styles.dialog_txt}>
+                  {t('workjoy:workjoy_yellowselected_popup')}
+                </Text>
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => {
+                    this.setState({
+                      commentBox: true,
+                      yellowDialogVisible: false,
+                    });
+                  }}>
+                  <Text style={styles.submit_btn}>{t('common:no')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    marginLeft: 15,
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => {
+                    // this.gotoMessage();
+                    this.setState({
+                      yellowDialogVisible: false,
+                      message_dialog: true,
+                    });
+                  }}>
+                  <Text style={styles.submit_btn}>
+                    {/* {Text_EN.Text_en.send_message} */}
+                    {t('common:yes')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Dialog>
+          <Dialog
+            visible={this.state.commentBox}
+            title={t('socail_capital:social_kapital_submit_message')}
+            onTouchOutside={() => this.setState({commentBox: false})}>
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={styles.dialog_close_icon_comment}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      commentBox: false,
+                    })
+                  }>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <Text
+                style={{
+                  fontSize: width > height ? wp('2%') : wp('4%'),
+                }}>
+                {t('workjoy:comment_text')}
               </Text>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  marginTop: 20,
+                }}>
+                <TextInput
+                  style={styles.Text_input}
+                  placeholder={t('workjoy:write_comment')}
+                  multiline={true}
+                  fontSize={width > height ? wp('1.5%') : wp('4%')}
+                  numberOfLines={4}
+                  onChangeText={commentText => this.setState({commentText})}
+                />
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 30,
+                    paddingLeft: 30,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => {
+                    this.setState({
+                      commentBox: false,
+                      redMessage_dialog: false,
+                    });
+                  }}>
+                  <Text style={styles.submit_btn}>{t('common:no')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    marginLeft: 15,
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 25,
+                    paddingLeft: 25,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => this.save_comment()}>
+                  <Text style={styles.submit_btn}>{t('common:yes')}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Dialog>
+          <Dialog
+            visible={this.state.gotoShareBox}
+            onTouchOutside={() => this.setState({gotoShareBox: false})}>
+            <View
+              style={{
+                position: 'relative',
+                padding: 15,
+              }}>
+              <View style={styles.dialog_close_icon}>
+                <TouchableOpacity
+                  onPress={() =>
+                    this.setState({
+                      gotoShareBox: false,
+                    })
+                  }>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3.5%') : wp('8%'),
+                    }}
+                    source={require('../../uploads/close.png')}
+                  />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  paddingBottom: 10,
+                  marginTop: 50,
+                }}>
+                <Text style={styles.dialog_txt}>
+                  {t('workjoy:share_box_text')}
+                </Text>
+              </View>
+              <View style={styles.dialog_submit_btn}>
+                <TouchableOpacity
+                  style={{
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    borderRadius: 5,
+                  }}
+                  onPress={() =>
+                    this.setState({
+                      gotoShareBox: false,
+                    })
+                  }>
+                  <Text style={styles.submit_btn}>{t('common:no')}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={{
+                    marginLeft: 15,
+                    backgroundColor: '#00a1ff',
+                    padding: 10,
+                    paddingRight: 15,
+                    paddingLeft: 15,
+                    borderRadius: 5,
+                  }}
+                  onPress={() => {
+                    this.setState({
+                      gotoShareBox: false,
+                    });
+                    this.experience_Page();
+                  }}>
+                  <Text style={styles.submit_btn}>
+                    {t('workjoy:share_experience')}
+                  </Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </Dialog>
+
+          <Image
+            style={styles.background_diamond}
+            source={require('../../uploads/diamond-dark.png')}
+          />
+          <ScrollView>
+            <View
+              style={{
+                padding: 10,
+                flexDirection: 'row',
+                borderBottomColor: '#01a2ff',
+                borderBottomWidth: 2,
+                justifyContent: 'space-between',
+              }}>
+              <View>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.goBack()}>
+                  <Icon name="chevron-left" size={30} color="#00a1ff" />
+                </TouchableOpacity>
+              </View>
+              <View
+                style={{
+                  position: 'absolute',
+                  left: width > height ? wp('48%') : wp('45%'),
+                  alignSelf: 'center',
+                }}>
+                <Image
+                  style={{
+                    width: width > height ? wp('6%') : wp('15%'),
+                    height: width > height ? wp('3%') : wp('6%'),
+                  }}
+                  source={require('../../uploads/Diwologo_png.png')}
+                />
+              </View>
+              <View>
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.openDrawer()}>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('8%'),
+                      height: width > height ? wp('3%') : wp('7%'),
+                    }}
+                    source={require('../../uploads/drawer_menu.png')}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
             <View
               style={{
-                position: 'absolute',
-                left: width > height ? wp('48%') : wp('45%'),
-                alignSelf: 'center',
+                flex: 1,
+                marginHorizontal: width > height ? wp('3%') : wp('2%'),
+                marginTop: 10,
               }}>
-              <Image
-                style={{
-                  width: width > height ? wp('6%') : wp('15%'),
-                  height: width > height ? wp('3%') : wp('6%'),
-                }}
-                source={require('../../uploads/Diwologo_png.png')}
-              />
-            </View>
-            <View>
               <TouchableOpacity
-                onPress={() => this.props.navigation.openDrawer()}>
-                <Image
+                onPress={() =>
+                  this.props.navigation.navigate('More_info', {
+                    Firstname: this.state.firstName,
+                    token: this.state.token,
+                  })
+                }>
+                <View
                   style={{
-                    width: width > height ? wp('3.5%') : wp('8%'),
-                    height: width > height ? wp('3%') : wp('7%'),
-                  }}
-                  source={require('../../uploads/drawer_menu.png')}
-                />
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <Text style={styles.upper_txt}>
+                    {t('common:cooperation')}
+                  </Text>
+                  <Image
+                    style={styles.diamond_icon}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text style={styles.upper_txt}>{t('common:trust')}</Text>
+                  <Image
+                    style={styles.diamond_icon}
+                    source={require('../../uploads/diamond_img.png')}
+                  />
+                  <Text style={styles.upper_txt}>{t('common:justice')}</Text>
+                </View>
               </TouchableOpacity>
-            </View>
-          </View>
-          <View
-            style={{
-              flex: 1,
-              marginHorizontal: width > height ? wp('3%') : wp('2%'),
-              marginTop: 10,
-            }}>
-            <TouchableOpacity
-              onPress={() =>
-                this.props.navigation.navigate('More_info', {
-                  Firstname: this.state.firstName,
-                  token: this.state.token,
-                })
-              }>
-              <View
-                style={{
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                  alignContent: 'center',
-                  alignItems: 'center',
-                }}>
-                <Text style={styles.upper_txt}>
-                  {Text_EN.Text_en.cooperation}
-                </Text>
-                <Image
-                  style={styles.diamond_icon}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
-                <Image
-                  style={styles.diamond_icon}
-                  source={require('../../uploads/diamond_img.png')}
-                />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
-              </View>
-            </TouchableOpacity>
 
-            <Text style={styles.workjoy_title}>
-              <Text
-                style={{
-                  fontSize: width > height ? wp('2.5%') : wp('4%'),
-                  fontWeight: 'bold',
-                }}>
-                {Text_EN.Text_en.job_satisfaction} :{' '}
+              <Text style={styles.workjoy_title}>
+                <Text
+                  style={{
+                    fontSize: width > height ? wp('2.5%') : wp('4%'),
+                    fontWeight: 'bold',
+                  }}>
+                  {t('workjoy:job_satisfaction')}:{" "}  
+                </Text>
+                {t('workjoy:workjoy_title')}
               </Text>
-              {Text_EN.Text_en.workjoy_title}
-            </Text>
 
-            <TouchableOpacity onPress={() => this.green_selected()}>
-              <Card borderRadius={15} containerStyle={{marginVertical: 40}}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  {this.state.green_selected == 1 ? (
-                    <Image
-                      style={{
-                        width: width > height ? wp('4%') : wp('10%'),
-                        height: width > height ? wp('4%') : wp('10%'),
-                      }}
-                      source={require('../../uploads/g1.png')}
-                    />
-                  ) : (
-                    <Image
-                      style={{
-                        width: width > height ? wp('4%') : wp('10%'),
-                        height: width > height ? wp('4%') : wp('10%'),
-                      }}
-                      source={require('../../uploads/green.png')}
-                    />
-                  )}
-                  <Text style={styles.question_txt}>
-                    {Text_EN.Text_en.workjoy_good_week}
-                  </Text>
-                </View>
-              </Card>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.yellow_selected()}>
-              <Card borderRadius={10}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  {this.state.yellow_selected == 1 ? (
-                    <Image
-                      style={{
-                        width: width > height ? wp('4%') : wp('10%'),
-                        height: width > height ? wp('4%') : wp('10%'),
-                      }}
-                      source={require('../../uploads/y1.png')}
-                    />
-                  ) : (
-                    <Image
-                      style={{
-                        width: width > height ? wp('4%') : wp('10%'),
-                        height: width > height ? wp('4%') : wp('10%'),
-                      }}
-                      source={require('../../uploads/yellow.png')}
-                    />
-                  )}
-                  <Text style={styles.question_txt}>
-                    {Text_EN.Text_en.workjoy_normal_week}
-                  </Text>
-                </View>
-              </Card>
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => this.red_selected()}>
-              <Card borderRadius={10}>
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  {this.state.red_selected == 1 ? (
-                    <Image
-                      style={{
-                        width: width > height ? wp('4%') : wp('10%'),
-                        height: width > height ? wp('4%') : wp('10%'),
-                      }}
-                      source={require('../../uploads/r1.png')}
-                    />
-                  ) : (
-                    <Image
-                      style={{
-                        width: width > height ? wp('4%') : wp('10%'),
-                        height: width > height ? wp('4%') : wp('10%'),
-                      }}
-                      source={require('../../uploads/red.png')}
-                    />
-                  )}
-                  <Text style={styles.question_txt}>
-                    {' '}
-                    {Text_EN.Text_en.workjoy_not_good}
-                  </Text>
-                </View>
-              </Card>
-            </TouchableOpacity>
-            {this.state.submit_btn_active == 0 ? (
-              <TouchableOpacity
-                style={styles.inactive_submit_btn}
-                onPress={() => this.inactive_press()}>
-                <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.submit_answer}
-                </Text>
+              <TouchableOpacity onPress={() => this.green_selected()}>
+                <Card
+                  borderRadius={15}
+                  containerStyle={{
+                    marginVertical: 40,
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    {this.state.green_selected == 1 ? (
+                      <Image
+                        style={{
+                          width: width > height ? wp('4%') : wp('10%'),
+                          height: width > height ? wp('4%') : wp('10%'),
+                        }}
+                        source={require('../../uploads/g1.png')}
+                      />
+                    ) : (
+                      <Image
+                        style={{
+                          width: width > height ? wp('4%') : wp('10%'),
+                          height: width > height ? wp('4%') : wp('10%'),
+                        }}
+                        source={require('../../uploads/green.png')}
+                      />
+                    )}
+                    <Text style={styles.question_txt}>
+                      {t('workjoy:workjoy_good_week')}
+                    </Text>
+                  </View>
+                </Card>
               </TouchableOpacity>
-            ) : (
+              <TouchableOpacity onPress={() => this.yellow_selected()}>
+                <Card borderRadius={10}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    {this.state.yellow_selected == 1 ? (
+                      <Image
+                        style={{
+                          width: width > height ? wp('4%') : wp('10%'),
+                          height: width > height ? wp('4%') : wp('10%'),
+                        }}
+                        source={require('../../uploads/y1.png')}
+                      />
+                    ) : (
+                      <Image
+                        style={{
+                          width: width > height ? wp('4%') : wp('10%'),
+                          height: width > height ? wp('4%') : wp('10%'),
+                        }}
+                        source={require('../../uploads/yellow.png')}
+                      />
+                    )}
+                    <Text style={styles.question_txt}>
+                      {t('workjoy:workjoy_normal_week')}
+                    </Text>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => this.red_selected()}>
+                <Card borderRadius={10}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                    }}>
+                    {this.state.red_selected == 1 ? (
+                      <Image
+                        style={{
+                          width: width > height ? wp('4%') : wp('10%'),
+                          height: width > height ? wp('4%') : wp('10%'),
+                        }}
+                        source={require('../../uploads/r1.png')}
+                      />
+                    ) : (
+                      <Image
+                        style={{
+                          width: width > height ? wp('4%') : wp('10%'),
+                          height: width > height ? wp('4%') : wp('10%'),
+                        }}
+                        source={require('../../uploads/red.png')}
+                      />
+                    )}
+                    <Text style={styles.question_txt}>
+                      {' '}
+                      {t('workjoy:workjoy_not_good')}
+                    </Text>
+                  </View>
+                </Card>
+              </TouchableOpacity>
+              {this.state.submit_btn_active == 0 ? (
+                <TouchableOpacity
+                  style={styles.inactive_submit_btn}
+                  onPress={() => this.inactive_press()}>
+                  <Text style={styles.submit_btn}>
+                    {t('workjoy:submit_answer')}
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.active_submit_btn}
+                  onPress={() => this.send_answer()}>
+                  <Text style={styles.submit_btn}>
+                    {t('workjoy:submit_answer')}
+                  </Text>
+                </TouchableOpacity>
+              )}
               <TouchableOpacity
                 style={styles.active_submit_btn}
-                onPress={() => this.send_answer()}>
+                onPress={() => this.redirect_measurement()}>
                 <Text style={styles.submit_btn}>
-                  {Text_EN.Text_en.submit_answer}
+                  {t('workjoy:link_measurement_btn')}
                 </Text>
               </TouchableOpacity>
-            )}
-            <TouchableOpacity
-              style={styles.active_submit_btn}
-              onPress={() => this.redirect_measurement()}>
-              <Text style={styles.submit_btn}>
-                {Text_EN.Text_en.link_measurement_btn}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </ScrollView>
+            </View>
+          </ScrollView>
 
-        {/* <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
+          {/* <View style={{flex:0.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
                 <View style={styles.bottom_btn}>
                     <TouchableOpacity onPress={()=>this.help_workjoy()}>
                         <Text style={styles.bottom_btn_txt}>{Text_EN.Text_en.bottom_btn_one_txt}</Text>
@@ -1269,18 +1950,21 @@ export default class home extends Component {
                     </TouchableOpacity>
                 </View>
             </View> */}
-        <HideWithKeyboard>
-          <View style={{marginBottom: 5}}>
-            <Text style={{textAlign: 'center'}}>
-              <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
-            </Text>
-          </View>
-        </HideWithKeyboard>
-      </View>
+          <HideWithKeyboard>
+            <View style={{marginBottom: 5}}>
+              <Text style={{textAlign: 'center'}}>
+                <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+              </Text>
+            </View>
+          </HideWithKeyboard>
+        </View>
       </SafeAreaView>
     );
   }
 }
+
+export default translate(['workjoy', 'common'], {wait: true})(home);
+
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
@@ -1441,5 +2125,16 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffffab',
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+  },
+  checkbox: {
+    alignSelf: 'center',
+    marginTop: 5,
+    marginRight: 5,
+  },
+  label: {
+    margin: 8,
   },
 });

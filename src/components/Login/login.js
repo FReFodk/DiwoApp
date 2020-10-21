@@ -16,12 +16,14 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {ScrollView} from 'react-navigation';
-import Text_EN from '../res/lang/static_text';
+import { SafeAreaView} from 'react-navigation';
+// import Text_EN from '../res/lang/static_text';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import DeviceInfo from 'react-native-device-info';
+import {t} from 'i18next/dist/commonjs';
 
 var {height, width} = Dimensions.get('window');
 
@@ -148,10 +150,9 @@ export default class login extends Component {
     var {height, width} = Dimensions.get('window');
     const {navigate} = this.props.navigation;
     console.log(width);
-    // console.log(height);
+    console.log('LOGIN HEigth',height);
     return (
-      <KeyboardAvoidingView style={styles.container} behavior="height"> 
-      
+      <KeyboardAvoidingView style={styles.container} behavior="height">
         {this.state.loading == true ? (
           <View style={styles.spinner} pointerEvents={'none'}>
             <ActivityIndicator
@@ -161,30 +162,30 @@ export default class login extends Component {
             />
           </View>
         ) : null}
-
-        <View style={styles.container}>
-          <Image
-            style={{
-              position: 'absolute',
-              width: width > height ? wp('58%') : wp('80%'),
-              height: width > height ? wp('68%') : wp('85%'),
-              bottom: -width * 0.3,
-              right: -width * 0.2,
-              opacity: 0.1,
-              transform: [{rotate: '320deg'}],
-            }}
-            source={require('../../uploads/diamond.png')}
-          />
-          
-          <View style={styles.first_container}>
+        <SafeAreaView style={{flex: 1}}>
+          <View style={styles.container}>
             <Image
               style={{
-                width: width > height ? wp('30%') : wp('70%'),
-                height: width > height ? wp('15%') : wp('40%'),
+                position: 'absolute',
+                width: width > height ? wp('58%') : wp('80%'),
+                height: width > height ? wp('68%') : wp('85%'),
+                bottom: -width * 0.3,
+                right: -width * 0.2,
+                opacity: 0.1,
+                transform: [{rotate: '320deg'}],
               }}
-              source={require('../../uploads/Diwo_logo_txt.png')}
+              source={require('../../uploads/diamond.png')}
             />
-            
+
+            <View style={styles.first_container}>
+              <Image
+                style={{
+                  width: width > height ? wp('30%') : wp('70%'),
+                  height: width > height ? wp('15%') : wp('40%'),
+                }}
+                source={require('../../uploads/Diwo_logo_txt.png')}
+              />
+
               <View style={{marginTop: height * 0.02}}>
                 <Text
                   style={{
@@ -196,7 +197,7 @@ export default class login extends Component {
                     top: 5,
                   }}>
                   {' '}
-                  {Text_EN.Text_en.email}{' '}
+                  {t('common:email')}{' '}
                 </Text>
                 <TextInput
                   style={styles.input}
@@ -219,7 +220,7 @@ export default class login extends Component {
                     top: 5,
                   }}>
                   {' '}
-                  {Text_EN.Text_en.password}{' '}
+                  {t('common:password')}{' '}
                 </Text>
                 <TextInput
                   style={styles.input}
@@ -242,7 +243,7 @@ export default class login extends Component {
                       marginRight: width > height ? wp('1%') : wp('2%'),
                       fontSize: width > height ? wp('2%') : wp('3.5%'),
                     }}>
-                    {Text_EN.Text_en.forget_password}
+                    {t('common:forget_password')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -269,36 +270,36 @@ export default class login extends Component {
                   </TouchableOpacity>
                 </LinearGradient>
               </View>
-            
-          </View>
-          
-          <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
-            {/* <HideWithKeyboard>
-              <View
-                style={{
-                  paddingBottom: 10,
-                  justifyContent: 'flex-end',
-                  height: width > height ? wp('15%') : wp('10%'),
-                }}>
-                <Text
-                  style={{
-                    textAlign: 'center',
-                    fontSize: width > height ? wp('1.3%') : wp('3.5%'),
-                  }}>
-                  {Text_EN.Text_en.register}
-                </Text>
-              </View>
-            </HideWithKeyboard> */}
+            </View>
 
-            <HideWithKeyboard>
-              <View style={{marginBottom: 5}}>
-                <Text style={{textAlign: 'center'}}>
-                  <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
-                </Text>
-              </View>
-            </HideWithKeyboard>
+            <View style={{position: 'absolute', bottom: 0, left: 0, right: 0}}>
+              {/* <HideWithKeyboard>
+                <View
+                  style={{
+                    paddingBottom: 10,
+                    justifyContent: 'flex-end',
+                    height: width > height ? wp('15%') : wp('10%'),
+                  }}>
+                  <Text
+                    style={{
+                      textAlign: 'center',
+                      fontSize: width > height ? wp('1.3%') : wp('3.5%'),
+                    }}>
+                    {Text_EN.Text_en.register}
+                  </Text>
+                </View>
+              </HideWithKeyboard> */}
+
+              <HideWithKeyboard>
+                <View style={{marginBottom: 5}}>
+                  <Text style={{textAlign: 'center'}}>
+                    <Text style={{fontSize: 18}}>©</Text> Copyright FReFo
+                  </Text>
+                </View>
+              </HideWithKeyboard>
+            </View>
           </View>
-        </View>
+        </SafeAreaView>    
       </KeyboardAvoidingView>
     );
   }

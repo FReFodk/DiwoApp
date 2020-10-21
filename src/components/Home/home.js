@@ -12,12 +12,15 @@ import {
   Alert,
   Linking,
   Platform,
+  Picker,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Card, Icon} from 'react-native-elements';
+import {Card} from 'react-native-elements';
 import Carousel from 'react-native-snap-carousel';
 import {NavigationEvents, SafeAreaView} from 'react-navigation';
-import Text_EN from '../res/lang/static_text';
+
+import { useFocusEffect } from '@react-navigation/native'
+// import Text_EN from '../res/lang/static_text';
 import ViewMoreText from 'react-native-view-more-text';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {
@@ -26,10 +29,15 @@ import {
 } from 'react-native-responsive-screen';
 import {PushController} from '../../../PushController';
 import PushNotification from 'react-native-push-notification';
-import PushNotificationIOS from "@react-native-community/push-notification-ios";
+import PushNotificationIOS from '@react-native-community/push-notification-ios';
 // import firebase from 'react-native-firebase';
+import {translate} from 'react-i18next';
+import i18n from 'i18next';
+import RNPickerSelect from 'react-native-picker-select';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {Dialog} from 'react-native-simple-dialogs';
 
-export default class home extends Component {
+class home extends Component {
   constructor(props) {
     super(props);
     this._retrieveData = this._retrieveData.bind(this);
@@ -47,12 +55,19 @@ export default class home extends Component {
       message_active: 0,
       badgeCount: 0,
       //loading: false
+
+      lang: 'da',
+      langDialogVisible: false,
     };
     this._retrieveData();
     this.workjoyPage = this.workjoyPage.bind(this);
     this.page_reloaded = this.page_reloaded.bind(this);
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
+    
+    // useFocusEffect(()=>{
+    //   this.fetchData();
+    // })
 
     // this.help_workjoy = this.help_workjoy.bind(this);
     // this.learnMore = this.learnMore.bind(this);
@@ -121,7 +136,7 @@ export default class home extends Component {
   };
 
   page_reloaded() {
-    this.setState({loading: true});
+    // this.setState({loading: true});
     console.log('hi');
     this.componentDidMount();
     this.setState({loading: false});
@@ -132,16 +147,17 @@ export default class home extends Component {
       console.log('token_value::' + value);
       if (value !== null) {
         this.setState({storeToken: JSON.parse(value), count: 1});
-        this.componentDidMount();
+        
       } else {
-        this.props.navigation.navigate('Login');
+        
       }
+      this.componentDidMount();
     } catch (error) {
       alert(error);
     }
   };
   like_click = expr_id => {
-    this.setState({loading: true});
+    // this.setState({loading: true});
     let user_details = this.state.storeToken;
     console.log(user_details.token);
     let token = user_details.token;
@@ -169,7 +185,7 @@ export default class home extends Component {
   };
 
   dislike_click = expr_id => {
-    this.setState({loading: true});
+    // this.setState({loading: true});
     let user_details = this.state.storeToken;
     let token = user_details.token;
     var headers = new Headers();
@@ -238,9 +254,10 @@ export default class home extends Component {
   };
 
   help_workjoy = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er arbejdsglæde?',
-      Text_EN.Text_en.workjoy_help_popup,
+      t('common:sastisfaction_question'),
+      t('common:workjoy_help_popup'),
       [
         {
           text: 'Cancel',
@@ -254,9 +271,10 @@ export default class home extends Component {
   };
 
   help_socialkapital = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er social Kapital?',
-      Text_EN.Text_en.socialkapital_help_popup,
+      t('common:social_kapital_question'),
+      t('common:socialkapital_help_popup'),
       [
         {
           text: 'Cancel',
@@ -270,9 +288,10 @@ export default class home extends Component {
   };
 
   help_experience = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvorfor skal jeg svareliht?',
-      Text_EN.Text_en.experience_help_popup,
+      t('common:why_answer'),
+      t('common:experience_help_popup'),
       [
         {
           text: 'Cancel',
@@ -294,7 +313,7 @@ export default class home extends Component {
   };
 
   async fetchData() {
-    this.setState({loading: true});
+    // this.setState({loading: true});
     const {navigation} = this.props;
     let user_details;
     const token_value = navigation.getParam('token', 'NO-ID');
@@ -319,7 +338,7 @@ export default class home extends Component {
       }
       // console.log(auth);
       headers.append('Authorization', auth);
-      this.setState({loading: true});
+      // this.setState({loading: true});
       await fetch('http://diwo.nu/public/api/user', {
         method: 'POST',
         headers: headers,
@@ -370,71 +389,32 @@ export default class home extends Component {
               this.setState({
                 lastReviewDate: responseJson.workjoy_data[0].last_review_date,
               });
-
+              this.setState({isWorkjoy_active: 0});
               var date = responseJson.workjoy_data[0].last_review_date;
               var t = date.split(/[- :]/);
               var d = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-
-              let dayWord = [
-                'Sunday',
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-              ];
-              var day = new Date().getDay(); //Current Date
-              var month = new Date().getMonth() + 1; //Current month
-              var year = new Date().getFullYear(); //Current year
-              var hours = new Date().getHours(); //Current Hours
-              var min = new Date().getMinutes();
               var now = new Date();
-              for (
-                var dt = new Date(d);
-                dt <= now;
-                dt.setDate(dt.getDate() + 1)
-              ) {
-                // console.log(dayWord[dt.getDay()]);
-                if (dayWord[dt.getDay()] == 'Thursday') {
-                  console.log(dayWord[dt.getDay()]);
-                  if (
-                    dt.getDate() == d.getDate() &&
-                    dt.getMonth() == d.getMonth() &&
-                    dt.getFullYear() == d.getFullYear()
-                  ) {
-                    this.setState({isWorkjoy_active: 0});
-                    console.log('gooo');
-                  } else {
-                    this.setState({isWorkjoy_active: 1});
-                    console.log('nooo');
-                  }
-                  if (
-                    d.getDate() == now.getDate() &&
-                    d.getMonth() == now.getMonth() &&
-                    d.getFullYear() == now.getFullYear()
-                  ) {
-                    this.setState({isWorkjoy_active: 0});
-                    console.log('Hooooo');
-                  }
-                } else if (dayWord[now.getDay()] == 'Thursday') {
-                  this.setState({isWorkjoy_active: 1});
-                } else if (
-                  d.getDate() == now.getDate() &&
-                  d.getMonth() == now.getMonth() &&
-                  d.getFullYear() == now.getFullYear()
-                ) {
-                  this.setState({isWorkjoy_active: 0});
-                  console.log('Hi');
+
+              if ((now.getDay() >= 4 && now.getDay() <= 6) || now.getDay()==0) {
+                let sunDay = this.getSunday();
+                if (d < sunDay) {
+                  this.setState({isWorkjoy_active: 1})
+                } else {
+                  this.setState({isWorkjoy_active: 0})
                 }
+              } else {
+                
+                  this.setState({isWorkjoy_active: 0});
+              
               }
-              // var currentDate = year +'-'+ month +'-'+day;
-              var currentTime = dayWord[day] + ':' + hours + ':' + min;
-              if (currentTime == 'Thursday:00:00') {
-                this.setState({isWorkjoy_active: 1});
-              }
+
+              
             } else {
-              this.setState({isWorkjoy_active: 1});
+              if ((now.getDay() >= 4 && now.getDay() <= 6) || now.getDay()==0) {
+                this.setState({isWorkjoy_active: 1});
+              } else {
+                this.setState({isWorkjoy_active: 0});
+              }
             }
           }
         })
@@ -442,7 +422,7 @@ export default class home extends Component {
           console.error(error);
         });
 
-      this.setState({loading: true});
+      // this.setState({loading: true});
       await fetch('http://diwo.nu/public/api/lastAddedSocialkapital', {
         method: 'POST',
         headers: headers,
@@ -460,68 +440,93 @@ export default class home extends Component {
               var t = date.split(/[- :]/);
               var d = new Date(t[0], t[1] - 1, t[2]);
 
-              // Checking activation for the current month
-              var now = new Date();
-              let lastDate =
-                this.getDaysInMonth(now.getMonth() + 1, now.getFullYear()) - 3;
-              let activationDate =
-                now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + lastDate;
-              var activet = activationDate.split(/[- :]/);
-              let activeDate = new Date(activet[0], activet[1] - 1, activet[2]);
-              //console.log(activeDate);
-
-              // Checking activation for the Previous month
-              var now = new Date();
-              let PrevlastDate =
-                this.getDaysInMonth(now.getMonth(), now.getFullYear()) - 3;
-              let PrevactivationDate =
-                now.getFullYear() + '-' + now.getMonth() + '-' + PrevlastDate;
-              var Prevt = PrevactivationDate.split(/[- :]/);
-              let PrevactiveDate = new Date(Prevt[0], Prevt[1] - 1, Prevt[2]);
-              //console.log(PrevactiveDate);
-
-              //check if database date and previous month activation date is same or not
-              if (
-                d.getTime() === PrevactiveDate.getTime() ||
-                d.getTime() === activeDate.getTime()
-              ) {
-                this.setState({isSocialKapital_active: 0});
+              const now = new Date();
+              if (d.getFullYear() !== now.getFullYear()) {
+                if (now.getDate() >=25) {
+                  console.log('aAAAAAAAAAAAAAAAa');
+                  this.setState({isSocialKapital_active: 1});
+                } else {
+                  this.setState({isSocialKapital_active: 0});
+                }
               } else {
-                //Check for activation between the database date and current date.
-                // let dateArray = [];
-                // let count = 0;
-                for (
-                  var dt = new Date(d);
-                  dt <= now;
-                  dt.setDate(dt.getDate() + 1)
-                ) {
-                  // console.log(dt);
-                  if (
-                    dt.getTime() === PrevactiveDate.getTime() ||
-                    dt.getTime() === activeDate.getTime()
-                  ) {
-                    // console.log("if");
+                if (d.getMonth() !== now.getMonth()) {
+                  if (now.getDate() >=25) {
+                    console.log('BBBBBBBBBBBBBBBB');
                     this.setState({isSocialKapital_active: 1});
-                    break;
-                  } else if (dt.getTime() > activeDate.getTime()) {
-                    if (
-                      dt.getDate() > activeDate.getDate() &&
-                      dt.getMonth() + 1 == activeDate.getMonth() + 1
-                    ) {
-                      this.setState({isSocialKapital_active: 0});
-                    } else {
-                      // console.log("In else if");
-                      this.setState({isSocialKapital_active: 1});
-                    }
                   } else {
-                    // console.log("else");
                     this.setState({isSocialKapital_active: 0});
                   }
-                  // dateArray.push(dt.getTime());
+                } else {
+                  this.setState({isSocialKapital_active: 0});
                 }
               }
+
+              // // Checking activation for the current month
+              // var now = new Date();
+              // let lastDate =
+              //   this.getDaysInMonth(now.getMonth() + 1, now.getFullYear()) - 3;
+              // let activationDate =
+              //   now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + lastDate;
+              // var activet = activationDate.split(/[- :]/);
+              // let activeDate = new Date(activet[0], activet[1] - 1, activet[2]);
+              // //console.log(activeDate);
+
+              // // Checking activation for the Previous month
+              // var now = new Date();
+              // let PrevlastDate =
+              //   this.getDaysInMonth(now.getMonth(), now.getFullYear()) - 3;
+              // let PrevactivationDate =
+              //   now.getFullYear() + '-' + now.getMonth() + '-' + PrevlastDate;
+              // var Prevt = PrevactivationDate.split(/[- :]/);
+              // let PrevactiveDate = new Date(Prevt[0], Prevt[1] - 1, Prevt[2]);
+              // //console.log(PrevactiveDate);
+              // //check if database date and previous month activation date is same or not
+              // if (
+              //   d.getTime() === PrevactiveDate.getTime() ||
+              //   d.getTime() === activeDate.getTime()
+              // ) {
+              //   this.setState({isSocialKapital_active: 0});
+              // } else {
+              //   //Check for activation between the database date and current date.
+              //   for (
+              //     var dt = new Date(d);
+              //     dt <= now;
+              //     dt.setDate(dt.getDate() + 1)
+              //   ) {
+              //     if (
+              //       dt.getTime() === PrevactiveDate.getTime() ||
+              //       dt.getTime() === activeDate.getTime()
+              //     ) {
+              //       this.setState({isSocialKapital_active: 1});
+              //       break;
+              //     } else if (dt.getTime() > activeDate.getTime()) {
+              //       if (
+              //         dt.getDate() > activeDate.getDate() &&
+              //         dt.getMonth() + 1 == activeDate.getMonth() + 1
+              //       ) {
+              //         this.setState({isSocialKapital_active: 0});
+              //       } else {
+              //         this.setState({isSocialKapital_active: 1});
+              //       }
+              //     } else {
+              //       // console.log("else");
+              //       this.setState({isSocialKapital_active: 0});
+              //     }
+              //     // dateArray.push(dt.getTime());
+              //   }
+              // }
             } else {
-              this.setState({isSocialKapital_active: 1});
+              //this.setState({isSocialKapital_active: 1});
+
+              const now = new Date();
+              if (now.getDate() >=25) {
+                const {showOpen} = this.state;
+
+                console.log('CCCCCCCCCCCCCCCCCC');
+                this.setState({isSocialKapital_active: 1});
+              } else {
+                this.setState({isSocialKapital_active: 0});
+              }
             }
           }
         })
@@ -529,7 +534,7 @@ export default class home extends Component {
           console.error(error);
         });
 
-      this.setState({loading: true});
+      // this.setState({loading: true});
       await fetch('http://diwo.nu/public/api/getLastMessageReadStatus', {
         method: 'POST',
         headers: headers,
@@ -554,7 +559,7 @@ export default class home extends Component {
       var headers = new Headers();
       let auth = 'Bearer ' + token_value;
       headers.append('Authorization', auth);
-      this.setState({loading: true});
+      // this.setState({loading: true});
       await fetch('http://diwo.nu/public/api/user', {
         method: 'POST',
         headers: headers,
@@ -570,7 +575,7 @@ export default class home extends Component {
           console.error(error);
         });
 
-      this.setState({loading: true});
+      // this.setState({loading: true});
       await fetch('http://diwo.nu/public/api/userExperience', {
         method: 'POST',
         headers: headers,
@@ -607,154 +612,30 @@ export default class home extends Component {
               var date = responseJson.workjoy_data[0].last_review_date;
               var t = date.split(/[- :]/);
               var d = new Date(t[0], t[1] - 1, t[2], t[3], t[4], t[5]);
-
-              let dayWord = [
-                'Sunday',
-                'Monday',
-                'Tuesday',
-                'Wednesday',
-                'Thursday',
-                'Friday',
-                'Saturday',
-              ];
-              var day = new Date().getDay(); //Current Date
-              var month = new Date().getMonth() + 1; //Current month
-              var year = new Date().getFullYear(); //Current year
-              var hours = new Date().getHours(); //Current Hours
-              var min = new Date().getMinutes();
               var now = new Date();
-              for (
-                var dt = new Date(d);
-                dt <= now;
-                dt.setDate(dt.getDate() + 1)
-              ) {
-                if (dayWord[dt.getDay()] == 'Thursday') {
-                  if (
-                    dt.getDate() == d.getDate() &&
-                    dt.getMonth() == d.getMonth() &&
-                    dt.getFullYear() == d.getFullYear()
-                  ) {
-                    this.setState({isWorkjoy_active: 0});
-                    console.log('1');
-                  } else {
-                    this.setState({isWorkjoy_active: 1});
-                    console.log('2');
-                  }
-                  if (
-                    dt.getDate() == now.getDate() &&
-                    dt.getMonth() == now.getMonth() &&
-                    dt.getFullYear() == now.getFullYear()
-                  ) {
-                    this.setState({isWorkjoy_active: 0});
-                    console.log('3');
-                  }
-                } else if (dayWord[now.getDay()] == 'Thursday') {
+
+              if ((now.getDay() >= 4 && now.getDay() <= 6) || now.getDay()==0) {
+                console.log('OK with 4 5');
+                let sunDay = this.getSunday();
+                if (d<sunDay) {
                   this.setState({isWorkjoy_active: 1});
-                  console.log('4');
-                } else if (
-                  d.getDate() == now.getDate() &&
-                  d.getMonth() == now.getMonth() &&
-                  d.getFullYear() == now.getFullYear()
-                ) {
+                } else {
                   this.setState({isWorkjoy_active: 0});
-                  console.log('Hi');
                 }
-              }
-              // var currentDate = year +'-'+ month +'-'+day;
-              var currentTime = dayWord[day] + ':' + hours + ':' + min;
-              if (currentTime == 'Thursday:00:00') {
-                this.setState({isWorkjoy_active: 1});
-              }
-            } else {
-              this.setState({isWorkjoy_active: 0});
-              console.log('5');
-            }
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
-
-      this.setState({loading: true});
-      await fetch('http://diwo.nu/public/api/lastAddedSocialkapital', {
-        method: 'POST',
-        headers: headers,
-      })
-        .then(response => response.json())
-        .then(responseJson => {
-          this.setState({loading: false});
-          if (responseJson.status == 200) {
-            console.log(responseJson);
-            if (responseJson.kapital_data[0]) {
-              this.setState({
-                lastReviewDate: responseJson.kapital_data[0].last_review_date,
-              });
-              var date = responseJson.kapital_data[0].last_review_date;
-              var t = date.split(/[- :]/);
-              var d = new Date(t[0], t[1] - 1, t[2]);
-
-              // Checking activation for the current month
-              var now = new Date();
-              let lastDate =
-                this.getDaysInMonth(now.getMonth() + 1, now.getFullYear()) - 3;
-              let activationDate =
-                now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + lastDate;
-              var activet = activationDate.split(/[- :]/);
-              let activeDate = new Date(activet[0], activet[1] - 1, activet[2]);
-              //console.log(activeDate);
-
-              // Checking activation for the Previous month
-              var now = new Date();
-              let PrevlastDate =
-                this.getDaysInMonth(now.getMonth(), now.getFullYear()) - 3;
-              let PrevactivationDate =
-                now.getFullYear() + '-' + now.getMonth() + '-' + PrevlastDate;
-              var Prevt = PrevactivationDate.split(/[- :]/);
-              let PrevactiveDate = new Date(Prevt[0], Prevt[1] - 1, Prevt[2]);
-              //console.log(PrevactiveDate);
-
-              //check if database date and previous month activation date is same or not
-              if (
-                d.getTime() === PrevactiveDate.getTime() ||
-                d.getTime() === activeDate.getTime()
-              ) {
-                this.setState({isSocialKapital_active: 0});
+                
+                
+              
               } else {
-                //Check for activation between the database date and current date.
-                // let dateArray = [];
-                // let count = 0;
-                for (
-                  var dt = new Date(d);
-                  dt <= now;
-                  dt.setDate(dt.getDate() + 1)
-                ) {
-                  // console.log(dt);
-                  if (
-                    dt.getTime() === PrevactiveDate.getTime() ||
-                    dt.getTime() === activeDate.getTime()
-                  ) {
-                    // console.log("if");
-                    this.setState({isSocialKapital_active: 1});
-                    break;
-                  } else if (dt.getTime() > activeDate.getTime()) {
-                    if (
-                      dt.getDate() > activeDate.getDate() &&
-                      dt.getMonth() + 1 == activeDate.getMonth() + 1
-                    ) {
-                      this.setState({isSocialKapital_active: 0});
-                    } else {
-                      // console.log("In else if");
-                      this.setState({isSocialKapital_active: 1});
-                    }
-                  } else {
-                    // console.log("else");
-                    this.setState({isSocialKapital_active: 0});
-                  }
-                  // dateArray.push(dt.getTime());
-                }
+                this.setState({isWorkjoy_active: 0});
               }
+
+              
             } else {
-              this.setState({isSocialKapital_active: 1});
+              if ((now.getDay() >= 4 && now.getDay() <= 6) || now.getDay()==0) {
+                this.setState({isWorkjoy_active: 1});
+              } else {
+                this.setState({isWorkjoy_active: 0});
+              }
             }
           }
         })
@@ -762,7 +643,95 @@ export default class home extends Component {
           console.error(error);
         });
 
-      this.setState({loading: true});
+      // this.setState({loading: true});
+      // await fetch('http://diwo.nu/public/api/lastAddedSocialkapital', {
+      //   method: 'POST',
+      //   headers: headers,
+      // })
+      //   .then(response => response.json())
+      //   .then(responseJson => {
+      //     this.setState({loading: false});
+      //     if (responseJson.status == 200) {
+      //       console.log(responseJson);
+      //       if (responseJson.kapital_data[0]) {
+      //         this.setState({
+      //           lastReviewDate: responseJson.kapital_data[0].last_review_date,
+      //         });
+      //         var date = responseJson.kapital_data[0].last_review_date;
+      //         var t = date.split(/[- :]/);
+      //         var d = new Date(t[0], t[1] - 1, t[2]);
+
+      //         // Checking activation for the current month
+      //         var now = new Date();
+      //         let lastDate =
+      //           this.getDaysInMonth(now.getMonth() + 1, now.getFullYear()) - 3;
+      //         let activationDate =
+      //           now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + lastDate;
+      //         var activet = activationDate.split(/[- :]/);
+      //         let activeDate = new Date(activet[0], activet[1] - 1, activet[2]);
+      //         //console.log(activeDate);
+
+      //         // Checking activation for the Previous month
+      //         var now = new Date();
+      //         let PrevlastDate =
+      //           this.getDaysInMonth(now.getMonth(), now.getFullYear()) - 3;
+      //         let PrevactivationDate =
+      //           now.getFullYear() + '-' + now.getMonth() + '-' + PrevlastDate;
+      //         var Prevt = PrevactivationDate.split(/[- :]/);
+      //         let PrevactiveDate = new Date(Prevt[0], Prevt[1] - 1, Prevt[2]);
+      //         //console.log(PrevactiveDate);
+
+      //         //check if database date and previous month activation date is same or not
+      //         if (
+      //           d.getTime() === PrevactiveDate.getTime() ||
+      //           d.getTime() === activeDate.getTime()
+      //         ) {
+      //           this.setState({isSocialKapital_active: 0});
+      //         } else {
+      //           //Check for activation between the database date and current date.
+      //           // let dateArray = [];
+      //           // let count = 0;
+      //           for (
+      //             var dt = new Date(d);
+      //             dt <= now;
+      //             dt.setDate(dt.getDate() + 1)
+      //           ) {
+      //             // console.log(dt);
+      //             if (
+      //               dt.getTime() === PrevactiveDate.getTime() ||
+      //               dt.getTime() === activeDate.getTime()
+      //             ) {
+      //               console.log(':((((((((((((((((((4))))))))))))))))))');
+      //               this.setState({isSocialKapital_active: 1});
+      //               break;
+      //             } else if (dt.getTime() > activeDate.getTime()) {
+      //               if (
+      //                 dt.getDate() > activeDate.getDate() &&
+      //                 dt.getMonth() + 1 == activeDate.getMonth() + 1
+      //               ) {
+      //                 this.setState({isSocialKapital_active: 0});
+      //               } else {
+      //                 console.log(':((((((((((((((((((5))))))))))))))))))');
+      //                 this.setState({isSocialKapital_active: 1});
+      //               }
+      //             } else {
+      //               // console.log("else");
+      //               this.setState({isSocialKapital_active: 0});
+      //             }
+      //             // dateArray.push(dt.getTime());
+      //           }
+      //         }
+      //       } else {
+      //         console.log(':((((((((((((((((((6))))))))))))))))))');
+      //         this.setState({isSocialKapital_active: 1});
+      //       }
+      //     }
+      //   })
+      //   .catch(error => {
+      //     console.error(error);
+      //   });
+
+      // this.setState({loading: true});
       await fetch('http://diwo.nu/public/api/getLastMessageReadStatus', {
         method: 'POST',
         headers: headers,
@@ -796,23 +765,52 @@ export default class home extends Component {
           if (this.state.isWorkjoy_active == 1) this.state.badgeCount++;
           if (this.state.isSocialKapital_active == 1) this.state.badgeCount++;
           if (this.state.badgeCount > 0) {
-            console.log("BADGE COUNT", this.state.badgeCount);
+            console.log('BADGE COUNT', this.state.badgeCount);
             if (Platform.OS != 'ios') {
               this.sendLocalNotification(this.state.badgeCount);
             }
-              PushNotification.setApplicationIconBadgeNumber(this.state.badgeCount);
-            
+            PushNotification.setApplicationIconBadgeNumber(
+              this.state.badgeCount,
+            );
           } else {
             PushNotification.setApplicationIconBadgeNumber(0);
           }
         }
-        
       }
     }, 1000);
   }
 
-  componentDidMount() {
-    this.fetchData();
+  getThursday(){
+    let d = new Date();
+    let day = d.getDay();
+    let diff = d.getDate() - day + 4;
+    const rt = new Date(d.setDate(diff));
+    return new Date(rt).setHours(0,0,0,0);
+  }
+  getSunday(){
+    let d = new Date();
+    let day = d.getDay();
+    if (day == 0) day = 7;
+    let diff = d.getDate() - day;
+    const rt = new Date(d.setDate(diff));
+    return new Date(rt).setHours(23,59,59,999);
+  }
+
+  async componentDidMount() {
+    const lang = await AsyncStorage.getItem('@APP:languageCode');
+    this.setState({lang: lang}, () => {
+      console.log(this.state.lang);
+      this.fetchData();
+    });
+    this.props.navigation.addListener('didFocus', ()=>{
+      this.fetchData();
+    })
+    const value = await AsyncStorage.getItem('visited_onces');
+    if (!value) {
+      this.props.navigation.navigate('Login');
+    }
+
+    
     // PushNotificationIOS.setApplicationIconBadgeNumber(10);
     // PushNotificationIOS.getApplicationIconBadgeNumber((res) => {
     //     console.log(res) //returns 10
@@ -820,6 +818,7 @@ export default class home extends Component {
   }
 
   renderViewMore = onPress => {
+    const {t} = this.props.screenProps;
     return (
       <Text
         onPress={onPress}
@@ -830,11 +829,12 @@ export default class home extends Component {
           marginTop: 12,
           textAlign: 'right',
         }}>
-        {Text_EN.Text_en.View_more}
+        {t('common:View_more')}
       </Text>
     );
   };
   renderViewLess = onPress => {
+    const {t} = this.props.screenProps;
     return (
       <Text
         onPress={onPress}
@@ -845,7 +845,7 @@ export default class home extends Component {
           marginTop: 12,
           textAlign: 'right',
         }}>
-        {Text_EN.Text_en.View_less}
+        {t('common:View_less')}
       </Text>
     );
   };
@@ -896,7 +896,6 @@ export default class home extends Component {
     );
   };
   sendLocalNotification = count => {
-
     if (Platform.OS == 'ios') {
       PushNotificationIOS.presentLocalNotification({
         alertBody: `Du har ${count} underretninger`,
@@ -907,7 +906,7 @@ export default class home extends Component {
     } else {
       PushNotification.localNotification({
         /* Android Only Properties */
-  
+
         /* iOS and Android properties */
         title: 'Diwo', // (optional)
         message: `Du har ${count} underretningerhhaa`, // (required)
@@ -919,11 +918,24 @@ export default class home extends Component {
       });
     }
   };
+
+  onChangeLang = lang => {
+    this.setState({lang: lang}, async () => {
+      i18n.changeLanguage(lang);
+      try {
+        await AsyncStorage.setItem('@APP:languageCode', lang);
+      } catch (error) {
+        alert(error);
+      }
+    });
+  };
+
   render() {
     var {height, width} = Dimensions.get('window');
-
+    const {t} = this.props.screenProps;
     return (
       <SafeAreaView style={{flex: 1}}>
+        
         <View style={styles.container}>
           <StatusBar />
           {this.state.loading == true ? (
@@ -934,11 +946,13 @@ export default class home extends Component {
           {/* {this.state.loading && <View style={styles.spinner} pointerEvents={'none'} >
               <ActivityIndicator size="large" color="#19e600" animating={this.state.loading}/>
             </View>} */}
-          <NavigationEvents
+          {/* <NavigationEvents
             onDidFocus={() => {
+              console.log("DID FOCUS HOME")
               this.page_reloaded();
+              this.fetchData();
             }}
-          />
+          /> */}
           <Image
             style={styles.background_diamond}
             source={require('../../uploads/diamond-dark.png')}
@@ -953,7 +967,7 @@ export default class home extends Component {
             }}>
             <View>
               <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-                Hej{' '}
+                {t('common:welcome')}{' '}
                 <Text
                   style={{
                     fontWeight: 'bold',
@@ -978,16 +992,29 @@ export default class home extends Component {
               />
             </View>
             <View>
-              <TouchableOpacity
-                onPress={() => this.props.navigation.openDrawer()}>
-                <Image
-                  style={{
-                    width: width > height ? wp('3.5%') : wp('6%'),
-                    height: width > height ? wp('3%') : wp('6%'),
-                  }}
-                  source={require('../../uploads/drawer_menu.png')}
-                />
-              </TouchableOpacity>
+              {/* <TouchableOpacity onPress={() => this.onChangeLang('en')}>
+                <Text>{this.state.lang}</Text>
+              </TouchableOpacity> */}
+            </View>
+            <View>
+              <View style={{flex: 1, flexDirection: 'row'}}>
+                <TouchableOpacity
+                  style={{marginRight: 15}}
+                  onPress={() => this.setState({langDialogVisible: true})}>
+                  <Icon name="language" size={20} />
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  onPress={() => this.props.navigation.openDrawer()}>
+                  <Image
+                    style={{
+                      width: width > height ? wp('3.5%') : wp('6%'),
+                      height: width > height ? wp('3%') : wp('6%'),
+                    }}
+                    source={require('../../uploads/drawer_menu.png')}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
           <View style={{marginBottom: 12}}>
@@ -1027,13 +1054,13 @@ export default class home extends Component {
                     />
                     {this.state.message_active == 1 ? (
                       <View style={styles.indicator}>
-                        <Text></Text>
+                        <Text />
                       </View>
                     ) : null}
                   </View>
                   <View style={styles.question_card_text}>
                     <Text style={{fontSize: width * 0.042}}>
-                      {Text_EN.Text_en.message_card_txt}
+                      {t('home:message_card_txt')}
                     </Text>
                   </View>
                   <View style={{flex: 0.3, justifyContent: 'center'}}>
@@ -1041,7 +1068,7 @@ export default class home extends Component {
                       style={styles.btn_view}
                       onPress={() => this.message_Page()}>
                       <Text style={styles.submit_btn}>
-                        {Text_EN.Text_en.home_msg_btn}
+                        {t('home:home_msg_btn')}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -1062,7 +1089,7 @@ export default class home extends Component {
                   </View>
                   <View style={styles.question_card_text}>
                     <Text style={{fontSize: width * 0.042}}>
-                      {Text_EN.Text_en.experience_card_text}
+                      {t('home:experience_card_text')}
                     </Text>
                   </View>
                   <View style={{flex: 0.3, justifyContent: 'center'}}>
@@ -1071,7 +1098,7 @@ export default class home extends Component {
                       onPress={() => this.experience_Page()}>
                       <Text style={styles.submit_btn}>
                         {' '}
-                        {Text_EN.Text_en.home_exp_share_btn}{' '}
+                        {t('home:home_exp_share_btn')}{' '}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -1096,13 +1123,13 @@ export default class home extends Component {
                     />
                     {this.state.isWorkjoy_active == 1 ? (
                       <View style={styles.indicator}>
-                        <Text></Text>
+                        <Text />
                       </View>
                     ) : null}
                   </View>
                   <View style={styles.question_card_text}>
                     <Text style={{fontSize: width * 0.042}}>
-                      {Text_EN.Text_en.workjoy_card_text}
+                      {t('home:workjoy_card_text')}
                     </Text>
                   </View>
                   <View style={{flex: 0.3, justifyContent: 'center'}}>
@@ -1111,7 +1138,7 @@ export default class home extends Component {
                       onPress={() => this.workjoyPage()}>
                       <Text style={styles.submit_btn}>
                         {' '}
-                        {Text_EN.Text_en.home_btn_send}{' '}
+                        {t('home:home_btn_send')}{' '}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -1131,13 +1158,13 @@ export default class home extends Component {
                     />
                     {this.state.isSocialKapital_active == 1 ? (
                       <View style={styles.kapitalIndicator}>
-                        <Text></Text>
+                        <Text />
                       </View>
                     ) : null}
                   </View>
                   <View style={styles.question_card_text}>
                     <Text style={{fontSize: width * 0.042}}>
-                      {Text_EN.Text_en.socialkapital_card_text}
+                      {t('home:socialkapital_card_text')}
                     </Text>
                   </View>
                   <View style={{flex: 0.3, justifyContent: 'center'}}>
@@ -1146,7 +1173,7 @@ export default class home extends Component {
                       onPress={() => this.socialkapital_Page()}>
                       <Text style={styles.submit_btn}>
                         {' '}
-                        {Text_EN.Text_en.home_btn_send}{' '}
+                        {t('home:home_btn_send')}{' '}
                       </Text>
                     </TouchableOpacity>
                   </View>
@@ -1154,6 +1181,24 @@ export default class home extends Component {
               </Card>
             </ScrollView>
           </View>
+          <Dialog
+            visible={this.state.langDialogVisible}
+            onTouchOutside={() =>
+              this.setState({
+                langDialogVisible: false,
+              })
+            }>
+            <View>
+              <Picker
+                selectedValue={this.state.lang}
+                onValueChange={(itemValue, itemIndex) =>
+                  this.onChangeLang(itemValue)
+                }>
+                <Picker.Item label="Dansk" value="da" />
+                <Picker.Item label="English" value="en" />
+              </Picker>
+            </View>
+          </Dialog>
           {/* <View style={{flex:1.2,flexDirection:'row',marginLeft:12,marginRight:12}}>
                 <View style={styles.bottom_btn}>
                     <TouchableOpacity onPress={()=>this.help_workjoy()}>
@@ -1184,6 +1229,9 @@ export default class home extends Component {
     );
   }
 }
+
+export default translate(['home', 'common'], {wait: true})(home);
+
 var {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
@@ -1222,7 +1270,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   spinner: {
-    height: '100%',
+    height: '90%',
     width: '100%',
     justifyContent: 'center',
     position: 'absolute',
@@ -1281,7 +1329,7 @@ const styles = StyleSheet.create({
   background_diamond: {
     position: 'absolute',
     width: width * 1,
-    height: width * 0.9,
+    height: height * 0.9,
     bottom: -width * 0.3,
     right: -width * 0.28,
     opacity: 0.2,
@@ -1289,7 +1337,7 @@ const styles = StyleSheet.create({
   },
   spinner: {
     position: 'absolute',
-    top: 0,
+    top: 20,
     right: 0,
     left: 0,
     bottom: 0,

@@ -46,6 +46,7 @@ target 'Diwo' do
   pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
 
   pod 'RNFirebase', :path => '../node_modules/react-native-firebase/ios'
+  pod 'RNCCheckbox', :path => '../node_modules/@react-native-community/checkbox/RNCCheckbox.podspec'
 
   pod 'Firebase/Core'
   pod 'Firebase/Messaging'

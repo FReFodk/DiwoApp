@@ -13,8 +13,10 @@ import LinearGradient from 'react-native-linear-gradient';
 import AsyncStorage from '@react-native-community/async-storage';
 import {NavigationEvents} from 'react-navigation';
 import DeviceInfo from 'react-native-device-info';
+import {translate} from 'react-i18next';
+import i18n from 'i18next';
 
-export default class logout extends Component {
+class logout extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -47,7 +49,7 @@ export default class logout extends Component {
   };
 
   logout = async () => {
-    // console.log("logout called", this.state.token);
+    console.log("logout called", this.state.token);
     const value = await AsyncStorage.removeItem('visited_onces');
     const user_details = this.state.token;
     console.log(JSON.stringify(user_details));
@@ -68,12 +70,13 @@ export default class logout extends Component {
     })
       .then(response => response.json())
       .then(responseJson => {
+        console.log('RESPONSEJSON LOGOUT',responseJson)
         // alert(JSON.stringify(responseJson))
         if (responseJson.status == 200) {
           console.log('answer', responseJson);
           this.props.navigation.navigate('Login');
         } else {
-          // this.props.navigation.navigate('Login');
+          this.props.navigation.navigate('Login');
           console.log("You aren't logged out");
         }
       })
@@ -83,10 +86,10 @@ export default class logout extends Component {
       });
   };
 
-  // componentDidMount() {
-  //   console.log("Logout page");
-  //   this.logout();
-  // }
+  componentDidMount() {
+    console.log("Logout page");
+    this.logout();
+  }
 
   render() {
     return (
@@ -97,6 +100,8 @@ export default class logout extends Component {
     );
   }
 }
+
+export default translate(['home', 'common'], {wait: true})(logout);
 
 const styles = StyleSheet.create({
   container: {

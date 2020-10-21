@@ -1,0 +1,130 @@
+{
+  "home": {
+    "message_card_txt": "Your messages - from your manager and colleagues",
+    "home_msg_btn": "Inbox",
+    "experience_card_text": "Have you found a diamond? Had a good experience?",
+    "home_exp_share_btn": "Share",
+    "workjoy_card_text": "How has your work satisfaction been this week?",
+    "home_btn_send": "Reply",
+    "socialkapital_card_text": "How has the teams collaboration been? - and the distribution of tasks?"
+  },
+  "measurement": {
+    "measurement_workjoy_title": "How is your work satisfaction developing?",
+    "measurement_socialkaptial_title": "How is your social capital developing?",
+    "total": "Total",
+    "week": "Week"
+  },
+  "message": {
+    "delete_message": "When the message is deleted, it cannot be restored",
+    "Receive": "Inbox",
+    "Send": "Send",
+    "choose_receiver": "Choose receiver",
+    "slide_to_write": "Slide to write a message"
+  },
+  "more_info": {
+    "more_info_title1": "Why should I answer?",
+    "more_info_title2": "Social Capital",
+    "more_info_title3": "Work Satisfaction",
+    "more_info_text1": "Your manager thinks that something could be done to improve your work environment and job satisfaction. To get an indication on how you are doing, your manager wants you to answer.\n\nIt also means that even though you may not see your manager very often, she or he can better get a sense of how you and your team are doing - and act if something seems to be going the wrong way.\n\nFor you manager to be able to help and support a healthy and good work environment, it is important that you answer the questions sincerely every time. This gives your manager the most correct data to talk from when you meet - or may prioritize an extra meeting if something requires immediate attention.",
+    "more_info_text2": "The basic idea in Social Capital is that by building and utilizing strong relationships in the company, one can benefit with higher quality and efficiency - and at the same time strengthen job satisfaction and a good work environment.\n\nSocial Capital is the invisible value in strong internal collaborative relationships. The clear connection between Social Capital and the company's performance thus applies both in the form of higher productivity and quality and in the form of a better work environment, increased job satisfaction and lower sickness absence.\n\nSurveys show that when Social Capital is high and when employees experiences a high degree of trust and fairness in distribution of tasks, a “buffer” is achieved that help when high demands in the work burden. And vice versa: Injustice and mistrust creates more stress in the workplace. A high Social Capital also indicates that employees and management work well together. It shows that they can often find solutions together, which can increase productivity and quality further - and at the same time strengthen the work environment. A high level of Social Capital is therefore a foundation for counteracting change and increased competition.\n\nIn practice, this presupposes that management and employees can cooperate, and that cooperation is based on a high degree of trust and justice.\n\nTRUST,JUSTICE and COOPERATION are the three focal points of a positive Social Capital. They are also called the Three Diamonds. Hence, the app-name DIWO (Diamonds at Work). When managers and employees focus on the Three Diamonds together, they are well on their way in developing their Social Capital.\n\nTRUST is about what expectations management and employees have to each other. Do the employees trust the announcements that come from management? Does management trust employees to do a good job? Do the employees trust each other? These expectations to each other are created over time.\n\nJUSTICE is about whether the individual feels that things are going well in connection with decision-making processes and distribution of tasks. Are all relevant opinions heard, and do they influence decision-making processes and the distribution of tasks? Does the individual feel recognized and rewarded for their efforts?\n\nGOOD COLLABORATION is conditional on management and employees having norms for mutual obligations. This also applies between employees: Is there clarity about the distribution of tasks, areas of responsibility and division of roles? Is there a common idea of ​​where we are going - what are our goals and how do we get there?\n\nBy focusing on these three diamonds, you can launch a positive spiral, building more and more Social Capital. The Social Capital measurements in this app require an answer on 5 questions, and as it takes a little longer to create changes in relation to this, the measurement is made \"only\" once a month.",
+    "more_info_text3": "Your job satisfaction is important because it affects your motivation, your well-being and your handling of changes and tasks. Job satisfaction is therefore an important indicator for your manager to whether you as an employee thrive at work. It is hence something that your manager can use as an indication of whether there is something related to work satisfaction and joy, that needs to be talked about and changed. It is of course a simplification of something complicated, as work satisfaction can be affected by many things, but work satisfaction measurements can still be used as an indicator of the level of thriving in the team.\n\nA better work environment, mentally, is often an important side benefit of working with Social Capital. As work satisfaction is closely linked to the mental work environment, work satisfaction is one of the factors on which it can be measured whether Social Capital and thriving are on the rise or going down.\n\nThe work satisfaction measurements are every week, so that your manager can get ongoing feedback on how things are going, and take action quickly and when appropriate, rather than when it's too late."
+  },
+  "socail_capital": {
+    "inactive_social_kapital_comment": "You cannot comment again already. It becomes possible, when you also have to answer the Social Capital questions again. If you have something urgent you need to talk to your manager about, that cannot wait, you can send a message through your inbox",
+    "inactive_social_kapital_submit": "You cannot answer again already. It becomes possible again in the end of the month. If you have something urgent you need to talk to your manager about, you can send a message through your inbox",
+    "social_kapital_commentbox": "Do you have a comment to either the questions or your answers? Then please write it here",
+    "social_kapital_error": "Error! You are missing to answer one or more questions",
+    "social_kapital_submit_message": "Thanks for your answer",
+    "social_kapital": "Social Capital",
+    "socialkapital_title": "Your manager wants to improve the collaboration in the team and increase the feeling of justice in distribution of tasks and trust between you",
+    "socialkapital_question_one": "Do you have a good collaboration with your colleagues?",
+    "socialkapital_question_two": "Do you think there is a good collaboration between management and your team?",
+    "socialkapital_question_three": "What level of trust do you experience in your team? Do you trust each other?",
+    "socialkapital_question_four": "What level of trust do you experience between management and your team?",
+    "socialkapital_question_five": "Do you think that tasks are distributed in a fair way in your team?",
+    "link_measurement_btn": "View earlier answers",
+    "submit_answer": "Submit answer",
+    "write_comment": "Write comment",
+    "send_comment": "Send comment"
+  },
+  "workjoy": {
+    "workjoy_green_selected": "Excellent",
+    "workjoy_red_selected": "Bad",
+    "workjoy_yellow_selected": "Average",
+    "inactive_workjoy_submit": "You cannot answer again already. It becomes possible again next week. If you have something urgent you need to talk to your manager about, you can send a message through your inbox",
+    "workjoy_greenselected_popup": "Thanks for your answer. Will you share what made the week good?",
+    "workjoy_yellowselected_popup": "Thanks for your answer. Will you share why the week only was average? Maybe with your manager or TR/AMR so you can talk about how you get an excellent (green) week.",
+    "workjoy_redselected_popup": "Oh, that was not good. When you choose a bad (red) week, we think you should send a message to either your manager or TR/AMR about the reason for you bad week. Then you will be able to meet and discuss what you need, for your work satisfaction to get better.",
+    "three_time_red": "Oh, that is really bad! For three weeks in a row, you've had bad weeks. Something must be done! This is not how it should be to go to work! You should send a message to your manager, and maybe also your TR/AMR, and tell them the reason. Then you manager will contact you, so you can meet and discuss what needs to be done, to give you more work satisfaction.",
+    "comment_text": "Do you want to write a comment, just to yourself, about your choice?",
+    "share_box_text": "Do you want to share your experience?",
+    "share_experience": "Share experience",
+    "job_satisfaction": "Work satisfaction",
+    "workjoy_title": "How has your work satisfaction been this week?",
+    "workjoy_good_week": "Ahh - nice week",
+    "workjoy_normal_week": "It has been a mixed week - just average",
+    "workjoy_not_good": "This was a bad week, not really good",
+    "submit_answer": "Submit answer",
+    "link_measurement_btn": "View earlier answers",
+    "write_comment": "Write comment",
+    "choose_receiver": "Choose receiver",
+    "slide_to_write": "Slide to write a message"
+  },
+  "experience": {
+    "experience_pop": "Thanks for sharing your experience",
+    "experience_error_pop": "Error! You did not write an experience, did you want to do that?",
+    "experience_title": "Have you found a diamond?:",
+    "experience_text": "A good experience can be between colleagues or a colleague and your manager, and can show either good collaboration, trust or justice",
+    "experience_placeholder": "Write your experience here..",
+    "experience_note": "It has to have relation to your work tasks",
+    "experience_share": "Shared experiences"
+  },
+  "profile": {
+    "question_comment": "Do you have a comment?",
+    "my_profile": "My Profile"
+  },
+  "menu": {
+    "home": "Home",
+    "workjoy": "Work Satisfaction",
+    "social_capital": "Social Capital",
+    "experience": "Experiences",
+    "message": "Messages",
+    "measurement": "My Measurements",
+    "profile": "My Profile",
+    "more_info": "More info",
+    "logout": "Logout"
+  },
+  "common": {
+    "sastisfaction_question": "What is work satisfaction?",
+    "workjoy_help_popup": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+    "social_kapital_question": "What is Social Capital?",
+    "socialkapital_help_popup": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+    "why_answer": "Why should I answer?",
+    "experience_help_popup": "Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industrys standard dummy text ever since the 1500s",
+
+    "cooperation": "Collaboration",
+    "trust": "Trust",
+    "justice": "Justice",
+
+    "select_user_error": "Error! Complete the missing",
+    "title": "Title",
+    "send_message": "Send message",
+
+    "email": "Email",
+    "password": "Write password",
+    "forget_password": "Forgot the password?",
+    "View_more": "View more",
+    "View_less": "View less",
+    "welcome": "Hi",
+
+    "no": "No",
+    "yes": "Yes",
+
+    "question_open": "Question is open",
+    "search": "Search",
+    "comment": "Thanks for your answer",
+    "comments": "Comments",
+    "comment_to_mng": "Comment to manager",
+    "write_message": "Write message"
+  }
+}

@@ -11,9 +11,9 @@ import {
   Button,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Card, Icon} from 'react-native-elements';
+import {Card} from 'react-native-elements';
 import {Dialog} from 'react-native-simple-dialogs';
-import Text_EN from '../res/lang/static_text';
+// import Text_EN from '../res/lang/static_text';
 import {NavigationEvents, SafeAreaView} from 'react-navigation';
 import ViewMoreText from 'react-native-view-more-text';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
@@ -21,8 +21,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/Feather';
+import {translate} from 'react-i18next';
+import i18n from 'i18next';
 
-export default class More_info extends Component {
+class More_info extends Component {
   myInterval = '';
   constructor(props) {
     super(props);
@@ -66,9 +69,10 @@ export default class More_info extends Component {
   };
 
   help_workjoy = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er arbejdsglæde?',
-      Text_EN.Text_en.workjoy_help_popup,
+      t('common:sastisfaction_question'),
+      t('common:workjoy_help_popup'),
       [
         {
           text: 'Cancel',
@@ -82,9 +86,10 @@ export default class More_info extends Component {
   };
 
   help_socialkapital = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er social Kapital?',
-      Text_EN.Text_en.socialkapital_help_popup,
+      t('common:social_kapital_question'),
+      t('common:socialkapital_help_popup'),
       [
         {
           text: 'Cancel',
@@ -98,9 +103,10 @@ export default class More_info extends Component {
   };
 
   help_experience = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvorfor skal jeg svareliht?',
-      Text_EN.Text_en.experience_help_popup,
+      t('common:why_answer'),
+      t('common:experience_help_popup'),
       [
         {
           text: 'Cancel',
@@ -114,6 +120,7 @@ export default class More_info extends Component {
   };
 
   renderViewMore = onPress => {
+    const {t} = this.props.screenProps;
     return (
       <Text
         onPress={onPress}
@@ -123,11 +130,12 @@ export default class More_info extends Component {
           fontWeight: 'bold',
           marginTop: 10,
         }}>
-        {Text_EN.Text_en.View_more}
+        {t('common:View_more')}
       </Text>
     );
   };
   renderViewLess = onPress => {
+    const {t} = this.props.screenProps;
     return (
       <Text
         onPress={onPress}
@@ -137,7 +145,7 @@ export default class More_info extends Component {
           fontWeight: 'bold',
           marginTop: 10,
         }}>
-        {Text_EN.Text_en.View_less}
+        {t('common:View_less')}
       </Text>
     );
   };
@@ -186,6 +194,8 @@ export default class More_info extends Component {
   }
 
   render() {
+    const {t} = this.props.screenProps;
+
     return (
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
@@ -207,16 +217,9 @@ export default class More_info extends Component {
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-                Hej{' '}
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                  }}>
-                  {this.state.firstName}
-                </Text>
-              </Text>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Icon name="chevron-left" size={30} color="#00a1ff" />
+              </TouchableOpacity>
             </View>
             <View
               style={{
@@ -260,7 +263,7 @@ export default class More_info extends Component {
                         color: '#038fc1',
                         fontWeight: 'bold',
                       }}>
-                      {Text_EN.Text_en.more_info_title1}
+                      {t('more_info:more_info_title1')}
                     </Text>
                   </View>
                   <ViewMoreText
@@ -270,7 +273,7 @@ export default class More_info extends Component {
                     textStyle={{
                       fontSize: width > height ? wp('2%') : wp('3.8%'),
                     }}>
-                    <Text>{Text_EN.Text_en.more_info_text1}</Text>
+                    <Text>{t('more_info:more_info_text1')}</Text>
                   </ViewMoreText>
                 </Card>
                 <Card borderRadius={15}>
@@ -285,7 +288,7 @@ export default class More_info extends Component {
                         color: '#038fc1',
                         fontWeight: 'bold',
                       }}>
-                      {Text_EN.Text_en.more_info_title2}
+                      {t('more_info:more_info_title2')}
                     </Text>
                   </View>
                   <ViewMoreText
@@ -295,7 +298,7 @@ export default class More_info extends Component {
                     textStyle={{
                       fontSize: width > height ? wp('2.3%') : wp('3.8%'),
                     }}>
-                    <Text>{Text_EN.Text_en.more_info_text2}</Text>
+                    <Text>{t('more_info:more_info_text2')}</Text>
                   </ViewMoreText>
                 </Card>
                 <Card borderRadius={15}>
@@ -310,7 +313,7 @@ export default class More_info extends Component {
                         color: '#038fc1',
                         fontWeight: 'bold',
                       }}>
-                      {Text_EN.Text_en.more_info_title3}
+                      {t('more_info:more_info_title3')}
                     </Text>
                   </View>
                   <ViewMoreText
@@ -320,7 +323,7 @@ export default class More_info extends Component {
                     textStyle={{
                       fontSize: width > height ? wp('2.3%') : wp('3.8%'),
                     }}>
-                    <Text>{Text_EN.Text_en.more_info_text3}</Text>
+                    <Text>{t('more_info:more_info_text3')}</Text>
                   </ViewMoreText>
                 </Card>
               </ScrollView>
@@ -338,6 +341,8 @@ export default class More_info extends Component {
     );
   }
 }
+
+export default translate(['more_info', 'common'], {wait: true})(More_info);
 
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({

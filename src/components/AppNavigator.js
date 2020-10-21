@@ -24,9 +24,10 @@ import {
 
 import firebase from 'react-native-firebase';
 import DeviceInfo from 'react-native-device-info';
+import i18n from '../I18n/index';
 
 var {height, width} = Dimensions.get('window');
-
+console.log("HEIGHT----------->", height)
 setTimeout(function() {
   SplashScreen.hide();
 }, 2000);
@@ -151,110 +152,128 @@ const Primary_Nav = createDrawerNavigator(
     },
     Home: {
       screen: Home,
-      navigationOptions: {
-        drawerLabel: Text_EN.Text_en.Home,
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/home.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:home'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/home.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     Workjoy: {
       screen: Workjoy,
-      navigationOptions: {
-        drawerLabel: Text_EN.Text_en.Arbejdsglaede,
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/portfolio.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:workjoy'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/portfolio.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     Social_kapital: {
       screen: Social_kapital,
-      navigationOptions: {
-        drawerLabel: Text_EN.Text_en.Social_Kapital,
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/question.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:social_capital'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/question.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     Experience: {
       screen: Experience,
-      navigationOptions: {
-        drawerLabel: Text_EN.Text_en.Experience,
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/experiment-results.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:experience'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/experiment-results.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     Message: {
       screen: Message,
-      navigationOptions: {
-        drawerLabel: 'Beskeder',
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/email.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:message'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/email.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     Measurement: {
       screen: Measurement,
-      navigationOptions: {
-        drawerLabel: Text_EN.Text_en.Mine_Malinger,
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/graph.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:measurement'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/graph.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     Profile: {
       screen: Profile,
-      navigationOptions: {
-        drawerLabel: Text_EN.Text_en.Min_Profile,
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/avatar.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:profile'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/avatar.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     More_info: {
       screen: More_info,
-      navigationOptions: {
-        drawerLabel: Text_EN.Text_en.More_info,
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/more.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:more_info'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/more.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     Logout: {
       screen: Logout,
-      navigationOptions: {
-        drawerLabel: Text_EN.Text_en.Logout,
-        drawerIcon: (
-          <Image
-            source={require('../uploads/menu_logo/log-out.png')}
-            style={{width: 30, height: 30}}
-          />
-        ),
+      navigationOptions: props => {
+        return {
+          drawerLabel: props.screenProps.t('menu:logout'),
+          drawerIcon: (
+            <Image
+              source={require('../uploads/menu_logo/log-out.png')}
+              style={{width: 30, height: 30}}
+            />
+          ),
+        };
       },
     },
     Forgot: {

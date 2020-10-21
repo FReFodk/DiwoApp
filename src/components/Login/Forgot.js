@@ -15,15 +15,17 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native-gesture-handler';
-import Text_EN from '../res/lang/static_text';
+// import Text_EN from '../res/lang/static_text';
 import LinearGradient from 'react-native-linear-gradient';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {translate} from 'react-i18next';
+import i18n from 'i18next';
 
-export default class App extends Component {
+class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -83,6 +85,8 @@ export default class App extends Component {
   render() {
     var {height, width} = Dimensions.get('window');
     const {navigate} = this.props.navigation;
+    const {t} = this.props.screenProps;
+
     return (
       <View style={styles.container} behavior="height">
         {this.state.loading == true ? (
@@ -129,7 +133,7 @@ export default class App extends Component {
                     top: 5,
                   }}>
                   {' '}
-                  {Text_EN.Text_en.email}{' '}
+                  {t('common:email')}{' '}
                 </Text>
                 <TextInput
                   style={styles.input}
@@ -183,6 +187,8 @@ export default class App extends Component {
     );
   }
 }
+
+export default translate(['common'], {wait: true})(App);
 
 var {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({

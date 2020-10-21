@@ -12,7 +12,7 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import {Dialog} from 'react-native-simple-dialogs';
-import Text_EN from '../res/lang/static_text';
+// import Text_EN from '../res/lang/static_text';
 import {NavigationEvents, SafeAreaView} from 'react-navigation';
 import {Card} from 'react-native-elements';
 import {LineChart} from 'react-native-chart-kit';
@@ -21,8 +21,12 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/Feather';
+import {translate} from 'react-i18next';
+import i18n from 'i18next';
+import {t} from 'i18next/dist/commonjs';
 
-export default class home extends Component {
+class home extends Component {
   myInterval = '';
   constructor(props) {
     super(props);
@@ -68,9 +72,10 @@ export default class home extends Component {
   };
 
   help_workjoy = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er arbejdsglæde?',
-      Text_EN.Text_en.workjoy_help_popup,
+      t('common:sastisfaction_question'),
+      t('common:workjoy_help_popup'),
       [
         {
           text: 'Cancel',
@@ -84,9 +89,10 @@ export default class home extends Component {
   };
 
   help_socialkapital = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er social Kapital?',
-      Text_EN.Text_en.socialkapital_help_popup,
+      t('common:social_kapital_question'),
+      t('common:socialkapital_help_popup'),
       [
         {
           text: 'Cancel',
@@ -100,9 +106,10 @@ export default class home extends Component {
   };
 
   help_experience = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvorfor skal jeg svareliht?',
-      Text_EN.Text_en.experience_help_popup,
+      t('common:why_answer'),
+      t('common:experience_help_popup'),
       [
         {
           text: 'Cancel',
@@ -335,6 +342,8 @@ export default class home extends Component {
       'November',
       'December',
     ];
+    const {t} = this.props.screenProps;
+
     return (
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
@@ -356,16 +365,9 @@ export default class home extends Component {
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-                Hej{' '}
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                  }}>
-                  {this.state.firstName}
-                </Text>
-              </Text>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Icon name="chevron-left" size={30} color="#00a1ff" />
+              </TouchableOpacity>
             </View>
             <View
               style={{
@@ -411,23 +413,24 @@ export default class home extends Component {
                     alignItems: 'center',
                   }}>
                   <Text style={styles.upper_txt}>
-                    {Text_EN.Text_en.cooperation}
+                    {t('common:cooperation')}
                   </Text>
                   <Image
                     style={styles.diamond_icon}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
+                  <Text style={styles.upper_txt}>{t('common:trust')}</Text>
                   <Image
                     style={styles.diamond_icon}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
+                  <Text style={styles.upper_txt}>{t('common:justice')}</Text>
                 </View>
               </TouchableOpacity>
               <View style={{alignItems: 'center', marginTop: 15}}>
-                <Text style={{fontSize: width > height ? wp('2.2%') : wp('4%')}}>
-                  {Text_EN.Text_en.measurement_workjoy_title}
+                <Text
+                  style={{fontSize: width > height ? wp('2.2%') : wp('4%')}}>
+                  {t('measurement:measurement_workjoy_title')}
                 </Text>
                 {this.state.dataSource.length != 0 ? (
                   <FlatList
@@ -441,10 +444,10 @@ export default class home extends Component {
                             fontSize: width > height ? wp('2.2%') : wp('4%'),
                             marginRight: 10,
                           }}>
-                          Uge {('000' + item.week.toString()).slice(-2)}{' '}
+                          {t('measurement:week')}{' '}
+                          {('000' + item.week.toString()).slice(-2)}{' '}
                         </Text>
-
-                        {item.review == 'Bad' ? (
+                        {item.review == 'Bad' || item.review == 'værst' ? (
                           <Image
                             style={{
                               width: width > height ? wp('3%') : wp('5%'),
@@ -452,7 +455,7 @@ export default class home extends Component {
                             }}
                             source={require('../../uploads/red.png')}
                           />
-                        ) : item.review == 'Average' ? (
+                        ) : item.review == 'Average' || item.review == 'Gennemsnit' ? (
                           <Image
                             style={{
                               width: width > height ? wp('3%') : wp('5%'),
@@ -460,7 +463,7 @@ export default class home extends Component {
                             }}
                             source={require('../../uploads/yellow.png')}
                           />
-                        ) : item.review == 'Excellent' ? (
+                        ) : item.review == 'Excellent' || item.review == 'Fremragende' ? (
                           <Image
                             style={{
                               width: width > height ? wp('3%') : wp('5%'),
@@ -468,14 +471,22 @@ export default class home extends Component {
                             }}
                             source={require('../../uploads/green.png')}
                           />
-                        ) : null}
+                        ) : (
+                          <Text style={{color: '#038fc1'}}>N/A</Text>
+                        )}
+
                         <Text
                           style={{
                             fontSize: width > height ? wp('2.2%') : wp('4%'),
                             marginLeft: 15,
                             width: '70%',
                           }}>
-                          Kommentar : {item.comments}
+                          {t('common:comment')} :{' '}
+                          {item.comments !== '' ? (
+                            item.comments
+                          ) : (
+                            <Text style={{color: '#038fc1'}}>N/A</Text>
+                          )}
                         </Text>
                       </View>
                     )}
@@ -491,7 +502,7 @@ export default class home extends Component {
                     fontSize: width > height ? wp('2.2%') : wp('4%'),
                     alignSelf: 'center',
                   }}>
-                  {Text_EN.Text_en.measurement_socialkaptial_title}
+                  {t('measurement:measurement_socialkaptial_title')}
                 </Text>
                 <View style={{flexDirection: 'row', marginTop: 10}}>
                   {/* <Text>length:{this.state.dataSocialKapital.length}</Text> */}
@@ -563,52 +574,71 @@ export default class home extends Component {
                                   marginRight: 10,
                                   marginLeft:
                                     width > height ? wp('4%') : wp('1%'),
-                                }}></View>
+                                }}
+                              />
                               <View>
                                 {/* {item.question1=="yellow" && item.question2=="yellow"?this.setState({trust_per:20}):item.question1=="green" && item.question2=="green"?this.setState({trust_per:40}):null} */}
                                 <Text
                                   style={{
                                     fontSize:
                                       width > height ? wp('2.2%') : wp('3.5%'),
-                                    width: width > height ? wp('25%') : wp('32%'),
+                                    width:
+                                      width > height ? wp('25%') : wp('32%'),
                                   }}>
-                                  {Text_EN.Text_en.cooperation}:{' '}
+                                  {t('common:cooperation')}:{' '}
                                   <Text style={{fontWeight: 'bold'}}>
-                                    {item.cooperation}%
+                                    {item.cooperation === 0
+                                      ? 'N/A'
+                                      : item.cooperation + '%'}
                                   </Text>
                                 </Text>
                                 <Text
                                   style={{
                                     fontSize:
                                       width > height ? wp('2.2%') : wp('3.5%'),
-                                    width: width > height ? wp('25%') : wp('32%'),
+                                    width:
+                                      width > height ? wp('25%') : wp('32%'),
                                   }}>
-                                  {Text_EN.Text_en.trust}:{' '}
+                                  {t('common:trust')}:{' '}
                                   <Text style={{fontWeight: 'bold'}}>
-                                    {item.trust}%{' '}
+                                    {item.trust === 0
+                                      ? 'N/A'
+                                      : item.trust + '%'}
                                   </Text>
                                 </Text>
                                 <Text
                                   style={{
                                     fontSize:
                                       width > height ? wp('2.2%') : wp('3.5%'),
-                                    width: width > height ? wp('25%') : wp('32%'),
+                                    width:
+                                      width > height ? wp('25%') : wp('32%'),
                                   }}>
-                                  {Text_EN.Text_en.justice}:{' '}
+                                  {t('common:justice')}:{' '}
                                   <Text style={{fontWeight: 'bold'}}>
-                                    {item.justice}%
+                                    {item.justice === 0
+                                      ? 'N/A'
+                                      : item.justice + '%'}
                                   </Text>
                                 </Text>
                                 <Text
                                   style={{
                                     fontSize:
                                       width > height ? wp('2.2%') : wp('3.5%'),
-                                    width: width > height ? wp('25%') : wp('31%'),
+                                    width:
+                                      width > height ? wp('25%') : wp('31%'),
                                     fontWeight: 'bold',
                                     borderTopWidth: 1,
                                   }}>
-                                  {Text_EN.Text_en.total}:{' '}
-                                  {item.trust + item.cooperation + item.justice}%{' '}
+                                  {t('measurement:total')}:{' '}
+                                  {item.trust +
+                                    item.cooperation +
+                                    item.justice ===
+                                  0
+                                    ? 'N/A'
+                                    : item.trust +
+                                      item.cooperation +
+                                      item.justice +
+                                      '%'}
                                 </Text>
                               </View>
                             </View>
@@ -653,6 +683,9 @@ export default class home extends Component {
     );
   }
 }
+
+export default translate(['measurement', 'common'], {wait: true})(home);
+
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {

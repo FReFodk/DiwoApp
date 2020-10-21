@@ -16,14 +16,16 @@ import {
 import AsyncStorage from '@react-native-community/async-storage';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {Dialog} from 'react-native-simple-dialogs';
-import Text_EN from '../res/lang/static_text';
+// import Text_EN from '../res/lang/static_text';
 import {NavigationEvents, SafeAreaView} from 'react-navigation';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/Feather';
+import {translate} from 'react-i18next';
 
-export default class home extends Component {
+class home extends Component {
   myInterval = '';
   constructor(props) {
     super(props);
@@ -69,9 +71,10 @@ export default class home extends Component {
   };
 
   help_workjoy = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er arbejdsglæde?',
-      Text_EN.Text_en.workjoy_help_popup,
+      t('common:sastisfaction_question'),
+      t('common:workjoy_help_popup'),
       [
         {
           text: 'Cancel',
@@ -85,9 +88,10 @@ export default class home extends Component {
   };
 
   help_socialkapital = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er social Kapital?',
-      Text_EN.Text_en.socialkapital_help_popup,
+      t('common:social_kapital_question'),
+      t('common:socialkapital_help_popup'),
       [
         {
           text: 'Cancel',
@@ -101,9 +105,10 @@ export default class home extends Component {
   };
 
   help_experience = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvorfor skal jeg svareliht?',
-      Text_EN.Text_en.experience_help_popup,
+      t('common:why_answer'),
+      t('common:experience_help_popup'),
       [
         {
           text: 'Cancel',
@@ -282,9 +287,10 @@ export default class home extends Component {
   }
 
   render() {
+    const {t} = this.props.screenProps;
+
     var {height, width} = Dimensions.get('window');
     return (
-
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
           {this.state.loading == true ? (
@@ -355,7 +361,7 @@ export default class home extends Component {
               </View>
               <View style={{width: width > height ? wp('80%') : wp('75%')}}>
                 <Text style={styles.dialog_txt}>
-                  {Text_EN.Text_en.experience_pop}
+                  {t('experience:experience_pop')}
                 </Text>
               </View>
             </View>
@@ -382,7 +388,7 @@ export default class home extends Component {
                   width: width > height ? wp('80%') : wp('68%'),
                 }}>
                 <Text style={styles.dialog_txt}>
-                  {Text_EN.Text_en.experience_error_pop}
+                  {t('experience:experience_error_pop')}
                 </Text>
               </View>
             </View>
@@ -406,16 +412,9 @@ export default class home extends Component {
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-                Hej{' '}
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                  }}>
-                  {this.state.firstName}
-                </Text>
-              </Text>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Icon name="chevron-left" size={30} color="#00a1ff" />
+              </TouchableOpacity>
             </View>
             <View
               style={{
@@ -461,41 +460,43 @@ export default class home extends Component {
                     alignItems: 'center',
                   }}>
                   <Text style={styles.upper_txt}>
-                    {Text_EN.Text_en.cooperation}
+                    {t('common:cooperation')}
                   </Text>
                   <Image
                     style={styles.diamond_icon}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
+                  <Text style={styles.upper_txt}>{t('common:trust')}</Text>
                   <Image
                     style={styles.diamond_icon}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
+                  <Text style={styles.upper_txt}>{t('common:justice')}</Text>
                 </View>
               </TouchableOpacity>
               <View style={styles.text_view}>
                 <Text style={styles.experience_title}>
-                  {Text_EN.Text_en.experience_title}
+                  {t('experience:experience_title')}
                 </Text>
                 <Text style={styles.experience_text}>
-                  {Text_EN.Text_en.experience_text}
+                  {t('experience:experience_text')}
                 </Text>
                 <TextInput
                   defaultValue={this.state.experienceText}
                   style={styles.Text_input}
-                  placeholder={Text_EN.Text_en.experience_placeholder}
+                  placeholder={t('experience:experience_placeholder')}
                   multiline={true}
                   numberOfLines={8}
-                  onChangeText={experienceText => this.setState({experienceText})}
+                  onChangeText={experienceText =>
+                    this.setState({experienceText})
+                  }
                 />
                 <Text
                   style={{
                     textAlign: 'center',
                     fontSize: width > height ? wp('1.5%') : wp('3.5%'),
                   }}>
-                  {Text_EN.Text_en.experience_note}
+                  {t('experience:experience_note')}
                 </Text>
                 <TouchableOpacity
                   style={styles.active_submit_btn}
@@ -506,7 +507,9 @@ export default class home extends Component {
 
               <View>
                 <View style={styles.text_view}>
-                  <Text style={styles.experience_likes}>Delte oplevelser</Text>
+                  <Text style={styles.experience_likes}>
+                    {t('experience:experience_share')}
+                  </Text>
                   <FlatList
                     style={{padding: 5}}
                     data={this.state.dataSource}
@@ -571,6 +574,9 @@ export default class home extends Component {
     );
   }
 }
+
+export default translate(['experience', 'common'], {wait: true})(home);
+
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {

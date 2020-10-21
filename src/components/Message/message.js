@@ -10,26 +10,32 @@ import {
   TextInput,
   FlatList,
   ActivityIndicator,
+  KeyboardAvoidingView,
 } from 'react-native';
+import Checkbox from '@react-native-community/checkbox'
 import AsyncStorage from '@react-native-community/async-storage';
 import {Dialog} from 'react-native-simple-dialogs';
-import Text_EN from '../res/lang/static_text';
+// import Text_EN from '../res/lang/static_text';
 import {NavigationEvents, ScrollView, SafeAreaView} from 'react-navigation';
 import MultiSelect from 'react-native-multiple-select';
-import Card from 'react-native-elements';
+import Card, {withTheme} from 'react-native-elements';
 import {throwStatement, toComputedKey} from '@babel/types';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/Feather';
+import Carousel from 'react-native-snap-carousel';
+import {translate} from 'react-i18next';
+import i18n from 'i18next';
 
-export default class home extends Component {
+class home extends Component {
   myInterval = '';
   Newitem = [];
   constructor(props) {
     super(props);
-    
+
     this._retrieveData = this._retrieveData.bind(this);
     this.state = {
       tokenValue: '',
@@ -56,6 +62,10 @@ export default class home extends Component {
       replyMessage_dialog: false,
       replyRecID: '',
       loading: false,
+
+      isFocusTextArea: false,
+      searchText: '',
+      listItemCheck: [],
     };
     this._retrieveData();
     this.page_reloaded = this.page_reloaded.bind(this);
@@ -71,7 +81,7 @@ export default class home extends Component {
   _retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('visited_onces');
-      const openMessageBox = await AsyncStorage.getItem("isOpenMessage");
+      const openMessageBox = await AsyncStorage.getItem('isOpenMessage');
       if (openMessageBox == 'true') {
         this.send_message();
         AsyncStorage.setItem('isOpenMessage', 'false');
@@ -90,9 +100,10 @@ export default class home extends Component {
   };
 
   help_workjoy = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er arbejdsglæde?',
-      Text_EN.Text_en.workjoy_help_popup,
+      t('common:sastisfaction_question'),
+      t('common:workjoy_help_popup'),
       [
         {
           text: 'Cancel',
@@ -106,9 +117,10 @@ export default class home extends Component {
   };
 
   help_socialkapital = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er social Kapital?',
-      Text_EN.Text_en.socialkapital_help_popup,
+      t('common:social_kapital_question'),
+      t('common:socialkapital_help_popup'),
       [
         {
           text: 'Cancel',
@@ -122,9 +134,10 @@ export default class home extends Component {
   };
 
   help_experience = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvorfor skal jeg svareliht?',
-      Text_EN.Text_en.experience_help_popup,
+      t('common:why_answer'),
+      t('common:experience_help_popup'),
       [
         {
           text: 'Cancel',
@@ -138,9 +151,10 @@ export default class home extends Component {
   };
 
   messageDeleteConfirm = messageID => {
+    const {t} = this.props.screenProps;
     Alert.alert(
       'Er du sikker på, at du vil slette?',
-      Text_EN.Text_en.delete_message,
+      t('message:delete_message'),
       [
         {
           text: 'Cancel',
@@ -394,11 +408,18 @@ export default class home extends Component {
           console.log(responseJson);
           if (responseJson.status == 200) {
             console.log(responseJson);
+            const {listItemCheck} = this.state;
+            const temp = [];
+            for (let item of listItemCheck) {
+              temp.push(false);
+            }
+
             this.setState({
               message_dialog: false,
               message_title: '',
               message_text: '',
               selectedItems: [],
+              listItemCheck: [...temp],
               replyMessage_dialog: false,
             });
             this.componentDidMount();
@@ -477,6 +498,7 @@ export default class home extends Component {
           console.log(responseJson);
           //this.setState({item:responseJson.users[0].user_id});
           this.Newitem = [];
+          const listItemCheck = [];
           for (var i = 0; i < responseJson.users.length; i++) {
             var id = responseJson.users[i].user_id;
             var name =
@@ -488,7 +510,9 @@ export default class home extends Component {
               id: id,
               name: name,
             });
+            listItemCheck.push(false);
           }
+          this.setState({listItemCheck: listItemCheck});
         })
         .catch(error => {
           console.error(error);
@@ -514,13 +538,172 @@ export default class home extends Component {
     return date.toString();
   }
 
+  removePickedUser = index => {
+    const selectedItems = [...this.state.selectedItems];
+    selectedItems.splice(index, 1);
+    this.setState({selectedItems: selectedItems});
+  };
+
+  pickUser = (index, itemId) => {
+    const listItemCheck = [...this.state.listItemCheck];
+    const selectedItems = [...this.state.selectedItems];
+
+    const i = selectedItems.findIndex(it => it === itemId);
+
+    if (listItemCheck[index]) {
+      listItemCheck[index] = false;
+      selectedItems.splice(i, 1);
+    } else {
+      listItemCheck[index] = true;
+      selectedItems.push(itemId);
+    }
+    console.log(selectedItems);
+
+    this.setState({listItemCheck: listItemCheck, selectedItems: selectedItems});
+  };
+
+  _renderItem = ({item, index}) => {
+    const {t} = this.props.screenProps;
+    if (index === 0) {
+      return (
+        <View
+          style={{
+            position: 'relative',
+            padding: 15,
+            maxHeight: 550,
+          }}>
+          <View
+            style={{
+              paddingBottom: 10,
+              marginTop: 50,
+            }}>
+            {this.state.errorText == true ? (
+              <Text style={{paddingLeft: 15, color: 'red'}}>
+                {t('common:select_user_error')}
+              </Text>
+            ) : null}
+
+            <Text style={{textAlign: 'right', color: '#bdbdbd'}}>
+              {t('message:slide_to_write')}
+            </Text>
+
+            <Text
+              style={{
+                fontWeight: 'bold',
+                fontSize: 20,
+              }}>
+              {t('message:choose_receiver')}
+            </Text>
+
+            <TextInput
+              onFocus={() => this.setState({isFocusTextArea: true})}
+              style={{...styles.Text_input_title, paddingLeft: 10, marginTop: 10}}
+              placeholder={t('common:search')}
+              onChangeText={text => this.setState({searchText: text})}
+              onBlur={() => this.setState({isFocusTextArea: false})}
+            />
+            <ScrollView
+              style={{
+                marginBottom: this.state.isFocusTextArea ? wp('55%') : 0,
+              }}>
+              {this.Newitem.map((item, index) => {
+                const search = this.state.searchText.toLowerCase();
+                const itemName = item.name.toLowerCase();
+
+                const {listItemCheck} = this.state;
+
+                if (itemName.indexOf(search) !== -1) {
+                  return (
+                    <View style={styles._container}>
+                      <View style={styles.checkboxContainer}>
+                        <Checkbox
+                          value={listItemCheck[index]}
+                          onValueChange={() => this.pickUser(index, item.id)}
+                          style={styles.checkbox}
+                        />
+                        <TouchableOpacity>
+                          <Text
+                            onPress={() => this.pickUser(index, item.id)}
+                            style={styles.label}>
+                            {item.name}
+                          </Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  );
+                }
+                return null;
+              })}
+            </ScrollView>
+          </View>
+        </View>
+      );
+    } else {
+      return (
+        <View
+          style={{
+            position: 'relative',
+            padding: 15,
+            maxHeight: 550,
+          }}>
+          <View style={{paddingBottom: 10, marginTop: 50}}>
+            {this.state.errorText == true ? (
+              <Text style={{paddingLeft: 15, color: 'red'}}>
+                {t('common:select_user_error')}
+              </Text>
+            ) : null}
+
+            <TextInput
+              defaultValue={this.state.message_title}
+              style={styles.Text_input_title}
+              placeholder={t('common:title')}
+              onChangeText={message_title =>
+                this.setState({message_title, errorText: false})
+              }
+            />
+            {this.state.errorText == true ? (
+              <Text style={{paddingLeft: 15, color: 'red'}} />
+            ) : null}
+            <TextInput
+              defaultValue={this.state.message_text}
+              style={styles.Text_input_message}
+              placeholder={t('common:comment_to_mng')}
+              multiline={true}
+              numberOfLines={5}
+              onChangeText={message_text =>
+                this.setState({message_text, errorText: false})
+              }
+            />
+            <View style={styles.dialog_submit_btn}>
+              <TouchableOpacity
+                style={{
+                  backgroundColor: '#00a1ff',
+                  padding: 10,
+                  paddingRight: 25,
+                  paddingLeft: 25,
+                  borderRadius: 5,
+                  marginBottom: 20,
+                }}
+                onPress={() => this.message_send()}>
+                <Text style={styles.submit_btn}>
+                  {t('common:send_message')}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      );
+    }
+  };
+
   render() {
-    const {selectedItems} = this.state;
     var {height, width} = Dimensions.get('window');
     var day = new Date().getDay(); //Current Date
     var month = new Date().getMonth() + 1; //Current month
     var year = new Date().getFullYear(); //Current year
     var string = day + '-' + month + '-' + year;
+
+    const {t} = this.props.screenProps;
 
     return (
       <SafeAreaView style={{flex: 1}}>
@@ -570,17 +753,17 @@ export default class home extends Component {
               <View style={{paddingBottom: 10, marginTop: 50}}>
                 <TextInput
                   style={styles.Text_input_title}
-                  placeholder={Text_EN.Text_en.title}
+                  placeholder={t('common:title')}
                   onChangeText={message_title =>
                     this.setState({message_title, errorText: false})
                   }
                 />
                 {this.state.errorText == true ? (
-                  <Text style={{paddingLeft: 15, color: 'red'}}></Text>
+                  <Text style={{paddingLeft: 15, color: 'red'}} />
                 ) : null}
                 <TextInput
                   style={styles.Text_input_message}
-                  placeholder="Kommentar til din leder"
+                  placeholder={t('common:comment_to_mng')}
                   multiline={true}
                   numberOfLines={8}
                   onChangeText={message_text =>
@@ -599,7 +782,7 @@ export default class home extends Component {
                   }}
                   onPress={() => this.reply_send()}>
                   <Text style={styles.submit_btn}>
-                    {Text_EN.Text_en.send_message}
+                    {t('common:send_message')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -658,29 +841,43 @@ export default class home extends Component {
             </View> */}
             </View>
           </Dialog>
+
           <Dialog
             visible={this.state.message_dialog}
-            onTouchOutside={() =>
+            onTouchOutside={() => {
+              const {listItemCheck} = this.state;
+              const temp = [];
+              for (let item of listItemCheck) {
+                temp.push(false);
+              }
+
               this.setState({
                 message_dialog: false,
                 errorText: false,
                 message_title: '',
                 message_text: '',
                 selectedItems: [],
-              })
-            }>
+              });
+            }}>
             <View style={{position: 'relative', padding: 15}}>
               <View style={styles.dialog_close_icon}>
                 <TouchableOpacity
-                  onPress={() =>
+                  onPress={() => {
+                    const {listItemCheck} = this.state;
+                    const temp = [];
+                    for (let item of listItemCheck) {
+                      temp.push(false);
+                    }
+
                     this.setState({
                       message_dialog: false,
                       errorText: false,
                       message_title: '',
                       message_text: '',
                       selectedItems: [],
-                    })
-                  }>
+                      listItemCheck: [...temp],
+                    });
+                  }}>
                   <Image
                     style={{
                       width: width > height ? wp('3.5%') : wp('8%'),
@@ -690,6 +887,25 @@ export default class home extends Component {
                   />
                 </TouchableOpacity>
               </View>
+            </View>
+
+            <Carousel
+              ref={c => {
+                this._carousel = c;
+              }}
+              data={[1, 2]}
+              renderItem={this._renderItem}
+              sliderWidth={wp('73%')}
+              itemWidth={wp('73%')}
+            />
+
+            {/* <ScrollView
+              ref="scroll_view"
+              style={{
+                position: 'relative',
+                padding: 15,
+                maxHeight: 550,
+              }}>
               <View style={{paddingBottom: 10, marginTop: 50}}>
                 {this.state.errorText == true ? (
                   <Text style={{paddingLeft: 15, color: 'red'}}>
@@ -723,7 +939,28 @@ export default class home extends Component {
                   searchInputStyle={{color: '#CCC'}}
                   submitButtonColor="#48d22b"
                   submitButtonText="Submit"
+                  removeSelected={true}
                 />
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    flexWrap: 'wrap',
+                    marginLeft: 16,
+                  }}>
+                  {selectedItems.map(id => {
+                    const pickedItem = this.Newitem.find(
+                      item => item.id === id,
+                    );
+                    return (
+                      <View style={styles.tag}>
+                        <TouchableOpacity style={styles.tag_close}>
+                          <Text style={styles.tag_text}>X</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.tag_text}>{pickedItem.name}</Text>
+                      </View>
+                    );
+                  })}
+                </View>
                 <TextInput
                   defaultValue={this.state.message_title}
                   style={styles.Text_input_title}
@@ -731,37 +968,48 @@ export default class home extends Component {
                   onChangeText={message_title =>
                     this.setState({message_title, errorText: false})
                   }
+                  onFocus={this.onFocusTextInputInDialog}
+                  // onBlur={() => this.setState({isFocusTextArea: false})}
                 />
                 {this.state.errorText == true ? (
-                  <Text style={{paddingLeft: 15, color: 'red'}}></Text>
+                  <Text style={{paddingLeft: 15, color: 'red'}} />
                 ) : null}
                 <TextInput
                   defaultValue={this.state.message_text}
                   style={styles.Text_input_message}
                   placeholder="Kommentar til din leder"
                   multiline={true}
-                  numberOfLines={8}
+                  numberOfLines={5}
                   onChangeText={message_text =>
                     this.setState({message_text, errorText: false})
                   }
+                  onFocus={this.onFocusTextInputInDialog}
+                  onBlur={() => this.setState({isFocusTextArea: false})}
                 />
+                <View
+                  style={
+                    isFocusTextArea
+                      ? {...styles.dialog_submit_btn, marginBottom: 280}
+                      : styles.dialog_submit_btn
+                  }>
+                  <TouchableOpacity
+                    style={{
+                      backgroundColor: '#00a1ff',
+                      padding: 10,
+                      paddingRight: 25,
+                      paddingLeft: 25,
+                      borderRadius: 5,
+                      marginBottom: 20,
+                    }}
+                    onPress={() => this.message_send()}>
+                    <Text style={styles.submit_btn}>
+                      {Text_EN.Text_en.send_message}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.dialog_submit_btn}>
-                <TouchableOpacity
-                  style={{
-                    backgroundColor: '#00a1ff',
-                    padding: 10,
-                    paddingRight: 25,
-                    paddingLeft: 25,
-                    borderRadius: 5,
-                  }}
-                  onPress={() => this.message_send()}>
-                  <Text style={styles.submit_btn}>
-                    {Text_EN.Text_en.send_message}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            </View>
+            </ScrollView>
+           */}
           </Dialog>
 
           <Image
@@ -777,16 +1025,9 @@ export default class home extends Component {
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-                Hej{' '}
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                  }}>
-                  {this.state.firstName}
-                </Text>
-              </Text>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Icon name="chevron-left" size={30} color="#00a1ff" />
+              </TouchableOpacity>
             </View>
             <View
               style={{
@@ -832,20 +1073,18 @@ export default class home extends Component {
                     alignItems: 'center',
                   }}>
                   <Text style={styles.upper_txt}>
-                    {Text_EN.Text_en.cooperation}
+                    {t('common:cooperation')}
                   </Text>
                   <Image
                     style={styles.diamond_icon_top}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
+                  <Text style={styles.upper_txt}>{t('common:trust')}</Text>
                   <Image
                     style={styles.diamond_icon_top}
                     source={require('../../uploads/diamond_img.png')}
                   />
-                  <Text style={styles.upper_txt}>
-                    {Text_EN.Text_en.justice}
-                  </Text>
+                  <Text style={styles.upper_txt}>{t('common:justice')}</Text>
                 </View>
               </TouchableOpacity>
               <View style={{flexDirection: 'row', margin: 20}}>
@@ -881,14 +1120,14 @@ export default class home extends Component {
                           fontWeight: 'bold',
                           fontSize: width > height ? wp('1.5%') : wp('4%'),
                         }}>
-                        {Text_EN.Text_en.Receive}
+                        {t('message:Receive')}
                       </Text>
                     ) : (
                       <Text
                         style={{
                           fontSize: width > height ? wp('1.5%') : wp('3.5%'),
                         }}>
-                        {Text_EN.Text_en.Receive}
+                        {t('message:Receive')}
                       </Text>
                     )}
                   </View>
@@ -921,14 +1160,14 @@ export default class home extends Component {
                           fontWeight: 'bold',
                           fontSize: width > height ? wp('1.5%') : wp('4%'),
                         }}>
-                        {Text_EN.Text_en.Send}
+                        {t('message:Send')}
                       </Text>
                     ) : (
                       <Text
                         style={{
                           fontSize: width > height ? wp('1.5%') : wp('3.5%'),
                         }}>
-                        {Text_EN.Text_en.Send}
+                        {t('message:Send')}
                       </Text>
                     )}
                   </View>
@@ -952,11 +1191,11 @@ export default class home extends Component {
                                 {item.is_read == 0 &&
                                 item.receiver_id == this.state.userId ? (
                                   <View style={styles.messageIndicator}>
-                                    <Text></Text>
+                                    <Text />
                                   </View>
                                 ) : (
                                   <View style={styles.readIndicator}>
-                                    <Text></Text>
+                                    <Text />
                                   </View>
                                 )}
                                 <Text
@@ -978,11 +1217,11 @@ export default class home extends Component {
                                 {item.is_read == 0 &&
                                 item.receiver_id == this.state.userId ? (
                                   <View style={styles.messageIndicator}>
-                                    <Text></Text>
+                                    <Text />
                                   </View>
                                 ) : (
                                   <View style={styles.readIndicator}>
-                                    <Text></Text>
+                                    <Text />
                                   </View>
                                 )}
                                 <Text
@@ -1034,11 +1273,11 @@ export default class home extends Component {
                                 {item.is_read == 0 &&
                                 item.receiver_id == this.state.userId ? (
                                   <View style={styles.messageIndicator}>
-                                    <Text></Text>
+                                    <Text />
                                   </View>
                                 ) : (
                                   <View style={styles.readIndicator}>
-                                    <Text></Text>
+                                    <Text />
                                   </View>
                                 )}
                                 <Text
@@ -1056,11 +1295,11 @@ export default class home extends Component {
                                 {item.is_read == 0 &&
                                 item.receiver_id == this.state.userId ? (
                                   <View style={styles.messageIndicator}>
-                                    <Text></Text>
+                                    <Text />
                                   </View>
                                 ) : (
                                   <View style={styles.readIndicator}>
-                                    <Text></Text>
+                                    <Text />
                                   </View>
                                 )}
                                 <Text
@@ -1107,7 +1346,9 @@ export default class home extends Component {
               <TouchableOpacity
                 style={styles.active_submit_btn}
                 onPress={() => this.send_message()}>
-                <Text style={styles.submit_btn}>Skriv besked</Text>
+                <Text style={styles.submit_btn}>
+                  {t('common:write_message')}
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -1123,6 +1364,9 @@ export default class home extends Component {
     );
   }
 }
+
+export default translate(['message', 'common'], {wait: true})(home);
+
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
@@ -1296,5 +1540,41 @@ const styles = StyleSheet.create({
     alignContent: 'center',
     alignItems: 'center',
     backgroundColor: '#ffffffab',
+  },
+  tag: {
+    backgroundColor: '#00a1ff',
+    marginRight: 5,
+    paddingTop: 5,
+    paddingBottom: 5,
+    paddingRight: 8,
+    paddingLeft: 8,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    borderRadius: 10,
+    borderTopRightRadius: 50,
+    borderBottomRightRadius: 50,
+    marginBottom: 8,
+  },
+  tag_close: {
+    marginRight: 10,
+    fontSize: 10,
+  },
+  tag_text: {
+    color: '#fff',
+    fontSize: 10,
+  },
+  _container: {
+    flex: 1,
+  },
+  checkboxContainer: {
+    flexDirection: 'row',
+  },
+  checkbox: {
+    alignSelf: 'center',
+    marginTop: 5,
+    marginRight: 5,
+  },
+  label: {
+    margin: 8,
   },
 });

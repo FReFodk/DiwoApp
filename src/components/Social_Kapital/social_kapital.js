@@ -12,17 +12,20 @@ import {
   TextInput,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
-import {Card, Icon} from 'react-native-elements';
+import {Card} from 'react-native-elements';
 import {Dialog} from 'react-native-simple-dialogs';
-import Text_EN from '../res/lang/static_text';
+// import Text_EN from '../res/lang/static_text';
 import {NavigationEvents, SafeAreaView} from 'react-navigation';
 import HideWithKeyboard from 'react-native-hide-with-keyboard';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Icon from 'react-native-vector-icons/Feather';
+import {translate} from 'react-i18next';
+import i18n from 'i18next';
 
-export default class social_kapital extends Component {
+class social_kapital extends Component {
   myInterval = '';
   constructor(props) {
     super(props);
@@ -42,6 +45,8 @@ export default class social_kapital extends Component {
       activeBtn: 1,
       answerSend: false,
       loading: false,
+
+      showOpen: true,
     };
     this._retrieveData();
     Text.defaultProps = Text.defaultProps || {};
@@ -66,9 +71,10 @@ export default class social_kapital extends Component {
   };
 
   help_workjoy = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er arbejdsglæde?',
-      Text_EN.Text_en.workjoy_help_popup,
+      t('common:sastisfaction_question'),
+      t('common:workjoy_help_popup'),
       [
         {
           text: 'Cancel',
@@ -82,9 +88,10 @@ export default class social_kapital extends Component {
   };
 
   help_socialkapital = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvad er social Kapital?',
-      Text_EN.Text_en.socialkapital_help_popup,
+      t('common:social_kapital_question'),
+      t('common:socialkapital_help_popup'),
       [
         {
           text: 'Cancel',
@@ -98,9 +105,10 @@ export default class social_kapital extends Component {
   };
 
   help_experience = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
-      'Hvorfor skal jeg svareliht?',
-      Text_EN.Text_en.experience_help_popup,
+      t('common:why_answer'),
+      t('common:experience_help_popup'),
       [
         {
           text: 'Cancel',
@@ -185,9 +193,10 @@ export default class social_kapital extends Component {
   };
 
   inactive_press_comment = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
       '',
-      Text_EN.Text_en.inactive_social_kapital_comment,
+      t('socail_capital:inactive_social_kapital_comment'),
       [
         {
           text: 'Ok',
@@ -201,9 +210,10 @@ export default class social_kapital extends Component {
   };
 
   inactive_press = () => {
+    const {t} = this.props.screenProps;
     Alert.alert(
       '',
-      Text_EN.Text_en.inactive_social_kapital_submit,
+      t('socail_capital:inactive_social_kapital_submit'),
       [
         {
           text: 'Ok',
@@ -232,6 +242,8 @@ export default class social_kapital extends Component {
       fourthAnswer: '',
       fiveAnswer: '',
     });
+    const {t} = this.props.screenProps;
+
     if (this.state.count == 1) {
       const user_details = this.state.token;
       // this.setState({token:userToken.token});
@@ -268,71 +280,106 @@ export default class social_kapital extends Component {
                 lastReviewDate: responseJson.kapital_data[0].last_review_date,
               });
               var date = responseJson.kapital_data[0].last_review_date;
-              var t = date.split(/[- :]/);
-              var d = new Date(t[0], t[1] - 1, t[2]);
+              var z = date.split(/[- :]/);
+              var d = new Date(z[0], z[1] - 1, z[2]);
 
-              // Checking activation for the current month
-              var now = new Date();
-              let lastDate =
-                this.getDaysInMonth(now.getMonth() + 1, now.getFullYear()) - 3;
-              let activationDate =
-                now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + lastDate;
-              var activet = activationDate.split(/[- :]/);
-              let activeDate = new Date(activet[0], activet[1] - 1, activet[2]);
-              //console.log(activeDate);
-
-              // Checking activation for the Previous month
-              var now = new Date();
-              let PrevlastDate =
-                this.getDaysInMonth(now.getMonth(), now.getFullYear()) - 3;
-              let PrevactivationDate =
-                now.getFullYear() + '-' + now.getMonth() + '-' + PrevlastDate;
-              var Prevt = PrevactivationDate.split(/[- :]/);
-              let PrevactiveDate = new Date(Prevt[0], Prevt[1] - 1, Prevt[2]);
-              //console.log(PrevactiveDate);
-
-              //check if database date and previous month activation date is same or not
-              if (
-                d.getTime() === PrevactiveDate.getTime() ||
-                d.getTime() === activeDate.getTime()
-              ) {
-                this.setState({activeBtn: 0});
+              const {showOpen} = this.state;
+              const now = new Date();
+              if (d.getFullYear() !== now.getFullYear()) {
+                if (now.getDate() >= 25) {
+                  if (showOpen) {
+                    alert(t('common:question_open'));
+                    this.setState({activeBtn: 1, showOpen: false});
+                  }
+                } else {
+                  this.setState({activeBtn: 0});
+                }
               } else {
-                //Check for activation between the database date and current date.
-                // let dateArray = [];
-                // let count = 0;
-                for (
-                  var dt = new Date(d);
-                  dt <= now;
-                  dt.setDate(dt.getDate() + 1)
-                ) {
-                  console.log(dt);
-                  if (
-                    dt.getTime() === PrevactiveDate.getTime() ||
-                    dt.getTime() === activeDate.getTime()
-                  ) {
-                    console.log('if');
-                    this.setState({activeBtn: 1});
-                    break;
-                  } else if (dt.getTime() > activeDate.getTime()) {
-                    if (
-                      dt.getDate() > activeDate.getDate() &&
-                      dt.getMonth() + 1 == activeDate.getMonth() + 1
-                    ) {
-                      this.setState({activeBtn: 0});
-                    } else {
-                      console.log('In else if');
-                      this.setState({activeBtn: 1});
+                if (d.getMonth() !== now.getMonth()) {
+                  if (now.getDate() >= 25) {
+                    if (showOpen) {
+                      alert(t('common:question_open'));
+                      this.setState({activeBtn: 1, showOpen: false});
                     }
                   } else {
-                    console.log('else');
                     this.setState({activeBtn: 0});
                   }
-                  // dateArray.push(dt.getTime());
+                } else {
+                  this.setState({activeBtn: 0});
                 }
               }
+
+              // // Checking activation for the current month
+              // var now = new Date();
+              // let lastDate =
+              //   this.getDaysInMonth(now.getMonth() + 1, now.getFullYear()) - 3;
+              // let activationDate =
+              //   now.getFullYear() + '-' + (now.getMonth() + 1) + '-' + lastDate;
+              // var activet = activationDate.split(/[- :]/);
+              // let activeDate = new Date(activet[0], activet[1] - 1, activet[2]);
+              // //console.log(activeDate);
+
+              // // Checking activation for the Previous month
+              // var now = new Date();
+              // let PrevlastDate =
+              //   this.getDaysInMonth(now.getMonth(), now.getFullYear()) - 3;
+              // let PrevactivationDate =
+              //   now.getFullYear() + '-' + now.getMonth() + '-' + PrevlastDate;
+              // var Prevt = PrevactivationDate.split(/[- :]/);
+              // let PrevactiveDate = new Date(Prevt[0], Prevt[1] - 1, Prevt[2]);
+              // //console.log(PrevactiveDate);
+
+              // //check if database date and previous month activation date is same or not
+              // if (
+              //   d.getTime() === PrevactiveDate.getTime() ||
+              //   d.getTime() === activeDate.getTime()
+              // ) {
+              //   this.setState({activeBtn: 0});
+              // } else {
+              //   //Check for activation between the database date and current date.
+              //   // let dateArray = [];
+              //   // let count = 0;
+              //   for (
+              //     var dt = new Date(d);
+              //     dt <= now;
+              //     dt.setDate(dt.getDate() + 1)
+              //   ) {
+              //     console.log(dt);
+              //     if (
+              //       dt.getTime() === PrevactiveDate.getTime() ||
+              //       dt.getTime() === activeDate.getTime()
+              //     ) {
+              //       console.log('if');
+              //       this.setState({activeBtn: 1});
+              //       break;
+              //     } else if (dt.getTime() > activeDate.getTime()) {
+              //       if (
+              //         dt.getDate() > activeDate.getDate() &&
+              //         dt.getMonth() + 1 == activeDate.getMonth() + 1
+              //       ) {
+              //         this.setState({activeBtn: 0});
+              //       } else {
+              //         console.log('In else if');
+              //         this.setState({activeBtn: 1});
+              //       }
+              //     } else {
+              //       console.log('else');
+              //       this.setState({activeBtn: 0});
+              //     }
+              //     // dateArray.push(dt.getTime());
+              //   }
+              // }
             } else {
-              this.setState({activeBtn: 1});
+              const now = new Date();
+              if (now.getDate() >= 27) {
+                const {showOpen} = this.state;
+                if (showOpen) {
+                  alert(t('common:question_open'));
+                  this.setState({activeBtn: 1, showOpen: false});
+                }
+              } else {
+                this.setState({activeBtn: 0});
+              }
             }
           }
         })
@@ -343,6 +390,8 @@ export default class social_kapital extends Component {
   }
   render() {
     var {height, width} = Dimensions.get('window');
+    const {t} = this.props.screenProps;
+
     return (
       <SafeAreaView style={{flex: 1}}>
         <View style={styles.container}>
@@ -358,7 +407,7 @@ export default class social_kapital extends Component {
           />
           <Dialog
             visible={this.state.commentbox}
-            title="Kommentarer"
+            title={t('common:comments')}
             onTouchOutside={() => this.setState({commentbox: false})}>
             <View style={{position: 'relative', padding: 15}}>
               <View style={styles.dialog_close_icon}>
@@ -375,7 +424,7 @@ export default class social_kapital extends Component {
               </View>
               <View style={{paddingBottom: 10}}>
                 <Text style={styles.dialog_txt}>
-                  {Text_EN.Text_en.social_kapital_commentbox}
+                  {t('socail_capital:social_kapital_commentbox')}
                 </Text>
                 <TextInput
                   style={{
@@ -387,7 +436,7 @@ export default class social_kapital extends Component {
                     backgroundColor: 'white',
                     flexWrap: 'wrap',
                   }}
-                  placeholder="Skriv kommentar her.."
+                  placeholder={t('socail_capital:write_comment')}
                   multiline={true}
                   fontSize={width > height ? wp('1.5') : wp('4%')}
                   numberOfLines={5}
@@ -404,7 +453,7 @@ export default class social_kapital extends Component {
                       color: 'white',
                       fontWeight: 'bold',
                     }}>
-                    Send Kommentar
+                    {t('socail_capital:send_comment')}
                   </Text>
                 </TouchableOpacity>
               </View>
@@ -428,7 +477,7 @@ export default class social_kapital extends Component {
               </View>
               <View style={{paddingBottom: 10}}>
                 <Text style={styles.dialog_txt}>
-                  {Text_EN.Text_en.social_kapital_error}
+                  {t('socail_capital:social_kapital_error')}
                 </Text>
               </View>
             </View>
@@ -451,7 +500,7 @@ export default class social_kapital extends Component {
               </View>
               <View style={{paddingBottom: 10}}>
                 <Text style={styles.dialog_txt}>
-                  {Text_EN.Text_en.social_kapital_submit_message}
+                  {t('socail_capital:social_kapital_submit_message')}
                 </Text>
               </View>
             </View>
@@ -470,16 +519,9 @@ export default class social_kapital extends Component {
               justifyContent: 'space-between',
             }}>
             <View>
-              <Text style={{fontSize: width > height ? wp('1.6%') : wp('4%')}}>
-                Hej{' '}
-                <Text
-                  style={{
-                    fontWeight: 'bold',
-                    fontSize: width > height ? wp('1.6%') : wp('4.5%'),
-                  }}>
-                  {this.state.firstName}
-                </Text>
-              </Text>
+              <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
+                <Icon name="chevron-left" size={30} color="#00a1ff" />
+              </TouchableOpacity>
             </View>
             <View
               style={{
@@ -523,26 +565,24 @@ export default class social_kapital extends Component {
                   alignContent: 'center',
                   alignItems: 'center',
                 }}>
-                <Text style={styles.upper_txt}>
-                  {Text_EN.Text_en.cooperation}
-                </Text>
+                <Text style={styles.upper_txt}>{t('common:cooperation')}</Text>
                 <Image
                   style={styles.diamond_icon_top}
                   source={require('../../uploads/diamond_img.png')}
                 />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.trust}</Text>
+                <Text style={styles.upper_txt}>{t('common:trust')}</Text>
                 <Image
                   style={styles.diamond_icon_top}
                   source={require('../../uploads/diamond_img.png')}
                 />
-                <Text style={styles.upper_txt}>{Text_EN.Text_en.justice}</Text>
+                <Text style={styles.upper_txt}>{t('common:justice')}</Text>
               </View>
             </TouchableOpacity>
             <Text style={styles.social_title}>
               <Text style={{fontWeight: 'bold'}}>
-                {Text_EN.Text_en.social_kapital}:{' '}
+                {t('socail_capital:social_kapital')}:{' '}
               </Text>
-              {Text_EN.Text_en.socialkapital_title}
+              {t('socail_capital:socialkapital_title')}
             </Text>
             <ScrollView>
               <Card borderRadius={15}>
@@ -558,7 +598,7 @@ export default class social_kapital extends Component {
                       style={{
                         fontSize: width > height ? wp('2.5%') : wp('3.5%'),
                       }}>
-                      {Text_EN.Text_en.socialkapital_question_one}
+                      {t('socail_capital:socialkapital_question_one')}
                     </Text>
                   </View>
                   <View style={styles.icon_view}>
@@ -614,7 +654,7 @@ export default class social_kapital extends Component {
                       style={{
                         fontSize: width > height ? wp('2.5%') : wp('3.5%'),
                       }}>
-                      {Text_EN.Text_en.socialkapital_question_two}
+                      {t('socail_capital:socialkapital_question_two')}
                     </Text>
                   </View>
                   <View style={styles.icon_view}>
@@ -670,7 +710,7 @@ export default class social_kapital extends Component {
                       style={{
                         fontSize: width > height ? wp('2.5%') : wp('3.5%'),
                       }}>
-                      {Text_EN.Text_en.socialkapital_question_three}
+                      {t('socail_capital:socialkapital_question_three')}
                     </Text>
                   </View>
                   <View style={styles.icon_view}>
@@ -726,7 +766,7 @@ export default class social_kapital extends Component {
                       style={{
                         fontSize: width > height ? wp('2.5%') : wp('3.5%'),
                       }}>
-                      {Text_EN.Text_en.socialkapital_question_four}
+                      {t('socail_capital:socialkapital_question_four')}
                     </Text>
                   </View>
                   <View style={styles.icon_view}>
@@ -782,7 +822,7 @@ export default class social_kapital extends Component {
                       style={{
                         fontSize: width > height ? wp('2.5%') : wp('3.5%'),
                       }}>
-                      {Text_EN.Text_en.socialkapital_question_five}
+                      {t('socail_capital:socialkapital_question_five')}
                     </Text>
                   </View>
                   <View style={styles.icon_view}>
@@ -829,7 +869,7 @@ export default class social_kapital extends Component {
               <View style={styles.submit_btn}>
                 <TouchableOpacity onPress={() => this.redirect_measurement()}>
                   <Text style={styles.btn_txt}>
-                    {Text_EN.Text_en.link_measurement_btn}
+                    {t('socail_capital:link_measurement_btn')}
                   </Text>
                 </TouchableOpacity>
                 {this.state.activeBtn == 0 ? (
@@ -837,7 +877,7 @@ export default class social_kapital extends Component {
                     style={{marginLeft: 10}}
                     onPress={() => this.inactive_press()}>
                     <Text style={styles.inactive_btn_txt}>
-                      {Text_EN.Text_en.submit_answer}
+                      {t('socail_capital:submit_answer')}
                     </Text>
                   </TouchableOpacity>
                 ) : (
@@ -845,7 +885,7 @@ export default class social_kapital extends Component {
                     style={{marginLeft: 10}}
                     onPress={() => this.send_answer()}>
                     <Text style={styles.btn_txt}>
-                      {Text_EN.Text_en.submit_answer}
+                      {t('socail_capital:submit_answer')}
                     </Text>
                   </TouchableOpacity>
                 )}
@@ -884,6 +924,9 @@ export default class social_kapital extends Component {
     );
   }
 }
+
+export default translate(['home', 'common'], {wait: true})(social_kapital);
+
 const {height, width} = Dimensions.get('window');
 const styles = StyleSheet.create({
   container: {
